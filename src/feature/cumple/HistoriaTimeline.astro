@@ -1,7 +1,7 @@
 ---
 // src/feature/cumple/HistoriaTimeline.astro
 // 📖 Línea de Tiempo: "Mi Historia en 5 Pasitos de Bendición"
-// Fotos Extra Grandes (340px desktop / 300px mobile) + Riel Continuo Dorado
+// Fotos Extra Grandes con Carga Progresiva imgwii (Blur-Up + /wpuntos.svg)
 // 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados
 import historiaSeed from '@semillas/historia.json';
 
@@ -25,13 +25,15 @@ const pasitos = Array.isArray(historiaSeed) ? historiaSeed : [];
         <!-- Bullet Circular sobre el Riel -->
         <span class="geco-timeline-bullet" aria-hidden="true"></span>
 
-        <!-- Contenedor de Foto Extra Grande -->
+        <!-- Contenedor de Foto Extra Grande con imgwii blur-up y placeholder SVG -->
         <div class="geco-node-photo-container">
           <img
-            src={pasito.foto || ''}
+            src="/wpuntos.svg"
+            data-src={pasito.foto || ''}
             alt={pasito.alt || pasito.titulo || ''}
-            class="geco-node-photo"
+            class="geco-node-photo wi_skeleton"
             loading="lazy"
+            decoding="async"
             width="800"
             height="340"
           />
@@ -49,17 +51,12 @@ const pasitos = Array.isArray(historiaSeed) ? historiaSeed : [];
 </section>
 
 <script>
-  import { leerStorage } from '@widev/storage.js';
+  import { imgwii } from '@widev';
 
-  function hidratarHistoria() {
-    try {
-      const customHistoria = leerStorage('geco_historia_custom', null);
-      if (Array.isArray(customHistoria) && customHistoria.length > 0) {
-        // Soporte para hidratación dinámica si el usuario personaliza la historia en el futuro
-      }
-    } catch {}
+  function activarImgWii() {
+    imgwii.ver('#timelineStream');
   }
 
-  hidratarHistoria();
-  document.addEventListener('astro:page-load', hidratarHistoria);
+  activarImgWii();
+  document.addEventListener('astro:page-load', activarImgWii);
 </script>

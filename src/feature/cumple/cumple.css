@@ -450,23 +450,92 @@
   gap: 6px;
 }
 
+.geco-survey-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.geco-survey-btn-refresh {
+  font-size: 0.78rem;
+  color: var(--tx2);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: var(--r_pill);
+  background: var(--glass-raised);
+  border: 1px solid var(--border-light);
+  transition: all var(--tr_f);
+}
+
+.geco-survey-btn-refresh:hover {
+  background: var(--glass-card);
+  color: var(--mco);
+  border-color: var(--mco);
+}
+
+.geco-survey-btn-refresh.cargando i {
+  animation: gecoSpin 0.75s linear infinite;
+  color: var(--mco);
+}
+
+.geco-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 2px 7px;
+  border-radius: var(--r_pill);
+  margin-left: 6px;
+}
+
+.geco-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: gecoPulse 1.8s ease-in-out infinite;
+}
+
 .geco-survey-btn-reset {
   font-size: 0.78rem;
   color: var(--mco);
   font-weight: 600;
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: var(--r_pill);
   background: var(--glass-raised);
-  border: none;
+  border: 1px solid var(--gold-vip-border);
   transition: all var(--tr_f);
+}
+
+.geco-survey-btn-reset.visible {
+  display: inline-flex;
 }
 
 .geco-survey-btn-reset:hover {
   background: var(--mco-light);
+}
+
+@keyframes gecoSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gecoPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
 }
 
 .geco-survey-feedback-banner {

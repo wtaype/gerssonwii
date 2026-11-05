@@ -69,4 +69,8 @@ export const wiTema = {
   toggle: alternarTema
 };
 
+export const witema = wiTema;
+export const witemas = wiTema;
+export const setTema = (t) => aplicarTema(t, true);
+
 export default wiTema;

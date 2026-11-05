@@ -2,6 +2,20 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // Colección de Encuestas: /encuestas/conocemos
+    match /encuestas/{encuestaId} {
+      allow read, write: if true;
+    }
+
+    // Mensajes y Saludos de Cumpleaños (Fase 6)
+    match /mensajes/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+    
+    // Regla de cierre por seguridad
     match /{document=**} {
       allow read, write: if false;
     }

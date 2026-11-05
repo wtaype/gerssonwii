@@ -1,7 +1,8 @@
 ---
 // src/feature/cumple/EncuestaCard.astro
 // 📊 Encuesta Interactiva: "¿De dónde nos conocemos? 💕"
-// Votación reactiva en tiempo real, persistencia en Storage y Toasts WiDev
+// 5 Opciones Oficiales en Vivo vía /encuestas/conocemos (Documento Único)
+// Máximo Rendimiento y Ahorro de Cuota: wiSmart + Rate-Limit de Lecturas
 // 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados
 import encuestaSeed from '@semillas/encuesta.json';
 
@@ -11,16 +12,21 @@ const opciones = Array.isArray(encuestaSeed.opciones) ? encuestaSeed.opciones : 
 ---
 
 <div class="geco-survey-card" id="seccionEncuestaV9">
-  <!-- Badge Superior -->
-  <span class="geco-survey-badge">
-    <i class="fa-solid fa-square-poll-vertical"></i> Encuesta de Amigos & Vínculo
-  </span>
+  <!-- Barra Superior con Badge y Estado En Vivo -->
+  <div class="geco-survey-top-bar">
+    <span class="geco-survey-badge">
+      <i class="fa-solid fa-square-poll-vertical"></i> Encuesta de Amigos & Vínculo
+    </span>
+    <span class="geco-live-badge" id="surveyLiveBadge" title="Sincronización en vivo con Firebase Firestore">
+      <span class="geco-live-dot"></span> En vivo
+    </span>
+  </div>
 
   <!-- Pregunta y Subtítulo -->
   <h3 class="geco-survey-title">{pregunta}</h3>
   <p class="geco-survey-sub">{subtitulo}</p>
 
-  <!-- Opciones de Votación -->
+  <!-- 5 Opciones Oficiales de Votación -->
   <div class="geco-survey-options" id="listaOpcionesEncuesta">
     {opciones.map((opt, idx) => (
       <button
@@ -56,65 +62,73 @@ const opciones = Array.isArray(encuestaSeed.opciones) ? encuestaSeed.opciones : 
     <span id="surveyFeedbackText"></span>
   </div>
 
-  <!-- Pie de Encuesta: Total de Votos y Botón de Reelección -->
+  <!-- Pie de Encuesta: Total de Votos y Acciones Protegidas -->
   <div class="geco-survey-footer">
     <div class="geco-survey-total-label" id="surveyTotalLabel">
       <i class="fa-solid fa-chart-simple geco-heading-icon"></i>
-      <span>Cargando respuestas...</span>
+      <span id="surveyTotalText">Cargando respuestas...</span>
     </div>
 
-    <button type="button" class="geco-survey-btn-reset" id="btnCambiarVoto" title="Cambiar mi elección">
-      <i class="fa-solid fa-rotate-left"></i>
-      <span>Cambiar mi respuesta</span>
-    </button>
+    <div class="geco-survey-actions">
+      <!-- Botón de Actualizar con Enfriamiento para Cuidar Lecturas -->
+      <button
+        type="button"
+        class="geco-survey-btn-refresh"
+        id="btnActualizarVotos"
+        title="Actualizar votos en tiempo real"
+        aria-label="Actualizar resultados de la encuesta"
+      >
+        <i class="fa-solid fa-arrows-rotate" id="iconRefreshVotos"></i>
+        <span>Actualizar</span>
+      </button>
+
+      <!-- Botón de Cambiar / Revertir Elección -->
+      <button
+        type="button"
+        class="geco-survey-btn-reset"
+        id="btnCambiarVoto"
+        title="Cambiar mi elección"
+        aria-label="Cambiar mi respuesta"
+      >
+        <i class="fa-solid fa-rotate-left"></i>
+        <span>Cambiar respuesta</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <script>
-  import encuestaData from '@semillas/encuesta.json';
+  import {
+    obtenerEstadoLocal,
+    guardarVotoLocal,
+    revertirVotoLocal,
+    sincronizarDesdeFirestore,
+    calcularPorcentajes,
+    FEEDBACK_MSGS,
+    OPCIONES
+  } from './data/cacheConocemos.js';
   import { Mensaje } from '@widev/mensajes.js';
-  import { leerStorage, escribirStorage, borrarStorage } from '@widev/storage.js';
+  import { wiSmart } from '@widev';
 
-  const CLAVE_VOTOS = 'geco_survey_v9_votes';
-  const CLAVE_USUARIO = 'geco_survey_v9_user';
-
-  const opciones = encuestaData.opciones || [];
-  const votosDefecto = opciones.map((o: any) => o.votosBase ?? 10);
-  const feedbackMensajes = opciones.map((o: any) => o.feedback ?? '¡Gracias por responder!');
-
-  let votos = [...votosDefecto];
-  let usuarioEleccion: number | null = null;
-
-  function cargarEstadoEncuesta() {
-    try {
-      const guardados = leerStorage(CLAVE_VOTOS, null);
-      if (Array.isArray(guardados) && guardados.length === opciones.length) {
-        votos = guardados.map(Number);
-      } else {
-        votos = [...votosDefecto];
-      }
-
-      const userSaved = leerStorage(CLAVE_USUARIO, null);
-      if (userSaved !== null && !isNaN(Number(userSaved))) {
-        usuarioEleccion = Number(userSaved);
-      } else {
-        usuarioEleccion = null;
-      }
-    } catch {
-      votos = [...votosDefecto];
-      usuarioEleccion = null;
-    }
-  }
+  let estado = obtenerEstadoLocal();
+  let desuscribirRealtime: (() => void) | null = null;
+  let enfriamientoRefresh = false;
 
   function renderizarEncuesta() {
-    const total = votos.reduce((a, b) => a + b, 0);
-    const totalLabel = document.getElementById('surveyTotalLabel');
-    if (totalLabel) {
-      totalLabel.innerHTML = `<i class="fa-solid fa-chart-simple geco-heading-icon"></i> Total de votos: <strong>${total} respuestas</strong>`;
+    const { votos, usuarioEleccion, total } = estado;
+    const porcentajes = calcularPorcentajes(votos, total);
+
+    const totalTextEl = document.getElementById('surveyTotalText');
+    if (totalTextEl) {
+      if (total === 0) {
+        totalTextEl.innerHTML = `Total de votos: <strong>0 respuestas</strong> (¡Sé el primero en votar!)`;
+      } else {
+        totalTextEl.innerHTML = `Total de votos: <strong>${total} ${total === 1 ? 'respuesta' : 'respuestas'}</strong>`;
+      }
     }
 
-    votos.forEach((v, idx) => {
-      const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+    votos.forEach((_, idx) => {
+      const pct = porcentajes[idx] ?? 0;
       const bar = document.getElementById(`surveyBar-${idx}`);
       const pctEl = document.getElementById(`surveyPct-${idx}`);
       if (bar) bar.style.width = `${pct}%`;
@@ -127,60 +141,134 @@ const opciones = Array.isArray(encuestaSeed.opciones) ? encuestaSeed.opciones : 
 
     const banner = document.getElementById('surveyFeedbackBanner');
     const bannerText = document.getElementById('surveyFeedbackText');
-    if (usuarioEleccion !== null && banner && bannerText) {
-      bannerText.textContent = feedbackMensajes[usuarioEleccion] || '¡Gracias por tu respuesta!';
-      banner.classList.add('show');
-    } else if (banner) {
-      banner.classList.remove('show');
+    const btnReset = document.getElementById('btnCambiarVoto');
+
+    if (usuarioEleccion !== null) {
+      if (banner && bannerText) {
+        bannerText.textContent = FEEDBACK_MSGS[usuarioEleccion] || '¡Gracias por tu respuesta!';
+        banner.classList.add('show');
+      }
+      if (btnReset) btnReset.classList.add('visible');
+    } else {
+      if (banner) banner.classList.remove('show');
+      if (btnReset) btnReset.classList.remove('visible');
     }
   }
 
-  function setupEventListeners() {
+  function setupInteracciones() {
+    // 1. Votación en opciones (Actualización optimista instantánea + 1 escritura atómica Firestore)
     document.querySelectorAll('.geco-survey-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const idx = Number(btn.getAttribute('data-index'));
-        if (usuarioEleccion === idx) return;
+        if (estado.usuarioEleccion === idx) return;
 
-        if (usuarioEleccion !== null) {
-          votos[usuarioEleccion] = Math.max(0, votos[usuarioEleccion] - 1);
-        }
+        const prevIdx = estado.usuarioEleccion;
+        const prevOptId = prevIdx !== null ? OPCIONES[prevIdx]?.id : null;
+        const opt = OPCIONES[idx];
+        if (!opt) return;
 
-        votos[idx] += 1;
-        usuarioEleccion = idx;
-
-        escribirStorage(CLAVE_VOTOS, votos);
-        escribirStorage(CLAVE_USUARIO, idx);
-
+        // Actualización optimista local en 0ms
+        estado = guardarVotoLocal(idx);
         renderizarEncuesta();
 
+        // Celebración festiva
         if (typeof (window as any).lanzarConfeti === 'function') {
           (window as any).lanzarConfeti(80);
         }
 
-        Mensaje(feedbackMensajes[idx] || '¡Gracias por tu vínculo!', 'success');
+        Mensaje(FEEDBACK_MSGS[idx] || '¡Gracias por tu vínculo con Gersson!', 'success');
+
+        // Sincronización en segundo plano con /encuestas/conocemos (1 sola escritura)
+        import('./data/dataConocemos.js')
+          .then(({ votarConocemosRemoto }) => {
+            votarConocemosRemoto({
+              opcionId: opt.id,
+              opcionAnteriorId: prevOptId
+            });
+          })
+          .catch((err) => console.warn('[Conocemos Sync] Error:', err));
       });
     });
 
+    // 2. Botón Cambiar / Revertir Respuesta
     document.getElementById('btnCambiarVoto')?.addEventListener('click', () => {
-      if (usuarioEleccion !== null) {
-        votos[usuarioEleccion] = Math.max(0, votos[usuarioEleccion] - 1);
-        usuarioEleccion = null;
+      if (estado.usuarioEleccion === null) return;
 
-        escribirStorage(CLAVE_VOTOS, votos);
-        borrarStorage(CLAVE_USUARIO);
+      const prevIdx = estado.usuarioEleccion;
+      const prevOptId = prevIdx !== null ? OPCIONES[prevIdx]?.id : null;
 
-        renderizarEncuesta();
-        Mensaje('Puedes elegir nuevamente tu vínculo con Gersson.', 'info');
+      estado = revertirVotoLocal();
+      renderizarEncuesta();
+      Mensaje('Puedes elegir nuevamente tu vínculo con Gersson.', 'info');
+
+      if (prevOptId) {
+        import('./data/dataConocemos.js')
+          .then(({ revertirVotoRemoto }) => {
+            revertirVotoRemoto(prevOptId);
+          })
+          .catch((err) => console.warn('[Conocemos Revert] Error:', err));
+      }
+    });
+
+    // 3. Botón Manual de Actualizar con Protección Anti-Spam de Lecturas
+    const btnRefresh = document.getElementById('btnActualizarVotos');
+    btnRefresh?.addEventListener('click', async () => {
+      if (enfriamientoRefresh) {
+        Mensaje('Resultados al día. Espera un momento para refrescar.', 'info');
+        return;
+      }
+
+      enfriamientoRefresh = true;
+      btnRefresh.classList.add('cargando');
+
+      try {
+        const { consultarConocemos } = await import('./data/dataConocemos.js');
+        const datosRemotos = await consultarConocemos();
+        if (datosRemotos) {
+          estado = sincronizarDesdeFirestore(datosRemotos);
+          renderizarEncuesta();
+          Mensaje('Resultados actualizados en vivo ✨', 'success');
+        }
+      } catch {
+        Mensaje('Resultados sincronizados localmente.', 'info');
+      } finally {
+        setTimeout(() => btnRefresh.classList.remove('cargando'), 400);
+        setTimeout(() => { enfriamientoRefresh = false; }, 3500); // Cooldown de 3.5s
       }
     });
   }
 
-  function inicializar() {
-    cargarEstadoEncuesta();
-    renderizarEncuesta();
-    setupEventListeners();
+  function conectarTiempoReal() {
+    // Sincronización Inteligente en Tiempo Real vía wiSmart (Cero Bloqueo de Primer Render)
+    wiSmart({
+      js: [
+        async () => {
+          try {
+            const { escucharConocemos } = await import('./data/dataConocemos.js');
+            if (desuscribirRealtime) desuscribirRealtime();
+
+            desuscribirRealtime = escucharConocemos((datosRemotos) => {
+              if (datosRemotos) {
+                estado = sincronizarDesdeFirestore(datosRemotos);
+                renderizarEncuesta();
+              }
+            });
+          } catch (e) {
+            console.warn('[wiSmart] Listener diferido no disponible:', e);
+          }
+        }
+      ]
+    });
   }
 
+  function inicializar() {
+    estado = obtenerEstadoLocal();
+    renderizarEncuesta();
+    setupInteracciones();
+    conectarTiempoReal();
+  }
+
+  // Inicialización limpia en primer render y en navegación Astro
   inicializar();
   document.addEventListener('astro:page-load', inicializar);
 </script>
