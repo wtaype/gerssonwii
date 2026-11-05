@@ -1,0 +1,906 @@
+/* src/feature/musica/musica.css */
+/* 🎵 Estilos del Módulo de Música & Concentración Offline para Clayda */
+/* 100% Tokens de witema.css · 100% var(--fz_*) · Cero Colores Hex Sueltos */
+/* Unidades de Layout Exclusivas en vh y vw (Cero px/rem/em en layout) */
+
+/* ==========================================================================
+   1. CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.musica-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4vh;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 2vh;
+}
+
+/* ==========================================================================
+   2. TARJETA DEL REPRODUCTOR MAESTRO
+   ========================================================================== */
+.musica-player-card {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: 1.8vh;
+  padding: 1.4vh 1.8vw;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4vh;
+  transition: border-color var(--tr_m), box-shadow var(--tr_m);
+}
+
+.musica-player-card:hover {
+  border-color: var(--border-accent);
+}
+
+/* PÓSTER CINEMÁTICO */
+.musica-poster-box {
+  position: relative;
+  width: 100%;
+  height: 19vh;
+  border-radius: 1.5vh;
+  overflow: hidden;
+  background: var(--noche, #0a1827);
+  box-shadow: 0 0.8vh 2.5vh color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.musica-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.musica-player-card:hover .musica-poster-img {
+  transform: scale(1.03);
+}
+
+.musica-poster-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg, 
+    rgba(0, 0, 0, 0.25) 0%, 
+    rgba(0, 0, 0, 0.40) 40%, 
+    rgba(0, 0, 0, 0.92) 100%
+  );
+  pointer-events: none;
+}
+
+.musica-poster-head {
+  position: absolute;
+  top: 1.2vh;
+  left: 1.6vw;
+  right: 1.6vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.musica-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6vw;
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--white);
+  padding: 0.35vh 1.2vw;
+  border-radius: var(--r_full);
+  font-size: var(--fz_s1);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.musica-pulse-dot {
+  width: 0.8vh;
+  height: 0.8vh;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0.8vh var(--primary);
+  animation: musicaPulseDot 1.4s infinite;
+}
+
+@keyframes musicaPulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.musica-header-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.25vw;
+  height: 1.8vh;
+  width: 1.6vh;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 0.3vh 0.4vw;
+  border-radius: 0.6vh;
+  backdrop-filter: blur(6px);
+}
+
+.musica-header-eq span {
+  width: 0.3vh;
+  height: 30%;
+  background: var(--primary);
+  border-radius: 999vw;
+  transition: height 0.2s ease;
+}
+
+.musica-header-eq.playing span {
+  animation: musicaHeaderWave 0.7s ease-in-out infinite alternate;
+}
+
+.musica-header-eq.playing span:nth-child(2) { animation-delay: 0.15s; }
+.musica-header-eq.playing span:nth-child(3) { animation-delay: 0.35s; }
+.musica-header-eq.playing span:nth-child(4) { animation-delay: 0.5s; }
+
+@keyframes musicaHeaderWave {
+  0% { height: 20%; }
+  100% { height: 100%; }
+}
+
+/* TÍTULO Y ARTISTA DIRECTAMENTE SOBRE EL PÓSTER */
+.musica-poster-info {
+  position: absolute;
+  bottom: 1.4vh;
+  left: 1.8vw;
+  right: 1.8vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25vh;
+}
+
+.musica-track-title {
+  font-family: var(--ff_O);
+  font-size: var(--fz_m2);
+  font-weight: 800;
+  color: var(--white);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+  text-shadow: 0 0.25vh 1vh rgba(0, 0, 0, 0.85);
+}
+
+.musica-track-artist {
+  font-size: var(--fz_s3);
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0.2vh 0.6vh rgba(0, 0, 0, 0.8);
+}
+
+/* --------------------------------------------------------------------------
+   SCRUBBER DE TIEMPO CÓMODO, ALTO Y TÁCTIL
+   -------------------------------------------------------------------------- */
+.musica-scrubber-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+  padding-inline: 0.4vw;
+}
+
+.musica-scrubber-hitbox {
+  position: relative;
+  width: 100%;
+  padding-block: 1.1vh;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.musica-scrubber-track {
+  position: relative;
+  width: 100%;
+  height: 1.1vh;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: 999vw;
+  overflow: visible;
+}
+
+.musica-scrubber-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--brand-accent) 100%);
+  border-radius: 999vw;
+  pointer-events: none;
+}
+
+.musica-scrubber-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  width: 2.5vh;
+  height: 2.5vh;
+  border-radius: 50%;
+  background: var(--white);
+  border: 3px solid var(--primary);
+  box-shadow: 0 0.2vh 1vh color-mix(in srgb, var(--primary) 45%, transparent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: transform var(--tr_f);
+}
+
+.musica-scrubber-hitbox:hover .musica-scrubber-thumb,
+.musica-scrubber-hitbox:active .musica-scrubber-thumb {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.musica-time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fz_s1);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   MUELLE DE CONTROLES (LIKE AL COSTADO DE LOOP)
+   -------------------------------------------------------------------------- */
+.musica-controls-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8vw;
+  padding-block: 0.3vh;
+}
+
+.musica-btn-round {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: var(--fz_m2);
+  width: 4.5vh;
+  height: 4.5vh;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.musica-btn-round:hover {
+  color: var(--primary);
+  background: var(--bg-subtle);
+  transform: scale(1.1);
+}
+
+.musica-btn-round.active {
+  color: var(--primary);
+  background: var(--mbg);
+}
+
+.musica-repeat-badge {
+  position: absolute;
+  top: 0.4vh;
+  right: 0.4vh;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: none;
+}
+
+.musica-repeat-badge.visible {
+  display: block;
+}
+
+/* Botón Like en el dock */
+.musica-btn-like {
+  color: var(--text-muted);
+}
+
+.musica-btn-like.active {
+  color: var(--primary);
+}
+
+.musica-btn-like.active i {
+  animation: musicaHeartPop 0.35s ease;
+}
+
+@keyframes musicaHeartPop {
+  0% { transform: scale(0.7); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* Botón Hero Play */
+.musica-hero-play {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--brand-accent) 100%);
+  color: var(--white);
+  border: none;
+  width: 5.8vh;
+  height: 5.8vh;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_m3);
+  cursor: pointer;
+  box-shadow: 0 0.6vh 2.2vh color-mix(in srgb, var(--primary) 35%, transparent);
+  transition: all var(--tr_f);
+}
+
+.musica-hero-play:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0.8vh 2.8vh color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+.musica-hero-play:active {
+  transform: scale(0.95);
+}
+
+/* VOLUMEN */
+.musica-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  padding-inline: 0.8vw;
+}
+
+.musica-mute-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--fz_s3);
+  cursor: pointer;
+  padding: 0.4vh;
+  transition: color var(--tr_f);
+}
+
+.musica-mute-btn:hover {
+  color: var(--primary);
+}
+
+.musica-volume-slider {
+  flex: 1;
+  height: 0.6vh;
+  border-radius: 999vw;
+  accent-color: var(--primary);
+  background: var(--line);
+  cursor: pointer;
+}
+
+.musica-volume-text {
+  font-size: var(--fz_s1);
+  color: var(--text-muted);
+  min-width: 3.5ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   3. BARRA DE HERRAMIENTAS EN UNA SOLA LÍNEA (TODOS, FAVORITOS, BÚSQUEDA)
+   ========================================================================== */
+.musica-single-toolbar {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: 1.4vh;
+  padding: 0.8vh 1.2vw;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+}
+
+.musica-nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  color: var(--text-muted);
+  font-family: var(--ff_P);
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  padding: 0.65vh 1.2vw;
+  border-radius: var(--r_full);
+  cursor: pointer;
+  transition: all var(--tr_f);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.musica-nav-pill:hover {
+  color: var(--primary);
+  border-color: var(--border-accent);
+}
+
+.musica-nav-pill.active {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 0.3vh 1vh color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.musica-pill-badge {
+  background: color-mix(in srgb, var(--white) 22%, transparent);
+  color: inherit;
+  font-size: var(--fz_s1);
+  font-weight: 700;
+  padding: 0.1vh 0.6vw;
+  border-radius: var(--r_full);
+}
+
+.musica-nav-pill:not(.active) .musica-pill-badge {
+  background: var(--line);
+  color: var(--text-main);
+}
+
+/* Buscador integrado completando la línea */
+.musica-inline-search {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.musica-inline-search-icon {
+  position: absolute;
+  left: 1vw;
+  color: var(--text-muted);
+  font-size: var(--fz_s2);
+  pointer-events: none;
+}
+
+.musica-inline-search-input {
+  width: 100%;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_full);
+  padding: 0.65vh 1.8vw 0.65vh 2.6vw;
+  font-family: var(--ff_P);
+  font-size: var(--fz_s2);
+  color: var(--text-bright);
+  outline: none;
+  transition: border-color var(--tr_f), box-shadow var(--tr_f);
+}
+
+.musica-inline-search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.3vh color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.musica-inline-clear-btn {
+  position: absolute;
+  right: 0.8vw;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: none;
+  padding: 0.3vh;
+}
+
+.musica-inline-clear-btn.visible {
+  display: block;
+}
+
+/* ==========================================================================
+   4. LISTA DE CANCIONES (PLAYLIST EN CONTENEDOR UNIFICADO)
+   ========================================================================== */
+.musica-playlist-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+
+/* Contenedor único unificado con background var(--surface) */
+.musica-tracks-box {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: 1.6vh;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: border-color var(--tr_m), box-shadow var(--tr_m);
+}
+
+.musica-tracks-box:hover {
+  border-color: var(--border-accent);
+}
+
+/* Filas de la lista unificada separadas con línea y box-shadow sutil en el bottom */
+.musica-song-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-card) 60%, transparent);
+  box-shadow: 0 0.15vh 0 color-mix(in srgb, var(--text-main) 3%, transparent);
+  border-radius: 0;
+  padding: 1.35vh 1.8vw;
+  display: flex;
+  align-items: center;
+  gap: 1.4vw;
+  transition: background-color var(--tr_f);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.musica-song-card:last-child {
+  border-bottom: none;
+  box-shadow: none;
+}
+
+.musica-song-card:hover {
+  background: var(--raised);
+}
+
+.musica-song-card:active {
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+
+.musica-song-card.playing {
+  background: var(--mbg);
+  box-shadow: none;
+}
+
+.musica-song-card.playing::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 0.35vw;
+  min-width: 3.5px;
+  background: var(--primary);
+  border-radius: 0 999vw 999vw 0;
+}
+
+/* Cuadro del índice o ecualizador */
+.musica-song-idx-box {
+  width: 4.2vh;
+  height: 4.2vh;
+  border-radius: 1.1vh;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--tr_f);
+}
+
+.musica-song-num {
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  color: var(--text-muted);
+  display: block;
+}
+
+.musica-song-card.playing .musica-song-idx-box {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.musica-song-card.playing .musica-song-num {
+  display: none;
+}
+
+.musica-song-eq {
+  display: none;
+  align-items: flex-end;
+  gap: 0.25vw;
+  height: 1.8vh;
+  width: 1.4vh;
+}
+
+.musica-song-card.playing .musica-song-eq {
+  display: flex;
+}
+
+.musica-song-eq span {
+  width: 0.35vh;
+  background: var(--white);
+  border-radius: 999vw;
+  animation: musicaItemEqBounce 0.65s ease-in-out infinite alternate;
+}
+
+.musica-song-eq span:nth-child(2) { animation-delay: 0.2s; height: 75%; }
+.musica-song-eq span:nth-child(3) { animation-delay: 0.4s; height: 95%; }
+
+@keyframes musicaItemEqBounce {
+  0% { height: 25%; }
+  100% { height: 100%; }
+}
+
+/* Metadatos de la canción */
+.musica-song-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55vh;
+}
+
+.musica-song-title {
+  font-size: var(--fz_s4);
+  font-weight: 700;
+  color: var(--text-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.musica-song-card.playing .musica-song-title {
+  color: var(--primary);
+}
+
+.musica-song-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.musica-song-artist {
+  font-size: var(--fz_s2);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.musica-meta-dot {
+  font-size: var(--fz_s1);
+  color: var(--text-muted);
+  opacity: 0.45;
+}
+
+.musica-meta-val {
+  font-size: var(--fz_s1);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Acciones: Like y Play */
+.musica-song-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  flex-shrink: 0;
+}
+
+.musica-song-btn-like {
+  width: 4vh;
+  height: 4vh;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: var(--fz_m1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--tr_f);
+}
+
+.musica-song-btn-like:hover {
+  color: var(--primary);
+  background: var(--bg-subtle);
+  transform: scale(1.1);
+}
+
+.musica-song-btn-like.active {
+  color: var(--primary);
+  background: var(--mbg);
+  border-color: var(--border-accent);
+}
+
+.musica-song-btn-play {
+  width: 4.4vh;
+  height: 4.4vh;
+  border-radius: 50%;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fz_s3);
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.musica-song-card:hover .musica-song-btn-play {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.musica-song-card.playing .musica-song-btn-play {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 0.3vh 1.2vh color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+/* Estado vacío */
+.musica-empty-state {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: 1.5vh;
+  padding: 3.5vh 2vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+  color: var(--text-muted);
+}
+
+.musica-empty-state i {
+  font-size: var(--fz_l1);
+  color: var(--primary);
+}
+
+.musica-empty-text {
+  font-size: var(--fz_m1);
+  font-weight: 600;
+  margin: 0;
+}
+
+.musica-btn-reset-search {
+  background: var(--mbg);
+  color: var(--primary);
+  border: 1px solid var(--border-accent);
+  padding: 0.7vh 1.8vw;
+  border-radius: var(--r_full);
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ADAPTACIÓN MÓVIL SIN ROMPER LA LÍNEA DEL TOOLBAR */
+@media (max-width: 520px) {
+  .musica-poster-box {
+    height: 16vh;
+  }
+  .musica-single-toolbar {
+    gap: 1.5vw;
+    padding: 0.6vh 1.5vw;
+  }
+  .musica-nav-pill {
+    padding: 0.5vh 1.6vw;
+    gap: 0.8vw;
+  }
+  .musica-inline-search-input {
+    padding: 0.5vh 2vw 0.5vh 7vw;
+  }
+  .musica-inline-search-icon {
+    left: 2.2vw;
+  }
+}
+
+/* ==========================================================================
+   💻 RESPONSIVIDAD WEB PROFESIONAL PARA EL REPRODUCTOR (MIN-WIDTH)
+   ========================================================================== */
+@media (min-width: 768px) {
+  .musica-player-card {
+    padding: 2vh 2vw;
+    border-radius: 2vh;
+    gap: 1.6vh;
+  }
+
+  .musica-poster-box {
+    height: 24vh;
+    min-height: 210px;
+    max-height: 280px;
+    border-radius: 1.6vh;
+  }
+
+  .musica-poster-info {
+    bottom: 2vh;
+    left: 2.2vw;
+    right: 2.2vw;
+  }
+
+  .musica-track-title {
+    font-size: clamp(1.25rem, 1.9vw, 1.65rem);
+  }
+
+  .musica-track-artist {
+    font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  }
+
+  .musica-controls-dock {
+    gap: 1.6vw;
+  }
+
+  .musica-hero-play {
+    width: 6.2vh;
+    height: 6.2vh;
+    min-width: 50px;
+    min-height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .musica-btn-round {
+    width: 4.6vh;
+    height: 4.6vh;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 1.05rem;
+  }
+
+  /* Volumen acotado al centro (elimina la barra roja de 1500px en monitores grandes) */
+  .musica-volume-row {
+    max-width: 320px;
+    margin-inline: auto;
+    width: 100%;
+    justify-content: center;
+    gap: 0.8rem;
+    padding-inline: 0;
+  }
+
+  .musica-volume-slider {
+    height: 0.5vh;
+  }
+
+  .musica-single-toolbar {
+    padding: 1vh 1.4vw;
+    border-radius: 1.6vh;
+    gap: 1.2vw;
+  }
+
+  .musica-nav-pill {
+    padding: 0.7vh 1.4vw;
+  }
+
+  .musica-tracks-box {
+    border-radius: 1.8vh;
+  }
+
+  .musica-song-card {
+    padding: 1.2vh 1.6vw;
+    cursor: pointer;
+    transition: background-color var(--tr_f), transform var(--tr_f), border-color var(--tr_f);
+  }
+
+  .musica-song-card:hover {
+    background: var(--raised);
+    transform: translateY(-1px);
+  }
+
+  .musica-song-card:hover .musica-song-btn-play {
+    transform: scale(1.08);
+  }
+
+  .musica-song-title {
+    font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  }
+
+  .musica-song-artist {
+    font-size: clamp(0.8rem, 0.95vw, 0.92rem);
+  }
+}
