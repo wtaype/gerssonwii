@@ -1,0 +1,84 @@
+---
+// src/core/layouts/Principal.astro
+// 🏛️ Layout Maestro Modular de CumpleWii (Gersson 2026)
+// Soporta: View Transitions SPA (0ms), Anti-FOUC, Shell Responsivo y Dock Móvil
+import { ClientRouter } from 'astro:transitions';
+import Header from '@core/componentes/Header.astro';
+import Sidebar from '@core/componentes/Sidebar.astro';
+import NavBottom from '@core/componentes/NavBottom.astro';
+import Confetti from '@feature/cumple/lib/Confetti.astro';
+import configurar from '@semillas/configurar.js';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+}
+
+const {
+  titulo = configurar.nombre,
+  descripcion = configurar.descripcion
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es" data-theme="luz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <title>{titulo}</title>
+  <meta name="description" content={descripcion} />
+  <meta name="theme-color" content="#fcfbf7" />
+
+  <!-- Script Anti-FOUC de Cero Latencia (Ejecución Síncrona Inmediata) -->
+  <script is:inline>
+    (function () {
+      try {
+        var guardado = localStorage.getItem('wiTema');
+        var tema = guardado === 'noche' || guardado === 'luz'
+          ? guardado
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'noche' : 'luz');
+        document.documentElement.dataset.theme = tema;
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.content = tema === 'noche' ? '#080d1a' : '#fcfbf7';
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Fuentes Locales 0ms Latencia & FontAwesome -->
+  <link rel="stylesheet" href="/google/fonts.min.css" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+
+  <!-- Client Router de Astro para Navegación SPA Fluida -->
+  <ClientRouter fallback="swap" />
+</head>
+
+<body>
+  <div class="geco-shell">
+    <!-- 1. Barra Lateral Desktop (>= 901px) -->
+    <Sidebar />
+
+    <!-- 2. Área de Contenido Principal -->
+    <div class="geco-main-area">
+      <!-- Cabecera Superior -->
+      <Header />
+
+      <!-- Lienzo Principal de Contenido -->
+      <main class="geco-content">
+        <slot />
+      </main>
+    </div>
+  </div>
+
+  <!-- 3. Barra Inferior Móvil Fija (z-index: 9999) -->
+  <NavBottom />
+
+  <!-- 4. Lienzo Global de Confeti -->
+  <Confetti />
+</body>
+</html>
+
+<style is:global>
+  @import "../wicss/witema.css";
+  @import "../wicss/app.css";
+</style>

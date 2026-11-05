@@ -1,0 +1,31 @@
+{
+  "persona": {
+    "nombre": "Gersson Collantes Córdova",
+    "nombreCorto": "Gersson Collantes",
+    "apodo": "Geco",
+    "avatar": "/repowii/avatar-oficial.jpg",
+    "lema": "Creyente en Dios de todo corazón, apasionado por los sintetizadores y teclados en la alabanza, miembro de la comunidad FDA y de mi amada Iglesia.",
+    "badges": [
+      { "id": "fe", "texto": "Creyente en Dios", "icono": "fa-cross" },
+      { "id": "fda", "texto": "Comunidad FDA", "icono": "fa-shield" },
+      { "id": "iglesia", "texto": "Mi Iglesia", "icono": "fa-church" },
+      { "id": "tecladista", "texto": "Tecladista", "icono": "fa-music" }
+    ]
+  },
+  "evento": {
+    "badgeInvitacion": "Invitación • Gersson Collantes",
+    "titulo": "¡Te invito a celebrar mi Cumpleaños! 🎂",
+    "saludo": "Será una gran alegría compartir contigo una noche inolvidable de risas, buena música y gratitud por un año más de vida.",
+    "bendicion": "¡Dios te bendiga y celebremos juntos este día tan especial!",
+    "fecha": "Sábado 7 de Noviembre",
+    "hora": "8:00 PM (Puntual)",
+    "lugarNombre": "Casa de Mery Yanayaco",
+    "lugarSubtitulo": "Las Lomas, La Molina",
+    "direccion": "Calle Los Molinos de San Miguel 131, Las Lomas, La Molina",
+    "distrito": "La Molina, Lima - Perú",
+    "anfitriona": "Mery Yanayaco",
+    "telefonoAnfitriona": "+51 946 869 939",
+    "googleMapsEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.4!2d-76.9!3d-12.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDA1JzAwLjAiUyA3NsKwNTQnMDAuMCJX!5e0!3m2!1ses!2spe!4v1",
+    "googleMapsLink": "https://maps.google.com/?q=Calle+Los+Molinos+de+San+Miguel+131+La+Molina+Lima"
+  }
+}

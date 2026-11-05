@@ -1,0 +1,56 @@
+---
+// src/core/componentes/Header.astro
+// 👑 Cabecera Oficial: Título "Feliz Cumpleaños" + Switcher Luz/Noche + Avatar Geco
+// 100% Cero CSS Inline - Estilos centralizados en app.css
+import configurar from '@semillas/configurar.js';
+import cumple from '@semillas/cumple.json';
+
+const tituloHeader = configurar.app;
+const avatarSrc = cumple.persona.avatar;
+const avatarAlt = cumple.persona.nombreCorto;
+---
+
+<header class="geco-header">
+  <a href="/" class="geco-header-brand-link" title="Inicio - Feliz Cumpleaños">
+    <span class="geco-header-brand-title">{tituloHeader}</span>
+  </a>
+
+  <div class="geco-header-right">
+    <button type="button" class="geco-theme-pill-btn" id="btnTemaHeader" title="Cambiar tema Luz/Noche" aria-label="Cambiar tema visual">
+      <i class="fa-solid fa-sun" id="iconoTemaHeader"></i>
+      <span id="textoTemaHeader">Luz</span>
+    </button>
+
+    <a href="/" class="geco-header-avatar-link" title={avatarAlt}>
+      <img src={avatarSrc} alt={avatarAlt} class="geco-avatar-header" />
+    </a>
+  </div>
+</header>
+
+<script>
+  import { alternarTema, obtenerTemaPreferido } from '@widev/tema.js';
+
+  function sincronizarHeaderTema() {
+    const temaActual = document.documentElement.dataset.theme || obtenerTemaPreferido();
+    const icono = document.getElementById('iconoTemaHeader');
+    const texto = document.getElementById('textoTemaHeader');
+    if (icono && texto) {
+      if (temaActual === 'noche') {
+        icono.className = 'fa-solid fa-moon';
+        texto.textContent = 'Noche';
+      } else {
+        icono.className = 'fa-solid fa-sun';
+        texto.textContent = 'Luz';
+      }
+    }
+  }
+
+  sincronizarHeaderTema();
+  window.addEventListener('witema-changed', sincronizarHeaderTema);
+  document.addEventListener('astro:page-load', sincronizarHeaderTema);
+
+  document.getElementById('btnTemaHeader')?.addEventListener('click', () => {
+    alternarTema();
+    sincronizarHeaderTema();
+  });
+</script>

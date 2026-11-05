@@ -1,0 +1,11 @@
+/* ========================================================
+   🎨 APOYAR.CSS - FEATURE APOYAR & REGALOS (GERSSON 2026)
+   Tokens específicos y aislados para Yape y Plin
+   ======================================================== */
+
+:root {
+  --yape-primary: #742284;
+  --yape-hover:   #5b1968;
+  --yape-light:   rgba(116, 34, 132, 0.08);
+  --yape-border:  rgba(116, 34, 132, 0.25);
+}

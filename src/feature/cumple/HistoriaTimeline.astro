@@ -1,0 +1,65 @@
+---
+// src/feature/cumple/HistoriaTimeline.astro
+// 📖 Línea de Tiempo: "Mi Historia en 5 Pasitos de Bendición"
+// Fotos Extra Grandes (340px desktop / 300px mobile) + Riel Continuo Dorado
+// 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados
+import historiaSeed from '@semillas/historia.json';
+
+const pasitos = Array.isArray(historiaSeed) ? historiaSeed : [];
+---
+
+<section class="geco-timeline-section" aria-label="Historia de Gersson en 5 Pasitos">
+  <!-- Encabezado de Sección -->
+  <div class="geco-section-heading">
+    <h3>
+      <i class="fa-solid fa-timeline geco-heading-icon"></i>
+      <span>Mi Historia en 5 Pasitos de Bendición</span>
+    </h3>
+    <p>Cinco momentos especiales que han marcado el camino que Dios trazó para mí</p>
+  </div>
+
+  <!-- Riel Dorado Vertical Continuo -->
+  <div class="geco-timeline-stream" id="timelineStream">
+    {pasitos.map((pasito) => (
+      <article class="geco-timeline-node" data-pasito-num={pasito.numero}>
+        <!-- Bullet Circular sobre el Riel -->
+        <span class="geco-timeline-bullet" aria-hidden="true"></span>
+
+        <!-- Contenedor de Foto Extra Grande -->
+        <div class="geco-node-photo-container">
+          <img
+            src={pasito.foto || ''}
+            alt={pasito.alt || pasito.titulo || ''}
+            class="geco-node-photo"
+            loading="lazy"
+            width="800"
+            height="340"
+          />
+        </div>
+
+        <!-- Cuerpo del Pasito -->
+        <div class="geco-node-body">
+          {pasito.tag && <span class="geco-node-tag">{pasito.tag}</span>}
+          <h4 class="geco-node-title">{pasito.titulo || ''}</h4>
+          <p class="geco-node-desc">{pasito.descripcion || ''}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { leerStorage } from '@widev/storage.js';
+
+  function hidratarHistoria() {
+    try {
+      const customHistoria = leerStorage('geco_historia_custom', null);
+      if (Array.isArray(customHistoria) && customHistoria.length > 0) {
+        // Soporte para hidratación dinámica si el usuario personaliza la historia en el futuro
+      }
+    } catch {}
+  }
+
+  hidratarHistoria();
+  document.addEventListener('astro:page-load', hidratarHistoria);
+</script>

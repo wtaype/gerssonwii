@@ -2,7 +2,7 @@
 export const id = 'gerssonwii';
 export const app = 'Feliz Cumpleaños';
 export const by = '@wilder.taype';
-export const version = 1.0.0;
+export const version = '1.0.0';
 export const versionName = 'v1';
 export const linkweb = 'https://gerssonwii.web.app';
 export default { id, app, by, version, versionName, linkweb };

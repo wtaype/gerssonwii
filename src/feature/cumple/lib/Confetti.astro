@@ -1,0 +1,114 @@
+---
+// src/feature/cumple/lib/Confetti.astro
+// 🎊 Motor Ligero de Confeti Festivo (Canvas 60fps)
+// Expone window.lanzarConfeti(cantidad) globalmente
+---
+
+<canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+<style>
+  #confettiCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 99999;
+  }
+</style>
+
+<script>
+  let canvas: HTMLCanvasElement | null = null;
+  let ctx: CanvasRenderingContext2D | null = null;
+  let confettiParticles: Array<{
+    x: number;
+    y: number;
+    size: number;
+    color: string;
+    speedY: number;
+    speedX: number;
+    rotation: number;
+    rotationSpeed: number;
+    opacity: number;
+  }> = [];
+  let animId: number | null = null;
+
+  function initConfetti() {
+    canvas = document.getElementById('confettiCanvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    ajustarTamanioCanvas();
+    window.removeEventListener('resize', ajustarTamanioCanvas);
+    window.addEventListener('resize', ajustarTamanioCanvas);
+  }
+
+  function ajustarTamanioCanvas() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  export function lanzarConfeti(cantidad = 80) {
+    if (!canvas) initConfetti();
+    if (!canvas || !ctx) return;
+
+    const colores = ['#f59e0b', '#d97706', '#fbbf24', '#2563eb', '#10b981', '#ec4899', '#ffffff', '#8b5cf6'];
+    const w = canvas.width;
+    const h = canvas.height;
+
+    for (let i = 0; i < cantidad; i++) {
+      confettiParticles.push({
+        x: Math.random() * w,
+        y: Math.random() * (h * 0.4) - 20,
+        size: Math.random() * 8 + 4,
+        color: colores[Math.floor(Math.random() * colores.length)],
+        speedY: Math.random() * 3 + 2,
+        speedX: Math.random() * 4 - 2,
+        rotation: Math.random() * 360,
+        rotationSpeed: Math.random() * 6 - 3,
+        opacity: 1
+      });
+    }
+
+    if (!animId) animarConfeti();
+  }
+
+  function animarConfeti() {
+    if (!ctx || !canvas) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = confettiParticles.length - 1; i >= 0; i--) {
+      const p = confettiParticles[i];
+      p.y += p.speedY;
+      p.x += p.speedX;
+      p.rotation += p.rotationSpeed;
+      p.opacity -= 0.003;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+
+      if (p.y > canvas.height || p.opacity <= 0) {
+        confettiParticles.splice(i, 1);
+      }
+    }
+
+    if (confettiParticles.length > 0) {
+      animId = requestAnimationFrame(animarConfeti);
+    } else {
+      animId = null;
+    }
+  }
+
+  // Registrar en window para llamadas desde cualquier componente
+  if (typeof window !== 'undefined') {
+    (window as any).lanzarConfeti = lanzarConfeti;
+  }
+
+  initConfetti();
+  document.addEventListener('astro:page-load', initConfetti);
+</script>

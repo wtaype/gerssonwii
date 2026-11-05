@@ -1,18 +1,11 @@
 ---
 // src/pages/index.astro
-// Redirección directa e inmediata al aplicativo oficial final (/10)
+// 🌟 Página Principal Modular: Invitación de Cumpleaños
+// 100% Cero CSS Inline - Tokens WiTema y Arquitectura Desacoplada
+import Principal from '@core/layouts/Principal.astro';
+import CumplePage from '@feature/cumple/CumplePage.astro';
 ---
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="refresh" content="0;url=/10" />
-  <title>Cumpleaños • Gersson Collantes (Geco)</title>
-  <script is:inline>window.location.href = '/10';</script>
-</head>
-<body style="font-family: 'Poppins', system-ui, sans-serif; text-align: center; padding-top: 30vh; background: #fcfbf7; color: #0f172a;">
-  <h2 style="font-size: 1.4rem; font-weight: 700; color: #d97706; margin-bottom: 8px;">🎉 Cumpleaños de Gersson Collantes</h2>
-  <p style="color: #64748b; font-size: 0.9rem;">Cargando invitación oficial...</p>
-</body>
-</html>
+
+<Principal>
+  <CumplePage />
+</Principal>

@@ -1,0 +1,23 @@
+---
+// src/feature/cumple/CumplePage.astro
+// 🎂 Feature Modular Cumple: Ensambla Hero, Línea de Tiempo y Encuesta
+// 100% Cero CSS Inline - Tokens WiTema y Arquitectura Desacoplada
+import HeroCard from './HeroCard.astro';
+import HistoriaTimeline from './HistoriaTimeline.astro';
+import EncuestaCard from './EncuestaCard.astro';
+---
+
+<section class="geco-cumple-feature" aria-label="Invitación e Historia de Cumpleaños">
+  <!-- 1. Tarjeta Hero de Invitación VIP -->
+  <HeroCard />
+
+  <!-- 2. Línea de Tiempo: 5 Pasitos de Bendición (Fotos Grandes) -->
+  <HistoriaTimeline />
+
+  <!-- 3. Encuesta Interactiva de Vínculo -->
+  <EncuestaCard />
+</section>
+
+<style is:global>
+  @import "./cumple.css";
+</style>

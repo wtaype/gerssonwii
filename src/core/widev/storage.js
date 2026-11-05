@@ -102,3 +102,9 @@ export function getsaves(sel, attr, fn) {
     }
   });
 }
+
+
+// Alias Canónicos en Español
+export const leerStorage = getls;
+export const escribirStorage = (k, v) => savels(k, v, null);
+export const borrarStorage = removels;

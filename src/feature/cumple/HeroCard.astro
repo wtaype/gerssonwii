@@ -1,0 +1,120 @@
+---
+// src/feature/cumple/HeroCard.astro
+// 🎂 Tarjeta Hero Centrada de Invitación (V10 VIP)
+// Avatar Oficial + Título Centrado + 2 Líneas de Gratitud + Cajas de Gala
+// 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados
+import cumple from '@semillas/cumple.json';
+
+const persona = cumple.persona;
+const evento = cumple.evento;
+
+const badge = evento.badgeInvitacion;
+const avatar = persona.avatar;
+const nombreCorto = persona.nombreCorto;
+const titulo = evento.titulo;
+const saludo = evento.saludo;
+const bendicion = evento.bendicion;
+const fecha = evento.fecha;
+const hora = evento.hora;
+const lugarLabel = `${evento.lugarNombre} • ${evento.lugarSubtitulo}`;
+---
+
+<div class="geco-invite-card-v10" id="heroInviteCard">
+  <!-- 1. Badge Superior Centrado -->
+  {badge && (
+    <span class="geco-invite-top-badge" id="heroBadge">
+      <i class="fa-solid fa-envelope-open-text"></i> {badge}
+    </span>
+  )}
+
+  <!-- 2. Primera Foto Destacada: Avatar Oficial Centrado con Halo de Luz -->
+  <div class="geco-invite-avatar-hero-wrap">
+    <img
+      src={avatar}
+      alt={nombreCorto}
+      class="geco-invite-avatar-hero-img"
+      id="heroAvatarImg"
+      loading="eager"
+      width="104"
+      height="104"
+    />
+    <div class="geco-invite-avatar-badge-live" title="Celebrando la vida">
+      <i class="fa-solid fa-cake-candles"></i>
+    </div>
+  </div>
+
+  <!-- 3. Título Centrado -->
+  <h2 class="geco-invite-title" id="heroTitulo">
+    {titulo}
+  </h2>
+
+  <!-- 4. Descripción Centrada en 2 Líneas -->
+  <p class="geco-invite-desc-2lines" id="heroDescripcion">
+    <span>{saludo}</span><br />
+    <span>{bendicion}</span>
+  </p>
+
+  <!-- 5. Cajas de Información Detallada -->
+  <div class="geco-invite-details-list">
+    <!-- Fecha -->
+    <div class="geco-detail-box-v9">
+      <div class="geco-detail-icon-v9">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+      <div>
+        <div class="geco-detail-label-v9">Fecha</div>
+        <div class="geco-detail-val-v9" id="heroFecha">{fecha}</div>
+      </div>
+    </div>
+
+    <!-- Hora -->
+    <div class="geco-detail-box-v9">
+      <div class="geco-detail-icon-v9">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+      <div>
+        <div class="geco-detail-label-v9">Hora</div>
+        <div class="geco-detail-val-v9" id="heroHora">{hora}</div>
+      </div>
+    </div>
+
+    <!-- Lugar de Gala -->
+    <div class="geco-detail-box-v9">
+      <div class="geco-detail-icon-v9">
+        <i class="fa-solid fa-location-dot"></i>
+      </div>
+      <div>
+        <div class="geco-detail-label-v9">Lugar de Gala</div>
+        <div class="geco-detail-val-v9" id="heroLugar">{lugarLabel}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { leerStorage } from '@widev/storage.js';
+
+  function hidratarHeroCard() {
+    try {
+      // Prioridad 1: Configuración en LocalStorage o Cloud
+      const override = leerStorage('geco_cumple_custom', null);
+      if (override && typeof override === 'object') {
+        if (override.titulo) {
+          const el = document.getElementById('heroTitulo');
+          if (el) el.textContent = override.titulo;
+        }
+        if (override.fecha) {
+          const el = document.getElementById('heroFecha');
+          if (el) el.textContent = override.fecha;
+        }
+        if (override.hora) {
+          const el = document.getElementById('heroHora');
+          if (el) el.textContent = override.hora;
+        }
+      }
+    } catch {}
+  }
+
+  hidratarHeroCard();
+  document.addEventListener('astro:page-load', hidratarHeroCard);
+</script>

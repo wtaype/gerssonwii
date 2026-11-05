@@ -1,0 +1,186 @@
+---
+// src/feature/cumple/EncuestaCard.astro
+// 📊 Encuesta Interactiva: "¿De dónde nos conocemos? 💕"
+// Votación reactiva en tiempo real, persistencia en Storage y Toasts WiDev
+// 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados
+import encuestaSeed from '@semillas/encuesta.json';
+
+const pregunta = encuestaSeed.pregunta || '¿De dónde nos conocemos? 💕';
+const subtitulo = encuestaSeed.subtitulo || 'Elige tu vínculo con Gersson para saber de qué rincón viene la gente linda que me acompaña este cumpleaños:';
+const opciones = Array.isArray(encuestaSeed.opciones) ? encuestaSeed.opciones : [];
+---
+
+<div class="geco-survey-card" id="seccionEncuestaV9">
+  <!-- Badge Superior -->
+  <span class="geco-survey-badge">
+    <i class="fa-solid fa-square-poll-vertical"></i> Encuesta de Amigos & Vínculo
+  </span>
+
+  <!-- Pregunta y Subtítulo -->
+  <h3 class="geco-survey-title">{pregunta}</h3>
+  <p class="geco-survey-sub">{subtitulo}</p>
+
+  <!-- Opciones de Votación -->
+  <div class="geco-survey-options" id="listaOpcionesEncuesta">
+    {opciones.map((opt, idx) => (
+      <button
+        type="button"
+        class="geco-survey-btn"
+        data-index={idx}
+        data-opt-id={opt.id}
+        aria-label={`Opción ${opt.titulo}`}
+      >
+        <!-- Barra de Progreso Dinámica -->
+        <div class="geco-survey-progress" id={`surveyBar-${idx}`}></div>
+
+        <!-- Contenido de la Opción -->
+        <div class="geco-survey-btn-content">
+          <div class="geco-survey-left">
+            <div class="geco-survey-icon-circle">
+              <i class:list={['fa-solid', opt.icono || 'fa-heart']}></i>
+            </div>
+            <div>
+              <div class="geco-survey-text-title">{opt.titulo}</div>
+              <div class="geco-survey-text-desc">{opt.descripcion}</div>
+            </div>
+          </div>
+          <div class="geco-survey-pct" id={`surveyPct-${idx}`}>0%</div>
+        </div>
+      </button>
+    ))}
+  </div>
+
+  <!-- Banner de Respuesta Personalizada -->
+  <div class="geco-survey-feedback-banner" id="surveyFeedbackBanner">
+    <i class="fa-solid fa-sparkles geco-heading-icon"></i>
+    <span id="surveyFeedbackText"></span>
+  </div>
+
+  <!-- Pie de Encuesta: Total de Votos y Botón de Reelección -->
+  <div class="geco-survey-footer">
+    <div class="geco-survey-total-label" id="surveyTotalLabel">
+      <i class="fa-solid fa-chart-simple geco-heading-icon"></i>
+      <span>Cargando respuestas...</span>
+    </div>
+
+    <button type="button" class="geco-survey-btn-reset" id="btnCambiarVoto" title="Cambiar mi elección">
+      <i class="fa-solid fa-rotate-left"></i>
+      <span>Cambiar mi respuesta</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  import encuestaData from '@semillas/encuesta.json';
+  import { Mensaje } from '@widev/mensajes.js';
+  import { leerStorage, escribirStorage, borrarStorage } from '@widev/storage.js';
+
+  const CLAVE_VOTOS = 'geco_survey_v9_votes';
+  const CLAVE_USUARIO = 'geco_survey_v9_user';
+
+  const opciones = encuestaData.opciones || [];
+  const votosDefecto = opciones.map((o: any) => o.votosBase ?? 10);
+  const feedbackMensajes = opciones.map((o: any) => o.feedback ?? '¡Gracias por responder!');
+
+  let votos = [...votosDefecto];
+  let usuarioEleccion: number | null = null;
+
+  function cargarEstadoEncuesta() {
+    try {
+      const guardados = leerStorage(CLAVE_VOTOS, null);
+      if (Array.isArray(guardados) && guardados.length === opciones.length) {
+        votos = guardados.map(Number);
+      } else {
+        votos = [...votosDefecto];
+      }
+
+      const userSaved = leerStorage(CLAVE_USUARIO, null);
+      if (userSaved !== null && !isNaN(Number(userSaved))) {
+        usuarioEleccion = Number(userSaved);
+      } else {
+        usuarioEleccion = null;
+      }
+    } catch {
+      votos = [...votosDefecto];
+      usuarioEleccion = null;
+    }
+  }
+
+  function renderizarEncuesta() {
+    const total = votos.reduce((a, b) => a + b, 0);
+    const totalLabel = document.getElementById('surveyTotalLabel');
+    if (totalLabel) {
+      totalLabel.innerHTML = `<i class="fa-solid fa-chart-simple geco-heading-icon"></i> Total de votos: <strong>${total} respuestas</strong>`;
+    }
+
+    votos.forEach((v, idx) => {
+      const pct = total > 0 ? Math.round((v / total) * 100) : 0;
+      const bar = document.getElementById(`surveyBar-${idx}`);
+      const pctEl = document.getElementById(`surveyPct-${idx}`);
+      if (bar) bar.style.width = `${pct}%`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+    });
+
+    document.querySelectorAll('.geco-survey-btn').forEach((btn, idx) => {
+      btn.classList.toggle('voted', usuarioEleccion === idx);
+    });
+
+    const banner = document.getElementById('surveyFeedbackBanner');
+    const bannerText = document.getElementById('surveyFeedbackText');
+    if (usuarioEleccion !== null && banner && bannerText) {
+      bannerText.textContent = feedbackMensajes[usuarioEleccion] || '¡Gracias por tu respuesta!';
+      banner.classList.add('show');
+    } else if (banner) {
+      banner.classList.remove('show');
+    }
+  }
+
+  function setupEventListeners() {
+    document.querySelectorAll('.geco-survey-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-index'));
+        if (usuarioEleccion === idx) return;
+
+        if (usuarioEleccion !== null) {
+          votos[usuarioEleccion] = Math.max(0, votos[usuarioEleccion] - 1);
+        }
+
+        votos[idx] += 1;
+        usuarioEleccion = idx;
+
+        escribirStorage(CLAVE_VOTOS, votos);
+        escribirStorage(CLAVE_USUARIO, idx);
+
+        renderizarEncuesta();
+
+        if (typeof (window as any).lanzarConfeti === 'function') {
+          (window as any).lanzarConfeti(80);
+        }
+
+        Mensaje(feedbackMensajes[idx] || '¡Gracias por tu vínculo!', 'success');
+      });
+    });
+
+    document.getElementById('btnCambiarVoto')?.addEventListener('click', () => {
+      if (usuarioEleccion !== null) {
+        votos[usuarioEleccion] = Math.max(0, votos[usuarioEleccion] - 1);
+        usuarioEleccion = null;
+
+        escribirStorage(CLAVE_VOTOS, votos);
+        borrarStorage(CLAVE_USUARIO);
+
+        renderizarEncuesta();
+        Mensaje('Puedes elegir nuevamente tu vínculo con Gersson.', 'info');
+      }
+    });
+  }
+
+  function inicializar() {
+    cargarEstadoEncuesta();
+    renderizarEncuesta();
+    setupEventListeners();
+  }
+
+  inicializar();
+  document.addEventListener('astro:page-load', inicializar);
+</script>

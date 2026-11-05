@@ -1,0 +1,70 @@
+[
+  {
+    "id": "avatar_oficial",
+    "nombre": "avatar-oficial.jpg",
+    "titulo": "Gersson Collantes (Geco) Oficial",
+    "alt": "Foto oficial de Gersson Collantes con terno y sonrisa",
+    "url": "/repowii/avatar-oficial.jpg",
+    "categoria": "avatar",
+    "pin": true
+  },
+  {
+    "id": "pasito_01_infancia",
+    "nombre": "cumple-infancia-torta.jpg",
+    "titulo": "La Bendición de Nacer",
+    "alt": "Gersson de niño frente a su primera torta de cumpleaños",
+    "url": "/repowii/cumple-infancia-torta.jpg",
+    "categoria": "historia",
+    "pasito": "Pasito 01 • Infancia",
+    "pin": true
+  },
+  {
+    "id": "pasito_02_vocacion",
+    "nombre": "teclado-vintage-origen.jpg",
+    "titulo": "El Descubrimiento de las Teclas",
+    "alt": "Primer teclado Casio vintage en blanco y negro",
+    "url": "/repowii/teclado-vintage-origen.jpg",
+    "categoria": "historia",
+    "pasito": "Pasito 02 • Vocación",
+    "pin": true
+  },
+  {
+    "id": "pasito_03_pasion",
+    "nombre": "doblaje-orson-welles.jpg",
+    "titulo": "La Magia de la Voz y el Doblaje",
+    "alt": "Gersson frente al micrófono de estudio en Orson Welles",
+    "url": "/repowii/doblaje-orson-welles.jpg",
+    "categoria": "historia",
+    "pasito": "Pasito 03 • Pasión",
+    "pin": true
+  },
+  {
+    "id": "pasito_04_aventuras",
+    "nombre": "machu-picchu-creativo.jpg",
+    "titulo": "Viajes, Fotografía y Creación",
+    "alt": "Gersson con su cámara y micrófono en Machu Picchu",
+    "url": "/repowii/machu-picchu-creativo.jpg",
+    "categoria": "historia",
+    "pasito": "Pasito 04 • Aventuras",
+    "pin": true
+  },
+  {
+    "id": "pasito_05_fraternidad",
+    "nombre": "comunidad-mochis-iglesia.jpg",
+    "titulo": "Mi Iglesia, Comunidad FDA y Los Mochis",
+    "alt": "Gersson junto a sus hermanos de iglesia y amigos entrañables",
+    "url": "/repowii/comunidad-mochis-iglesia.jpg",
+    "categoria": "historia",
+    "pasito": "Pasito 05 • Fraternidad",
+    "pin": true
+  },
+  {
+    "id": "musica_poster",
+    "nombre": "diosesamor.png",
+    "titulo": "Póster Cinematográfico de Música",
+    "alt": "Dios es Amor - Santuario de Paz y Alabanza",
+    "url": "/diosesamor.png",
+    "categoria": "musica",
+    "pin": false
+  }
+]

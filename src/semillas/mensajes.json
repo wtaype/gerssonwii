@@ -1,0 +1,62 @@
+[
+  {
+    "id": "msg-1",
+    "nombre": "Mery Yanayaco",
+    "relacion": "Mochis",
+    "emoji": "🎂",
+    "fechaExacta": "Hoy, 6:30 PM",
+    "relativeTime": "hace 25 minutos",
+    "texto": "¡Feliz cumpleaños querido Geco! Gracias por tu corazón servicial y por llenarnos de alegría en cada reunión. ¡Este sábado celebramos a lo grande!",
+    "hearts": 12,
+    "amens": 8,
+    "claps": 15
+  },
+  {
+    "id": "msg-2",
+    "nombre": "Equipo FDA",
+    "relacion": "FDA",
+    "emoji": "🛡️",
+    "fechaExacta": "Hoy, 5:40 PM",
+    "relativeTime": "hace 1 hora",
+    "texto": "¡Hermano Gersson! Toda la comunidad FDA te manda un fuerte abrazo. Eres un ejemplo de perseverancia, fe y talento. ¡A celebrar tus bendiciones!",
+    "hearts": 19,
+    "amens": 14,
+    "claps": 22
+  },
+  {
+    "id": "msg-3",
+    "nombre": "Kalú",
+    "relacion": "Mochis",
+    "emoji": "🥳",
+    "fechaExacta": "Hoy, 5:08 PM",
+    "relativeTime": "hace 2 horas",
+    "texto": "¡Gersson hermano! Los Mochis estamos listos para el sábado. Dios bendiga tus proyectos y tu amor por la música.",
+    "hearts": 9,
+    "amens": 5,
+    "claps": 11
+  },
+  {
+    "id": "msg-4",
+    "nombre": "Pastor David & Familia",
+    "relacion": "Iglesia",
+    "emoji": "🕊️",
+    "fechaExacta": "Hoy, 4:15 PM",
+    "relativeTime": "hace 3 horas",
+    "texto": "Hermano Gersson, eres de gran bendición en el ministerio de alabanza con tu teclado. Que el Señor cumpla cada propósito de Jeremías 29:11 en tu vida.",
+    "hearts": 24,
+    "amens": 31,
+    "claps": 18
+  },
+  {
+    "id": "msg-5",
+    "nombre": "Daniel & Andrea",
+    "relacion": "Amigo",
+    "emoji": "🎹",
+    "fechaExacta": "Ayer, 9:20 PM",
+    "relativeTime": "ayer",
+    "texto": "¡El mejor tecladista! Que sigan los éxitos en el doblaje y la producción sonora. Te queremos un montón bro.",
+    "hearts": 15,
+    "amens": 7,
+    "claps": 16
+  }
+]

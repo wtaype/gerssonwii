@@ -25,18 +25,54 @@ html {
 
 body {
   box-sizing: border-box !important;
-  font-family: var(--ff_P);
-  background-color: var(--bg-body);
-  color: var(--text-main);
-  line-height: 1.6;
+  font-family: var(--ff_J);
+  background: var(--mesh-bg, var(--bg-body));
+  background-attachment: fixed;
+  color: var(--tx2, var(--text-main));
+  line-height: 1.5;
+  font-size: 14.5px;
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
   position: relative;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--tr_m, 0.3s ease), color var(--tr_m, 0.3s ease);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.geco-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.geco-main-area {
+  flex: 1;
+  margin-left: 255px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.geco-content {
+  flex: 1;
+  padding: 20px;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 110px;
+}
+
+@media (max-width: 900px) {
+  .geco-main-area {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  .geco-content {
+    padding: 16px 14px 110px !important;
+  }
 }
 
 #wimain, main {
@@ -57,7 +93,7 @@ section {
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
-  font-family: var(--ff_O), var(--ff_P);
+  font-family: var(--ff_J);
   font-weight: 700;
   line-height: 1.25;
   color: var(--text-bright);
@@ -2139,4 +2175,384 @@ img {
 
 .beca-nav-btn:active .beca-nav-icon-wrap {
   transform: scale(0.92);
+}
+
+
+/* ========================================================
+   🧭 ESTILOS CORE DE COMPONENTES: HEADER, SIDEBAR, NAVBOTTOM
+   (100% Cero CSS Inline en Componentes Astro)
+   ======================================================== */
+
+/* 1. CABECERA PRINCIPAL (.geco-header) */
+.geco-header {
+  position: sticky;
+  top: 0;
+  background: var(--glass-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-card);
+  z-index: 700;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background var(--tr_m), border-color var(--tr_m);
+}
+
+.geco-header-brand-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.geco-header-brand-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--mco);
+  letter-spacing: -0.3px;
+  transition: color var(--tr_f);
+}
+
+.geco-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.geco-theme-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--r_pill);
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  color: var(--tx2);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-theme-pill-btn:hover {
+  background: var(--mco-light);
+  color: var(--mco);
+  border-color: var(--border-accent);
+}
+
+.geco-header-avatar-link {
+  display: inline-flex;
+  border-radius: var(--r_pill);
+}
+
+.geco-avatar-header {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r_pill);
+  object-fit: cover;
+  border: 2px solid var(--mco);
+  box-shadow: 0 0 10px var(--mco-glow);
+  transition: transform var(--tr_f), box-shadow var(--tr_f);
+}
+
+.geco-header-avatar-link:hover .geco-avatar-header {
+  transform: scale(1.06);
+  box-shadow: 0 0 16px var(--mco-glow);
+}
+
+/* 2. BARRA LATERAL DESKTOP (.geco-sidebar >= 901px) */
+.geco-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 255px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--glass-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border-card);
+  z-index: 800;
+  padding: 16px 14px;
+  transition: background var(--tr_m), border-color var(--tr_m);
+}
+
+.geco-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.geco-brand-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r_m);
+  background: linear-gradient(135deg, var(--mco), #f59e0b);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 14px var(--mco-glow);
+}
+
+.geco-brand-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--tx1);
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+}
+
+.geco-brand-sub {
+  font-size: 0.74rem;
+  color: var(--tx3);
+  font-weight: 500;
+}
+
+.geco-profile-pill {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--glass-raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_m);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.geco-avatar-sm {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r_pill);
+  object-fit: cover;
+  border: 2px solid var(--mco);
+  box-shadow: 0 0 10px var(--mco-glow);
+}
+
+.geco-profile-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--tx1);
+  line-height: 1.2;
+}
+
+.geco-profile-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.geco-mini-tag {
+  font-size: 0.64rem;
+  padding: 2px 7px;
+  border-radius: var(--r_pill);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.geco-tag-fda {
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+}
+
+.geco-tag-faith {
+  background: var(--mco-light);
+  color: var(--mco);
+  border: 1px solid var(--border-accent);
+}
+
+.geco-nav-menu {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.geco-nav-category {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--tx3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 6px 10px 4px;
+}
+
+.geco-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--r_m);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--tx2);
+  text-decoration: none;
+  transition: all var(--tr_f);
+}
+
+.geco-nav-item:hover {
+  background: var(--glass-raised);
+  color: var(--mco);
+  transform: translateX(3px);
+}
+
+.geco-nav-item.active {
+  background: var(--mco-light);
+  color: var(--mco);
+  font-weight: 700;
+  border: 1px solid var(--border-accent);
+}
+
+.geco-nav-item i {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.geco-nav-badge {
+  margin-left: auto;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: var(--r_pill);
+  background: var(--mco);
+  color: #fff;
+  font-weight: 700;
+}
+
+.geco-sidebar-footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.geco-event-box {
+  background: var(--glass-raised);
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--r_m);
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.geco-event-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--tx3);
+  text-transform: uppercase;
+}
+
+.geco-event-val {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--mco);
+  margin-top: 2px;
+}
+
+.geco-theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: var(--r_m);
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  color: var(--tx2);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-theme-toggle-btn:hover {
+  background: var(--mco-light);
+  color: var(--mco);
+  border-color: var(--border-accent);
+}
+
+/* 3. DOCK MÓVIL INFERIOR (.geco-nav-bottom) */
+.geco-nav-bottom {
+  display: none;
+}
+
+/* 4. RESPONSIVE BREAKPOINT (<= 900px) */
+@media (max-width: 900px) {
+  .geco-sidebar {
+    display: none !important;
+  }
+
+  .geco-header {
+    padding: 8px 14px;
+  }
+
+  .geco-nav-bottom {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 9999;
+    background: var(--glass-dock);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-card);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+    padding: 6px 8px max(env(safe-area-inset-bottom, 8px), 8px);
+    justify-content: space-around;
+    align-items: center;
+    transition: background var(--tr_m), border-color var(--tr_m);
+  }
+
+  .geco-nav-dock-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px 10px;
+    border-radius: var(--r_m, 1vh);
+    color: var(--tx3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    min-width: 56px;
+    min-height: 48px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--tr_f);
+  }
+
+  .geco-nav-dock-btn i {
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: transform var(--tr_f);
+  }
+
+  .geco-nav-dock-btn:hover {
+    color: var(--mco);
+    transform: translateY(-1px);
+  }
+
+  .geco-nav-dock-btn.active {
+    color: var(--mco);
+    font-weight: 800;
+    background: var(--mco-light);
+    border: 1px solid var(--border-accent);
+    transform: translateY(-2px);
+  }
+
+  .geco-nav-dock-btn.active i {
+    transform: scale(1.1);
+  }
 }

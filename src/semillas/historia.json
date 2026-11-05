@@ -1,0 +1,42 @@
+[
+  {
+    "numero": 1,
+    "tag": "Pasito 01 • Infancia",
+    "titulo": "La Bendición de Nacer",
+    "foto": "/repowii/cumple-infancia-torta.jpg",
+    "alt": "Mi infancia frente a la torta",
+    "descripcion": "Crecí rodeado del amor de Dios y de una familia que me enseñó a valorar cada cumpleaños con gratitud y alegría pura. Desde niño frente a mi primera torta de cumpleaños, Dios ya tenía un propósito trazado para mi vida."
+  },
+  {
+    "numero": 2,
+    "tag": "Pasito 02 • Vocación",
+    "titulo": "El Descubrimiento de las Teclas",
+    "foto": "/repowii/teclado-vintage-origen.jpg",
+    "alt": "Mi primer teclado Casio",
+    "descripcion": "Frente a mi primer teclado Casio descubrí que la música sería mi manera de conectarme con Dios y alegrar a los demás. Horas y horas tocando, buscando armonías y afinando el oído para alabar al Creador con todo el corazón."
+  },
+  {
+    "numero": 3,
+    "tag": "Pasito 03 • Pasión",
+    "titulo": "La Magia de la Voz y el Doblaje",
+    "foto": "/repowii/doblaje-orson-welles.jpg",
+    "alt": "Cabina de doblaje y locución",
+    "descripcion": "En el Instituto Orson Welles y SISE me formé en doblaje y locución. El audio profesional y ponerle emoción a la voz me apasiona día a día, explorando matices y paisajes sonoros inolvidables."
+  },
+  {
+    "numero": 4,
+    "tag": "Pasito 04 • Aventuras",
+    "titulo": "Viajes, Fotografía y Creación",
+    "foto": "/repowii/machu-picchu-creativo.jpg",
+    "alt": "Machu Picchu y fotografía creativa",
+    "descripcion": "Viajero curioso. Con mi cámara réflex y micrófono direccional (como en Machu Picchu) registrando la grandeza de la creación divina con asombro, capturando memorias que perduran para siempre."
+  },
+  {
+    "numero": 5,
+    "tag": "Pasito 05 • Fraternidad",
+    "titulo": "Mi Iglesia, Comunidad FDA y Los Mochis",
+    "foto": "/repowii/comunidad-mochis-iglesia.jpg",
+    "alt": "Iglesia, Comunidad FDA y Los Mochis",
+    "descripcion": "\"Agradezco mucho que hayan llegado en el tiempo correcto\". Servir en alabanza, compartir la vida y reír juntos con ustedes es mi mayor tesoro. ¡Gracias por ser parte fundamental de mi caminar!"
+  }
+]

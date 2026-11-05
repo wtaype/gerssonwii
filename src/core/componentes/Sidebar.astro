@@ -1,0 +1,94 @@
+---
+// src/core/componentes/Sidebar.astro
+// 🧭 Barra Lateral de Navegación Desktop (>= 901px)
+// 100% Cero CSS Inline - Estilos centralizados en app.css
+import configurar from '@semillas/configurar.js';
+import cumple from '@semillas/cumple.json';
+
+const currentPath = Astro.url.pathname;
+const itemsNav = configurar.navegacion || [];
+const persona = cumple.persona;
+const evento = cumple.evento;
+---
+
+<aside class="geco-sidebar" aria-label="Menú principal desktop">
+  <!-- 1. Marca / Logo Superior -->
+  <div class="geco-brand">
+    <div class="geco-brand-icon">
+      <i class="fa-solid fa-cake-candles"></i>
+    </div>
+    <div>
+      <h1 class="geco-brand-title">Cumpleaños</h1>
+      <p class="geco-brand-sub">{persona.nombreCorto}</p>
+    </div>
+  </div>
+
+  <!-- 2. Perfil Resumido -->
+  <div class="geco-profile-pill">
+    <img src={persona.avatar} alt={persona.nombreCorto} class="geco-avatar-sm" />
+    <div>
+      <div class="geco-profile-name">{persona.nombreCorto}</div>
+      <div class="geco-profile-badges">
+        <span class="geco-mini-tag geco-tag-faith"><i class="fa-solid fa-cross"></i> Fe</span>
+        <span class="geco-mini-tag geco-tag-fda"><i class="fa-solid fa-shield"></i> FDA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Menú de Navegación Desacoplado -->
+  <nav class="geco-nav-menu">
+    <span class="geco-nav-category">Secciones</span>
+
+    {itemsNav.map((item) => {
+      const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+      return (
+        <a href={item.href} class:list={['geco-nav-item', { active: isActive }]} data-tab={item.id}>
+          <i class:list={['fa-solid', item.icono]}></i>
+          <span>{item.label}</span>
+          {item.badge && <span class="geco-nav-badge">{item.badge}</span>}
+        </a>
+      );
+    })}
+  </nav>
+
+  <!-- 4. Pie de Barra: Fecha Destacada y Cambio de Tema -->
+  <div class="geco-sidebar-footer">
+    <div class="geco-event-box">
+      <div class="geco-event-sub">🎉 La Gran Fiesta</div>
+      <div class="geco-event-val">{evento.fecha} • {evento.hora}</div>
+    </div>
+
+    <button type="button" class="geco-theme-toggle-btn" id="btnTemaSidebar" title="Alternar Modo Luz y Noche">
+      <i class="fa-solid fa-sun" id="iconoTemaSidebar"></i>
+      <span id="textoTemaSidebar">Tema Luz</span>
+    </button>
+  </div>
+</aside>
+
+<script>
+  import { alternarTema, obtenerTemaPreferido } from '@widev/tema.js';
+
+  function sincronizarSidebarTema() {
+    const temaActual = document.documentElement.dataset.theme || obtenerTemaPreferido();
+    const icono = document.getElementById('iconoTemaSidebar');
+    const texto = document.getElementById('textoTemaSidebar');
+    if (icono && texto) {
+      if (temaActual === 'noche') {
+        icono.className = 'fa-solid fa-moon';
+        texto.textContent = 'Tema Noche';
+      } else {
+        icono.className = 'fa-solid fa-sun';
+        texto.textContent = 'Tema Luz';
+      }
+    }
+  }
+
+  sincronizarSidebarTema();
+  window.addEventListener('witema-changed', sincronizarSidebarTema);
+  document.addEventListener('astro:page-load', sincronizarSidebarTema);
+
+  document.getElementById('btnTemaSidebar')?.addEventListener('click', () => {
+    alternarTema();
+    sincronizarSidebarTema();
+  });
+</script>
