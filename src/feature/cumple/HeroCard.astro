@@ -90,31 +90,3 @@ const lugarLabel = `${evento.lugarNombre} • ${evento.lugarSubtitulo}`;
     </div>
   </div>
 </div>
-
-<script>
-  import { leerStorage } from '@widev/storage.js';
-
-  function hidratarHeroCard() {
-    try {
-      // Prioridad 1: Configuración en LocalStorage o Cloud
-      const override = leerStorage('geco_cumple_custom', null);
-      if (override && typeof override === 'object') {
-        if (override.titulo) {
-          const el = document.getElementById('heroTitulo');
-          if (el) el.textContent = override.titulo;
-        }
-        if (override.fecha) {
-          const el = document.getElementById('heroFecha');
-          if (el) el.textContent = override.fecha;
-        }
-        if (override.hora) {
-          const el = document.getElementById('heroHora');
-          if (el) el.textContent = override.hora;
-        }
-      }
-    } catch {}
-  }
-
-  hidratarHeroCard();
-  document.addEventListener('astro:page-load', hidratarHeroCard);
-</script>

@@ -15,11 +15,6 @@ export default defineConfig({
   base: '/',
   compressHTML: true,
 
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'hover'
-  },
-
   // 🚀 0 ARCHIVOS .CSS: Inlining directo de todos los estilos críticos en el HTML
   build: {
     inlineStylesheets: 'always'
@@ -39,20 +34,25 @@ export default defineConfig({
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
-          entryFileNames: '_astro/app.[hash].js',
-          chunkFileNames(chunkInfo) {
-            if (chunkInfo.name.includes('Principal') || chunkInfo.name.includes('astro_type_script') || chunkInfo.name.includes('page') || chunkInfo.name.includes('HeroCard') || chunkInfo.name.includes('HistoriaTimeline') || chunkInfo.name.includes('EncuestaCard')) {
-              return '_astro/app.[hash].js';
+          entryFileNames(chunkInfo) {
+            if (chunkInfo.name.includes('ClientRouter')) {
+              return '_astro/ClientRouter.[hash].js';
             }
-            return '_astro/[name].[hash].js';
+            return '_astro/app.[hash].js';
+          },
+          chunkFileNames(chunkInfo) {
+            if (chunkInfo.name.includes('ClientRouter')) {
+              return '_astro/ClientRouter.[hash].js';
+            }
+            if (chunkInfo.name.includes('vendor-firebase')) {
+              return '_astro/vendor-firebase.[hash].js';
+            }
+            return '_astro/app.[hash].js';
           },
           manualChunks(id) {
             const norm = id.replace(/\\/g, '/');
             if (norm.includes('node_modules/firebase')) {
               return 'vendor-firebase';
-            }
-            if (norm.includes('node_modules')) {
-              return 'vendor';
             }
           }
         }

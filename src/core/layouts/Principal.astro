@@ -2,11 +2,20 @@
 // src/core/layouts/Principal.astro
 // 🏛️ Layout Maestro Modular Agnóstico (WiDev App Engine)
 // Soporta: View Transitions SPA (0ms), Anti-FOUC, Shell Responsivo y Dock Móvil
+// 🚀 0 CSS Externos: Fuentes locales, FontAwesome y WiTema inyectados en línea vía set:html
+// ⚡ Máximo 2 JS: ClientRouter + App despachador único
 import { ClientRouter } from 'astro:transitions';
 import Header from '@core/componentes/Header.astro';
 import Sidebar from '@core/componentes/Sidebar.astro';
 import NavBottom from '@core/componentes/NavBottom.astro';
 import configurar from '@semillas/configurar.js';
+
+import googleCss from '../../../public/google/fonts.min.css?raw';
+import awesomeCss from '../../../public/fontawesome/css/all.min.css?raw';
+import witemaCss from '../wicss/witema.css?inline';
+import appCss from '../wicss/app.css?inline';
+
+const globalCss = googleCss + '\n' + awesomeCss + '\n' + witemaCss + '\n' + appCss;
 
 interface Props {
   titulo?: string;
@@ -52,13 +61,11 @@ const colorNoche = configurar.tema?.colorNoche || '#080d1a';
     })();
   </script>
 
-  <!-- Optimización de Carga Crítica (Preload Eager) -->
-  <link rel="preload" href="/google/fonts.min.css" as="style" />
+  <!-- Optimización de Carga Crítica (Preload Eager solo de Avatar si existe) -->
   {avatarPreload && <link rel="preload" href={avatarPreload} as="image" type="image/jpeg" />}
 
-  <!-- Fuentes Locales 0ms Latencia & FontAwesome -->
-  <link rel="stylesheet" href="/google/fonts.min.css" />
-  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <!-- 🎨 Estilos Globales Inlined (Fuentes + FontAwesome + WiTema + App): 0 peticiones CSS bloqueantes -->
+  <style is:global data-astro-transition-persist="global-css" set:html={globalCss}></style>
 
   <!-- Client Router de Astro para Navegación SPA Fluida -->
   <ClientRouter fallback="swap" />
@@ -84,7 +91,7 @@ const colorNoche = configurar.tema?.colorNoche || '#080d1a';
   <!-- 3. Barra Inferior Móvil Fija (z-index: 9999) -->
   <NavBottom />
 
-  <!-- Gestor Global de Tema y Navegación Táctil Móvil (Swipe 0ms) -->
+  <!-- Despachador Único de la App (Tema, Gestos y Features bajo demanda) -->
   <script>
     import { alternarTema, obtenerTema } from '@widev/tema.js';
     import { iniciarGestosSwipe } from '@widev/gestos.js';
@@ -126,15 +133,23 @@ const colorNoche = configurar.tema?.colorNoche || '#080d1a';
       window.addEventListener('witema-changed', sincronizarUI);
     }
 
-    // Inicializar Motor Universal de Gestos Swipe con autodetección de rutas
+    // Inicializar Motor Universal de Gestos Swipe
     iniciarGestosSwipe();
 
-    document.addEventListener('astro:page-load', sincronizarUI);
+    // Orquestación inteligente de features de página
+    function inicializarPaginaActual() {
+      sincronizarUI();
+
+      // Feature Cumple (Invitación, Timeline, Encuesta)
+      if (document.getElementById('heroInviteCard') || document.getElementById('seccionEncuestaV9')) {
+        import('../../feature/cumple/lib/cumpleClient.js')
+          .then((m) => m.iniciarCumple())
+          .catch((e) => console.warn('[CumpleClient] Error:', e));
+      }
+    }
+
+    inicializarPaginaActual();
+    document.addEventListener('astro:page-load', inicializarPaginaActual);
   </script>
 </body>
 </html>
-
-<style is:global>
-  @import "../wicss/witema.css";
-  @import "../wicss/app.css";
-</style>

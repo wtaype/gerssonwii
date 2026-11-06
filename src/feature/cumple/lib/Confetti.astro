@@ -2,7 +2,7 @@
 // src/feature/cumple/lib/Confetti.astro
 // 🎊 Motor de Confeti y Celebración (Canvas 60fps)
 // Expone window.lanzarConfeti(cantidad) y window.__gecoDispararConfetti() globalmente
-// Feature-scoped para CumpleWii
+// ⚡ is:inline para 0 peticiones .js en red
 ---
 
 <canvas id="confettiCanvas" aria-hidden="true"></canvas>
@@ -18,98 +18,89 @@
   }
 </style>
 
-<script>
-  let canvas: HTMLCanvasElement | null = null;
-  let ctx: CanvasRenderingContext2D | null = null;
-  let confettiParticles: Array<{
-    x: number;
-    y: number;
-    size: number;
-    color: string;
-    speedY: number;
-    speedX: number;
-    rotation: number;
-    rotationSpeed: number;
-    opacity: number;
-  }> = [];
-  let animId: number | null = null;
+<script is:inline>
+  (function () {
+    var canvas = null;
+    var ctx = null;
+    var confettiParticles = [];
+    var animId = null;
 
-  function initConfetti() {
-    canvas = document.getElementById('confettiCanvas') as HTMLCanvasElement;
-    if (!canvas) return;
-    ctx = canvas.getContext('2d');
-    ajustarTamanioCanvas();
-    window.removeEventListener('resize', ajustarTamanioCanvas);
-    window.addEventListener('resize', ajustarTamanioCanvas);
-  }
-
-  function ajustarTamanioCanvas() {
-    if (!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  export function lanzarConfeti(cantidad = 80) {
-    if (!canvas) initConfetti();
-    if (!canvas || !ctx) return;
-
-    const colores = ['#f59e0b', '#d97706', '#fbbf24', '#2563eb', '#10b981', '#ec4899', '#ffffff', '#8b5cf6'];
-    const w = canvas.width;
-    const h = canvas.height;
-
-    for (let i = 0; i < cantidad; i++) {
-      confettiParticles.push({
-        x: Math.random() * w,
-        y: Math.random() * (h * 0.4) - 20,
-        size: Math.random() * 8 + 4,
-        color: colores[Math.floor(Math.random() * colores.length)],
-        speedY: Math.random() * 3 + 2,
-        speedX: Math.random() * 4 - 2,
-        rotation: Math.random() * 360,
-        rotationSpeed: Math.random() * 6 - 3,
-        opacity: 1
-      });
+    function initConfetti() {
+      canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      ajustarTamanioCanvas();
+      window.removeEventListener('resize', ajustarTamanioCanvas);
+      window.addEventListener('resize', ajustarTamanioCanvas);
     }
 
-    if (!animId) animarConfeti();
-  }
+    function ajustarTamanioCanvas() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
-  function animarConfeti() {
-    if (!ctx || !canvas) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function lanzarConfeti(cantidad) {
+      cantidad = cantidad || 80;
+      if (!canvas) initConfetti();
+      if (!canvas || !ctx) return;
 
-    for (let i = confettiParticles.length - 1; i >= 0; i--) {
-      const p = confettiParticles[i];
-      p.y += p.speedY;
-      p.x += p.speedX;
-      p.rotation += p.rotationSpeed;
-      p.opacity -= 0.003;
+      var colores = ['#f59e0b', '#d97706', '#fbbf24', '#2563eb', '#10b981', '#ec4899', '#ffffff', '#8b5cf6'];
+      var w = canvas.width;
+      var h = canvas.height;
 
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate((p.rotation * Math.PI) / 180);
-      ctx.globalAlpha = Math.max(0, p.opacity);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-      ctx.restore();
+      for (var i = 0; i < cantidad; i++) {
+        confettiParticles.push({
+          x: Math.random() * w,
+          y: Math.random() * (h * 0.4) - 20,
+          size: Math.random() * 8 + 4,
+          color: colores[Math.floor(Math.random() * colores.length)],
+          speedY: Math.random() * 3 + 2,
+          speedX: Math.random() * 4 - 2,
+          rotation: Math.random() * 360,
+          rotationSpeed: Math.random() * 6 - 3,
+          opacity: 1
+        });
+      }
 
-      if (p.y > canvas.height || p.opacity <= 0) {
-        confettiParticles.splice(i, 1);
+      if (!animId) animarConfeti();
+    }
+
+    function animarConfeti() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (var i = confettiParticles.length - 1; i >= 0; i--) {
+        var p = confettiParticles[i];
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.rotation += p.rotationSpeed;
+        p.opacity -= 0.003;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+
+        if (p.y > canvas.height || p.opacity <= 0) {
+          confettiParticles.splice(i, 1);
+        }
+      }
+
+      if (confettiParticles.length > 0) {
+        animId = requestAnimationFrame(animarConfeti);
+      } else {
+        animId = null;
       }
     }
 
-    if (confettiParticles.length > 0) {
-      animId = requestAnimationFrame(animarConfeti);
-    } else {
-      animId = null;
-    }
-  }
+    window.lanzarConfeti = lanzarConfeti;
+    window.__gecoDispararConfetti = function () { lanzarConfeti(90); };
 
-  if (typeof window !== 'undefined') {
-    (window as any).lanzarConfeti = lanzarConfeti;
-    (window as any).__gecoDispararConfetti = () => lanzarConfeti(90);
-  }
-
-  initConfetti();
-  document.addEventListener('astro:page-load', initConfetti);
+    initConfetti();
+    document.addEventListener('astro:page-load', initConfetti);
+  })();
 </script>
