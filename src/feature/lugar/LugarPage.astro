@@ -1,0 +1,533 @@
+---
+// src/feature/lugar/LugarPage.astro
+// 📍 Vista Principal del Módulo Lugar & Gala
+// Mapa Interactivo, Deep-links Waze/Maps/Uber, Cuenta Regresiva y Protocolo
+// 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados de @semillas/
+import cumple from '@semillas/cumple.json';
+import { OPCIONES_ASISTENCIA } from './data/cacheAsistencia.js';
+import './lugar.css';
+
+const evento = cumple.evento;
+const lugarNombre = evento.lugarNombre;
+const lugarSubtitulo = evento.lugarSubtitulo;
+const direccion = evento.direccion;
+const anfitriona = evento.anfitriona;
+const telefonoAnfitriona = evento.telefonoAnfitriona;
+const fecha = evento.fecha;
+const hora = evento.hora;
+const mapsEmbed = evento.googleMapsEmbed || "https://maps.google.com/maps?q=Calle+los+Molinos+de+San+Miguel+131,+La+Molina,+Lima,+Peru&t=&z=16&ie=UTF8&iwloc=&output=embed";
+
+// Enlaces de Navegación Deep-link
+const queryLugar = encodeURIComponent("Calle los molinos de san miguel 131, urbanización las Lomas, La Molina, Lima");
+const linkGoogleMaps = `https://www.google.com/maps/search/?api=1&query=${queryLugar}`;
+const linkWaze = `https://waze.com/ul?q=${queryLugar}`;
+const linkUber = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=${queryLugar}`;
+const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('¡Hola Mary Rosse! Ya voy en camino al cumpleaños de Gersson 🎉')}`;
+---
+
+<section class="geco-lugar-feature" aria-label="Ubicación y Protocolo del Evento">
+
+  <!-- 1. TARJETA CABECERA DE GALA -->
+  <article class="geco-lugar-header-card">
+    <div class="geco-lugar-badge-top">
+      <i class="fa-solid fa-location-dot"></i> Recepción Oficial • La Molina
+    </div>
+
+    <h2 class="geco-lugar-title">{lugarNombre}</h2>
+    <p class="geco-lugar-sub">
+      <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
+      <span>{direccion}</span>
+    </p>
+
+    <!-- Cuenta Regresiva en Vivo -->
+    <div class="geco-countdown-wrap" id="countdownWrap">
+      <div class="geco-countdown-heading">
+        <span><i class="fa-solid fa-clock geco-heading-icon"></i> Cuenta Regresiva para la Gran Fiesta</span>
+        <span id="countdownStatus">En camino</span>
+      </div>
+
+      <div class="geco-countdown-grid">
+        <div class="geco-countdown-box">
+          <span class="geco-countdown-num" id="cdDias">00</span>
+          <span class="geco-countdown-lbl">Días</span>
+        </div>
+        <div class="geco-countdown-box">
+          <span class="geco-countdown-num" id="cdHoras">00</span>
+          <span class="geco-countdown-lbl">Horas</span>
+        </div>
+        <div class="geco-countdown-box">
+          <span class="geco-countdown-num" id="cdMinutos">00</span>
+          <span class="geco-countdown-lbl">Min</span>
+        </div>
+        <div class="geco-countdown-box">
+          <span class="geco-countdown-num" id="cdSegundos">00</span>
+          <span class="geco-countdown-lbl">Seg</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 2. MAPA INTERACTIVO Y BOTONES DE LLEGADA -->
+  <article class="geco-map-interactive-card">
+    <div class="geco-map-top-bar">
+      <div class="geco-map-heading-wrap">
+        <div class="geco-map-heading-icon">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
+        <div>
+          <h3 class="geco-map-heading-title">Mapa en Primer Plano</h3>
+          <p class="geco-map-heading-desc">{lugarSubtitulo} • Urbanización Residencial</p>
+        </div>
+      </div>
+
+      <!-- Botón Copiar Dirección Rápido -->
+      <button
+        type="button"
+        class="geco-btn-route geco-btn-copy-address"
+        id="btnCopiarDireccion"
+        data-direccion={direccion}
+        title="Copiar dirección para tu app de taxi o GPS"
+      >
+        <i class="fa-solid fa-copy"></i>
+        <span>Copiar Dirección</span>
+      </button>
+    </div>
+
+    <!-- Iframe de Google Maps Embebido -->
+    <div class="geco-map-frame-container">
+      <iframe
+        class="geco-map-iframe"
+        src={mapsEmbed}
+        loading="lazy"
+        title={`Mapa interactivo de llegada a ${lugarNombre}`}
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- Barra de Accesos Rápidos de Navegación -->
+    <div class="geco-route-actions-wrap">
+      <span class="geco-route-actions-label">
+        <i class="fa-solid fa-diamond-turn-right"></i> ¿Cómo prefieres llegar a la gala?
+      </span>
+
+      <div class="geco-route-buttons-grid">
+        <a
+          href={linkGoogleMaps}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="geco-btn-route geco-btn-route-maps"
+          title="Abrir en Google Maps"
+        >
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span>Google Maps</span>
+        </a>
+
+        <a
+          href={linkWaze}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="geco-btn-route geco-btn-route-waze"
+          title="Abrir en Waze"
+        >
+          <i class="fa-brands fa-waze"></i>
+          <span>Waze</span>
+        </a>
+
+        <a
+          href={linkUber}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="geco-btn-route geco-btn-route-uber"
+          title="Pedir viaje en Uber hacia la fiesta"
+        >
+          <i class="fa-solid fa-car"></i>
+          <span>Pedir Uber</span>
+        </a>
+
+        <a
+          href={linkWhatsApp}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="geco-btn-route geco-btn-route-wa"
+          title="Avisar a Mary Rosse (Novia de Gersson) por WhatsApp"
+        >
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>Avisar a Mary Rosse 💕</span>
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3. TARJETAS DE PROTOCOLO Y RECOMENDACIONES -->
+  <div class="geco-protocol-grid">
+    <!-- Horario Oficial -->
+    <article class="geco-protocol-card">
+      <div class="geco-protocol-icon-circle">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+      <div>
+        <div class="geco-protocol-label">Horario Oficial</div>
+        <div class="geco-protocol-title">{fecha} • {hora}</div>
+        <p class="geco-protocol-desc">Agradecemos la máxima puntualidad para el inicio del programa, alabanzas y cena de gala.</p>
+      </div>
+    </article>
+
+    <!-- Código de Vestimenta -->
+    <article class="geco-protocol-card">
+      <div class="geco-protocol-icon-circle">
+        <i class="fa-solid fa-shirt"></i>
+      </div>
+      <div>
+        <div class="geco-protocol-label">Dress Code</div>
+        <div class="geco-protocol-title">Gala / Elegante Sport</div>
+        <p class="geco-protocol-desc">¡Ven con tus mejores prendas festivas para celebrar y salir radiante en todas las fotos!</p>
+      </div>
+    </article>
+
+    <!-- Clima y Climatización -->
+    <article class="geco-protocol-card">
+      <div class="geco-protocol-icon-circle">
+        <i class="fa-solid fa-cloud-moon"></i>
+      </div>
+      <div>
+        <div class="geco-protocol-label">Clima Nocturno</div>
+        <div class="geco-protocol-title">Fresco en La Molina (~17°C)</div>
+        <p class="geco-protocol-desc">Se sugiere traer saco, blazer o abrigo ligero para disfrutar con comodidad en los espacios abiertos.</p>
+      </div>
+    </article>
+
+    <!-- Anfitriona de Recepción -->
+    <article class="geco-protocol-card">
+      <div class="geco-protocol-icon-circle">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <div>
+        <div class="geco-protocol-label">Anfitriona Oficial</div>
+        <div class="geco-protocol-title">{anfitriona}</div>
+        <p class="geco-protocol-desc">Número de contacto: {telefonoAnfitriona}. En puerta habrá personal para recibirte cordialmente.</p>
+      </div>
+    </article>
+  </div>
+
+  <!-- 4. AVISO DE SEGURIDAD Y PARQUEO -->
+  <aside class="geco-security-banner" aria-label="Información de seguridad">
+    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+    <span>
+      <strong>Zona Residencial & Parqueo:</strong> Urbanización Las Lomas de La Molina cuenta con control de acceso, vigilancia permanente y facilidad de estacionamiento seguro en los alrededores de la casa.
+    </span>
+  </aside>
+
+  <!-- 5. ENCUESTA FESTIVA DE ASISTENCIA (/encuestas/asistencia) -->
+  <article class="geco-asistencia-survey-card" id="seccionEncuestaAsistencia">
+    <div class="geco-survey-top-bar">
+      <span class="geco-asistencia-badge">
+        <i class="fa-solid fa-clipboard-check"></i> Encuesta de Asistencia • ¿Nos acompañas?
+      </span>
+      <span class="geco-live-badge" id="surveyAsistenciaLiveBadge" title="Sincronización en vivo con Firebase Firestore">
+        <span class="geco-live-dot"></span> En vivo
+      </span>
+    </div>
+
+    <h3 class="geco-asistencia-title">¿Contamos con tu presencia en la fiesta? 🎉</h3>
+    <p class="geco-asistencia-sub">Confírmanos para tener listo tu asiento, tu plato en el buffet y tu sorpresita:</p>
+
+    <!-- 5 Opciones Divertidas -->
+    <div class="geco-survey-options" id="listaOpcionesAsistencia">
+      {OPCIONES_ASISTENCIA.map((opt, idx) => (
+        <button
+          type="button"
+          class="geco-survey-btn"
+          data-index={idx}
+          data-opt-id={opt.id}
+          aria-label={`Opción ${opt.titulo}`}
+        >
+          <div class="geco-survey-progress" id={`asistenciaBar-${idx}`}></div>
+          <div class="geco-survey-btn-content">
+            <div class="geco-survey-left">
+              <div class="geco-survey-icon-circle" style={`color: ${opt.color};`}>
+                <i class:list={['fa-solid', opt.icono]}></i>
+              </div>
+              <div>
+                <div class="geco-survey-text-title">{opt.titulo}</div>
+                <div class="geco-survey-text-desc">{opt.descripcion}</div>
+              </div>
+            </div>
+            <div class="geco-survey-pct" id={`asistenciaPct-${idx}`}>0%</div>
+          </div>
+        </button>
+      ))}
+    </div>
+
+    <!-- Banner de Feedback Divertido -->
+    <div class="geco-survey-feedback-banner" id="asistenciaFeedbackBanner">
+      <i class="fa-solid fa-sparkles geco-heading-icon"></i>
+      <span id="asistenciaFeedbackText"></span>
+    </div>
+
+    <!-- Pie de Encuesta de Asistencia -->
+    <div class="geco-survey-footer">
+      <div class="geco-survey-total-label" id="asistenciaTotalLabel">
+        <i class="fa-solid fa-users geco-heading-icon"></i>
+        <span id="asistenciaTotalText">Cargando respuestas...</span>
+      </div>
+
+      <div class="geco-survey-actions">
+        <!-- Botón de Actualizar con Cooldown -->
+        <button
+          type="button"
+          class="geco-survey-btn-refresh"
+          id="btnActualizarAsistencia"
+          title="Actualizar votos en tiempo real"
+          aria-label="Actualizar resultados de la encuesta de asistencia"
+        >
+          <i class="fa-solid fa-arrows-rotate" id="iconRefreshAsistencia"></i>
+          <span>Actualizar</span>
+        </button>
+
+        <!-- Botón de Cambiar / Revertir Elección -->
+        <button
+          type="button"
+          class="geco-survey-btn-reset"
+          id="btnCambiarAsistencia"
+          title="Cambiar mi elección"
+          aria-label="Cambiar mi confirmación de asistencia"
+        >
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Cambiar respuesta</span>
+        </button>
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<script>
+  import {
+    obtenerEstadoLocalAsistencia,
+    guardarVotoLocalAsistencia,
+    revertirVotoLocalAsistencia,
+    sincronizarDesdeFirestoreAsistencia,
+    calcularPorcentajesAsistencia,
+    FEEDBACK_MSGS_ASISTENCIA,
+    OPCIONES_ASISTENCIA
+  } from './data/cacheAsistencia.js';
+  import { wicopy } from '@widev/copy.js';
+  import { Mensaje } from '@widev/mensajes.js';
+  import { wiSmart } from '@widev';
+
+  let temporizadorCountdown: any = null;
+  let estadoAsistencia = obtenerEstadoLocalAsistencia();
+  let desuscribirAsistencia: (() => void) | null = null;
+  let enfriamientoRefreshAsistencia = false;
+
+  function renderizarEncuestaAsistencia() {
+    const { votos, usuarioEleccion, total } = estadoAsistencia;
+    const porcentajes = calcularPorcentajesAsistencia(votos, total);
+
+    const totalTextEl = document.getElementById('asistenciaTotalText');
+    if (totalTextEl) {
+      if (total === 0) {
+        totalTextEl.innerHTML = `Total de confirmaciones: <strong>0 respuestas</strong> (¡Sé el primero en confirmar!)`;
+      } else {
+        totalTextEl.innerHTML = `Total de confirmaciones: <strong>${total} ${total === 1 ? 'respuesta' : 'respuestas'}</strong>`;
+      }
+    }
+
+    votos.forEach((_, idx) => {
+      const bar = document.getElementById(`asistenciaBar-${idx}`);
+      const pctEl = document.getElementById(`asistenciaPct-${idx}`);
+      const pct = porcentajes[idx] || 0;
+
+      if (bar) bar.style.width = `${pct}%`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+    });
+
+    document.querySelectorAll('#listaOpcionesAsistencia .geco-survey-btn').forEach((btn, idx) => {
+      btn.classList.toggle('voted', usuarioEleccion === idx);
+    });
+
+    const banner = document.getElementById('asistenciaFeedbackBanner');
+    const bannerText = document.getElementById('asistenciaFeedbackText');
+    const btnReset = document.getElementById('btnCambiarAsistencia');
+
+    if (usuarioEleccion !== null) {
+      if (banner && bannerText) {
+        bannerText.textContent = FEEDBACK_MSGS_ASISTENCIA[usuarioEleccion] || '¡Gracias por confirmar!';
+        banner.classList.add('show');
+      }
+      if (btnReset) btnReset.classList.add('visible');
+    } else {
+      if (banner) banner.classList.remove('show');
+      if (btnReset) btnReset.classList.remove('visible');
+    }
+  }
+
+  function setupInteraccionesAsistencia() {
+    // 1. Votación en Opciones de Asistencia
+    document.querySelectorAll('#listaOpcionesAsistencia .geco-survey-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-index'));
+        if (estadoAsistencia.usuarioEleccion === idx) return;
+
+        const prevIdx = estadoAsistencia.usuarioEleccion;
+        const prevOptId = prevIdx !== null ? OPCIONES_ASISTENCIA[prevIdx]?.id : null;
+        const opt = OPCIONES_ASISTENCIA[idx];
+        if (!opt) return;
+
+        // Actualización optimista local
+        estadoAsistencia = guardarVotoLocalAsistencia(idx);
+        renderizarEncuestaAsistencia();
+
+        if (typeof (window as any).lanzarConfeti === 'function') {
+          (window as any).lanzarConfeti(70);
+        }
+
+        Mensaje(FEEDBACK_MSGS_ASISTENCIA[idx] || '¡Gracias por confirmar tu asistencia!', 'success');
+
+        // Sincronización en segundo plano con Firestore
+        import('./data/dataAsistencia.js')
+          .then(({ votarAsistenciaRemoto }) => {
+            votarAsistenciaRemoto({
+              opcionId: opt.id,
+              opcionAnteriorId: prevOptId
+            });
+          })
+          .catch((err) => console.warn('[Asistencia Sync] Error:', err));
+      });
+    });
+
+    // 2. Botón Cambiar / Revertir Elección de Asistencia
+    document.getElementById('btnCambiarAsistencia')?.addEventListener('click', () => {
+      if (estadoAsistencia.usuarioEleccion === null) return;
+
+      const prevIdx = estadoAsistencia.usuarioEleccion;
+      const prevOptId = prevIdx !== null ? OPCIONES_ASISTENCIA[prevIdx]?.id : null;
+
+      estadoAsistencia = revertirVotoLocalAsistencia();
+      renderizarEncuestaAsistencia();
+      Mensaje('Puedes elegir nuevamente tu confirmación de asistencia.', 'info');
+
+      if (prevOptId) {
+        import('./data/dataAsistencia.js')
+          .then(({ revertirAsistenciaRemoto }) => {
+            revertirAsistenciaRemoto(prevOptId);
+          })
+          .catch((err) => console.warn('[Asistencia Revert] Error:', err));
+      }
+    });
+
+    // 3. Botón Manual de Actualizar con Cooldown
+    const btnRefresh = document.getElementById('btnActualizarAsistencia');
+    btnRefresh?.addEventListener('click', async () => {
+      if (enfriamientoRefreshAsistencia) {
+        Mensaje('Resultados al día. Espera un momento para refrescar.', 'info');
+        return;
+      }
+
+      enfriamientoRefreshAsistencia = true;
+      btnRefresh.classList.add('cargando');
+
+      try {
+        const { consultarAsistencia } = await import('./data/dataAsistencia.js');
+        const datosRemotos = await consultarAsistencia();
+        if (datosRemotos) {
+          estadoAsistencia = sincronizarDesdeFirestoreAsistencia(datosRemotos);
+          renderizarEncuestaAsistencia();
+          Mensaje('Confirmaciones de asistencia actualizadas en vivo ✨', 'success');
+        }
+      } catch {
+        Mensaje('Resultados sincronizados localmente.', 'info');
+      } finally {
+        setTimeout(() => btnRefresh.classList.remove('cargando'), 400);
+        setTimeout(() => { enfriamientoRefreshAsistencia = false; }, 3500);
+      }
+    });
+  }
+
+  function conectarTiempoRealAsistencia() {
+    wiSmart({
+      js: [
+        async () => {
+          try {
+            const { escucharAsistencia } = await import('./data/dataAsistencia.js');
+            if (desuscribirAsistencia) desuscribirAsistencia();
+
+            desuscribirAsistencia = escucharAsistencia((datosRemotos) => {
+              if (datosRemotos) {
+                estadoAsistencia = sincronizarDesdeFirestoreAsistencia(datosRemotos);
+                renderizarEncuestaAsistencia();
+              }
+            });
+          } catch (e) {
+            console.warn('[wiSmart Asistencia] Listener no disponible:', e);
+          }
+        }
+      ]
+    });
+  }
+
+  function iniciarCuentaRegresiva() {
+    // Sábado 7 de Noviembre de 2026 a las 20:00 (8:00 PM) hora local de Lima
+    const fechaEvento = new Date('2026-11-07T20:00:00-05:00').getTime();
+
+    const elDias = document.getElementById('cdDias');
+    const elHoras = document.getElementById('cdHoras');
+    const elMin = document.getElementById('cdMinutos');
+    const elSeg = document.getElementById('cdSegundos');
+    const elStatus = document.getElementById('countdownStatus');
+
+    function actualizar() {
+      const ahora = new Date().getTime();
+      const diferencia = fechaEvento - ahora;
+
+      if (diferencia <= 0) {
+        if (elDias) elDias.textContent = '00';
+        if (elHoras) elHoras.textContent = '00';
+        if (elMin) elMin.textContent = '00';
+        if (elSeg) elSeg.textContent = '00';
+        if (elStatus) elStatus.textContent = '¡Es hoy! 🎉';
+        clearInterval(temporizadorCountdown);
+        return;
+      }
+
+      const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+      const pad = (n: number) => n.toString().padStart(2, '0');
+
+      if (elDias) elDias.textContent = pad(dias);
+      if (elHoras) elHoras.textContent = pad(horas);
+      if (elMin) elMin.textContent = pad(minutos);
+      if (elSeg) elSeg.textContent = pad(segundos);
+    }
+
+    actualizar();
+    if (temporizadorCountdown) clearInterval(temporizadorCountdown);
+    temporizadorCountdown = setInterval(actualizar, 1000);
+  }
+
+  function setupAccionesLugar() {
+    // 1. Copiar Dirección con WiCopy y Toast de Mensaje
+    const btnCopiar = document.getElementById('btnCopiarDireccion');
+    btnCopiar?.addEventListener('click', () => {
+      const dir = btnCopiar.getAttribute('data-direccion') || 'Calle los molinos de san miguel 131, urbanización las Lomas, La Molina';
+      wicopy(dir, btnCopiar);
+      Mensaje('¡Dirección copiada para tu taxi o GPS! 📍', 'success');
+    });
+  }
+
+  function inicializarModuloLugar() {
+    iniciarCuentaRegresiva();
+    setupAccionesLugar();
+    estadoAsistencia = obtenerEstadoLocalAsistencia();
+    renderizarEncuestaAsistencia();
+    setupInteraccionesAsistencia();
+    conectarTiempoRealAsistencia();
+  }
+
+  inicializarModuloLugar();
+  document.addEventListener('astro:page-load', inicializarModuloLugar);
+</script>

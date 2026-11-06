@@ -1,0 +1,549 @@
+---
+// src/feature/mensajes/MensajesPage.astro
+// 💌 Muro de Dedicatorias & Amor en Vivo • CumpleWii (Gersson Collantes 2026)
+// 100% Cero CSS Inline · 0ms Latencia Inicial · Sincronización en Tiempo Real con Firestore
+import semillas from '@semillas/mensajes.json';
+import './mensajes.css';
+
+const totalMensajes = semillas.length;
+const semillasJson = JSON.stringify(semillas);
+
+const emojis = ['🎂', '🎉', '🕊️', '🎹', '❤️', '🥳', '✨', '👑', '🙌', '🌟'];
+const templates = [
+  '¡Feliz cumpleaños hermano querido! 🎉',
+  '¡Que el Señor bendiga enormemente tus 26 años! 🙏',
+  '¡El mejor tecladista, productor y amigo! 🎹',
+  '¡Listísimos para celebrar a lo grande este sábado! 🥳',
+  '¡Un año de nuevas victorias, salud y paz de lo alto! 🌟'
+];
+---
+
+<div class="geco-mensajes-container" id="gecoMensajesRoot">
+
+  <!-- ========================================================
+       1. HERO HEADER DEL MURO
+       ======================================================== -->
+  <section class="geco-wall-hero" aria-label="Cabecera del Muro de Dedicatorias">
+    <div class="geco-wall-badge">
+      <i class="fa-solid fa-envelope-open-text"></i>
+      <span>Muro de Dedicatorias • Gersson 2026</span>
+    </div>
+    <h1 class="geco-wall-title">Palabras de Bendición &amp; Cariño 🎉</h1>
+    <p class="geco-wall-desc">
+      Escribe tus mejores deseos, versículos, anécdotas o palabras de ánimo para Gersson. Cada mensaje quedará guardado con mucho cariño para este día tan especial.
+    </p>
+
+    <!-- Indicadores de Confianza -->
+    <div class="geco-wall-stats-row">
+      <div class="geco-stat-pill">
+        <i class="fa-solid fa-bolt" style="color: var(--mco);"></i>
+        <span>Publicación instantánea</span>
+      </div>
+      <div class="geco-stat-pill">
+        <i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i>
+        <span>Sin registro ni contraseñas</span>
+      </div>
+      <div class="geco-stat-pill">
+        <i class="fa-solid fa-heart" style="color: #f59e0b;"></i>
+        <span id="gecoTotalWallCount">{totalMensajes} dedicatorias</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       2. FORMULARIO INTERACTIVO (SÚPER AMIGABLE)
+       ======================================================== -->
+  <section class="geco-form-card" aria-label="Formulario para dejar dedicatoria">
+    <div class="geco-form-header">
+      <div class="geco-form-header-icon">
+        <i class="fa-solid fa-pen-nib"></i>
+      </div>
+      <div class="geco-form-header-text">
+        <h2>Deja tu dedicatoria especial</h2>
+        <p>Gersson leerá cada uno de tus mensajes con gran alegría</p>
+      </div>
+    </div>
+
+    <form id="gecoMsgForm" novalidate>
+      <!-- Campo 1: Tu Nombre o Apodo -->
+      <div class="geco-input-group">
+        <label for="gecoMsgAuthor" class="geco-label">Tu Nombre o Apodo</label>
+        <div class="geco-input-box">
+          <i class="fa-solid fa-user-tag"></i>
+          <input
+            type="text"
+            id="gecoMsgAuthor"
+            class="geco-text-input"
+            placeholder="Ej: Mary Rosse, Pastor David, Carlos..."
+            maxlength="45"
+            required
+            autocomplete="name"
+          />
+        </div>
+      </div>
+
+      <!-- Campo 2: Vínculo con Gersson -->
+      <div class="geco-input-group" style="padding-top: 0.8vh;">
+        <span class="geco-label">¿De qué rincón lo acompañas?</span>
+        <div class="geco-vinculo-selector" id="gecoVinculoSelector" role="radiogroup">
+          <button type="button" class="geco-vinculo-btn selected" data-vinculo="amigos" data-texto="Amigos" role="radio" aria-checked="true">
+            <span>💛 Amigos</span>
+          </button>
+          <button type="button" class="geco-vinculo-btn" data-vinculo="iglesia" data-texto="De la Iglesia" role="radio" aria-checked="false">
+            <span>⛪ De la Iglesia</span>
+          </button>
+          <button type="button" class="geco-vinculo-btn" data-vinculo="familia" data-texto="De la Familia" role="radio" aria-checked="false">
+            <span>🏠 De la Familia</span>
+          </button>
+          <button type="button" class="geco-vinculo-btn" data-vinculo="novia" data-texto="De la Novia" role="radio" aria-checked="false">
+            <span>💖 De la Novia</span>
+          </button>
+          <button type="button" class="geco-vinculo-btn" data-vinculo="estudios" data-texto="De Estudios" role="radio" aria-checked="false">
+            <span>🎓 De Estudios</span>
+          </button>
+          <button type="button" class="geco-vinculo-btn" data-vinculo="trabajo" data-texto="Del Trabajo" role="radio" aria-checked="false">
+            <span>💼 Del Trabajo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Campo 3: Elige tu Sticker / Avatar -->
+      <div class="geco-input-group" style="padding-top: 0.8vh;">
+        <span class="geco-label">Elige tu Sticker o Emoji</span>
+        <div class="geco-stickers-row" id="gecoStickersRow" role="radiogroup">
+          {emojis.map((em, idx) => (
+            <button
+              type="button"
+              class:list={['geco-sticker-btn', { selected: idx === 0 }]}
+              data-emoji={em}
+              role="radio"
+              aria-checked={idx === 0 ? "true" : "false"}
+              aria-label={`Elegir sticker ${em}`}
+            >
+              <span>{em}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Campo 4: Plantillas Rápidas de Un Toque -->
+      <div class="geco-templates-box" style="padding-top: 0.8vh;">
+        <span class="geco-label">Inspírate con un toque:</span>
+        <div class="geco-templates-row">
+          {templates.map((tmpl, idx) => (
+            <button type="button" class="geco-template-pill" data-template={tmpl} title={tmpl}>
+              <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 4px; color: var(--mco);"></i>
+              <span>{`Plantilla ${idx + 1}`}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Campo 5: Mensaje de Dedicatoria -->
+      <div class="geco-input-group" style="padding-top: 0.8vh;">
+        <label for="gecoMsgText" class="geco-label">Tu Mensaje de Bendición</label>
+        <div class="geco-textarea-box">
+          <textarea
+            id="gecoMsgText"
+            class="geco-textarea"
+            rows="3"
+            maxlength="300"
+            placeholder="Escribe aquí tus palabras sinceras para Gersson..."
+            required
+          ></textarea>
+          <div class="geco-textarea-footer">
+            <span>✨ Palabras de bendición</span>
+            <span id="gecoCharCount">0 / 300</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de Envío Celebratorio -->
+      <div style="padding-top: 1.2vh; display: flex; justify-content: flex-end;">
+        <button type="submit" class="geco-submit-btn" id="gecoMsgSubmit">
+          <i class="fa-solid fa-paper-plane" id="gecoSubmitIcon"></i>
+          <span id="gecoSubmitText">¡Publicar Dedicatoria en el Muro! 🎉</span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ========================================================
+       3. FILTROS Y ACTUALIZACIÓN DEL MURO
+       ======================================================== -->
+  <section class="geco-wall-filters-section" aria-label="Filtros del Muro de Mensajes">
+    <div class="geco-wall-chips" role="tablist">
+      <button type="button" class="geco-wall-chip active" data-filter="todos" role="tab" aria-selected="true">
+        <span>Todos</span>
+      </button>
+      <button type="button" class="geco-wall-chip" data-filter="amigos" role="tab" aria-selected="false">
+        <span>💛 Amigos</span>
+      </button>
+      <button type="button" class="geco-wall-chip" data-filter="iglesia" role="tab" aria-selected="false">
+        <span>⛪ Iglesia</span>
+      </button>
+      <button type="button" class="geco-wall-chip" data-filter="familia" role="tab" aria-selected="false">
+        <span>🏠 Familia</span>
+      </button>
+      <button type="button" class="geco-wall-chip" data-filter="novia" role="tab" aria-selected="false">
+        <span>💖 Novia</span>
+      </button>
+      <button type="button" class="geco-wall-chip" data-filter="estudios" role="tab" aria-selected="false">
+        <span>🎓 Estudios</span>
+      </button>
+      <button type="button" class="geco-wall-chip" data-filter="trabajo" role="tab" aria-selected="false">
+        <span>💼 Trabajo</span>
+      </button>
+    </div>
+
+    <!-- Botón de Actualizar Muro -->
+    <button type="button" class="geco-refresh-wall-btn" id="gecoRefreshWallBtn" title="Actualizar dedicatorias">
+      <i class="fa-solid fa-rotate-right"></i>
+      <span>Actualizar</span>
+    </button>
+  </section>
+
+  <!-- ========================================================
+       4. MURO DE DEDICATORIAS EN VIVO
+       ======================================================== -->
+  <section class="geco-messages-wall" id="gecoWallContainer" aria-label="Muro de dedicatorias publicadas">
+    {semillas.map(item => (
+      <article class="geco-message-card" data-id={item.id} data-vinculo={item.vinculo}>
+        <div class="geco-msg-top">
+          <div class="geco-msg-author-row">
+            <div class="geco-msg-avatar">
+              <span>{item.emoji}</span>
+            </div>
+            <div class="geco-msg-author-meta">
+              <span class="geco-msg-name">{item.nombre}</span>
+              <div class="geco-msg-badge-row">
+                <span class:list={['geco-msg-tag', `geco-tag-${item.vinculo}`]}>
+                  {item.vinculoTexto}
+                </span>
+                <span class="geco-msg-date">{item.fechaTexto}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="geco-msg-body">
+          {item.mensaje}
+        </div>
+
+        <div class="geco-msg-footer">
+          <button
+            type="button"
+            class="geco-like-btn"
+            data-action="like"
+            data-id={item.id}
+            title="Enviar amor a este mensaje"
+            aria-label={`Me gusta (${item.likes})`}
+          >
+            <i class="fa-regular fa-heart"></i>
+            <span class="geco-like-count">{item.likes}</span>
+          </button>
+        </div>
+      </article>
+    ))}
+  </section>
+
+</div>
+
+<!-- Semilla Inmutable para el Cliente -->
+<script is:inline id="gecoMensajesSeedData" type="application/json" set:html={semillasJson}></script>
+
+<script>
+  import { Mensaje } from '@core/widev/mensajes.js';
+  import {
+    consultarMensajes,
+    enviarMensaje,
+    darLikeMensaje,
+    generarIdMensaje
+  } from './data/dataMensajes.js';
+  import {
+    combinarMensajes,
+    yaDioLikeLocal
+  } from './data/cacheMensajes.js';
+
+  function initMensajesPage() {
+    const root = document.getElementById('gecoMensajesRoot');
+    if (!root) return;
+
+    // Referencias DOM
+    const form = document.getElementById('gecoMsgForm') as HTMLFormElement | null;
+    const authorInput = document.getElementById('gecoMsgAuthor') as HTMLInputElement | null;
+    const msgText = document.getElementById('gecoMsgText') as HTMLTextAreaElement | null;
+    const charCount = document.getElementById('gecoCharCount');
+    const submitBtn = document.getElementById('gecoMsgSubmit') as HTMLButtonElement | null;
+    const submitIcon = document.getElementById('gecoSubmitIcon');
+    const submitText = document.getElementById('gecoSubmitText');
+
+    const wallContainer = document.getElementById('gecoWallContainer');
+    const totalWallCount = document.getElementById('gecoTotalWallCount');
+    const refreshBtn = document.getElementById('gecoRefreshWallBtn');
+
+    const vinculoBtns = root.querySelectorAll('.geco-vinculo-btn');
+    const stickerBtns = root.querySelectorAll('.geco-sticker-btn');
+    const templatePills = root.querySelectorAll('.geco-template-pill');
+    const filterChips = root.querySelectorAll('.geco-wall-chip');
+
+    let selectedVinculo = 'amigos';
+    let selectedVinculoTexto = 'Amigos';
+    let selectedEmoji = '🎂';
+    let activeFilter = 'todos';
+
+    // 1. Selector de Vínculo
+    vinculoBtns.forEach((btn: any) => {
+      btn.addEventListener('click', () => {
+        vinculoBtns.forEach((b: any) => {
+          b.classList.remove('selected');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('selected');
+        btn.setAttribute('aria-checked', 'true');
+        selectedVinculo = btn.dataset.vinculo || 'amigos';
+        selectedVinculoTexto = btn.dataset.texto || 'Amigos';
+      });
+    });
+
+    // 2. Selector de Sticker Emoji
+    stickerBtns.forEach((btn: any) => {
+      btn.addEventListener('click', () => {
+        stickerBtns.forEach((b: any) => {
+          b.classList.remove('selected');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('selected');
+        btn.setAttribute('aria-checked', 'true');
+        selectedEmoji = btn.dataset.emoji || '🎂';
+      });
+    });
+
+    // 3. Plantillas de un toque
+    templatePills.forEach((pill: any) => {
+      pill.addEventListener('click', () => {
+        const text = pill.dataset.template || '';
+        if (msgText) {
+          if (!msgText.value.trim()) {
+            msgText.value = text;
+          } else {
+            msgText.value = `${msgText.value.trim()} ${text}`;
+          }
+          actualizarContador();
+          msgText.focus();
+        }
+      });
+    });
+
+    // 4. Contador de Caracteres
+    function actualizarContador() {
+      if (!msgText || !charCount) return;
+      const len = msgText.value.length;
+      charCount.textContent = `${len} / 300`;
+      charCount.style.color = len > 280 ? '#ef4444' : 'var(--tx2)';
+    }
+
+    msgText?.addEventListener('input', actualizarContador);
+
+    // 5. Enviar Dedicatoria (Instantáneo en Frontend & Segundo Plano en Firebase)
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nombre = authorInput?.value.trim() || '';
+      const mensaje = msgText?.value.trim() || '';
+
+      if (!nombre) {
+        Mensaje('Por favor ingresa tu nombre o apodo 😊', 'warning');
+        authorInput?.focus();
+        return;
+      }
+
+      if (!mensaje || mensaje.length < 3) {
+        Mensaje('Escribe unas palabras de cariño para Gersson ✍️', 'warning');
+        msgText?.focus();
+        return;
+      }
+
+      // Generar UID Firebase oficial en cliente (0ms latencia)
+      const itemUid = generarIdMensaje();
+      const nuevo = {
+        id: itemUid,
+        nombre,
+        vinculo: selectedVinculo,
+        vinculoTexto: selectedVinculoTexto,
+        emoji: selectedEmoji,
+        mensaje,
+        likes: 0,
+        fechaTexto: 'Recién ahora'
+      };
+
+      // Limpiar campos de inmediato
+      if (msgText) msgText.value = '';
+      actualizarContador();
+
+      // Disparar confeti festivo
+      const win = window as any;
+      if (typeof win.__gecoDispararConfetti === 'function') {
+        win.__gecoDispararConfetti();
+      }
+
+      // Notificación optimista
+      Mensaje('¡Dedicatoria publicada con éxito! 🎉', 'success');
+
+      // Insertar la tarjeta de inmediato en el DOM
+      insertarTarjetaEnMuro(nuevo, true);
+      actualizarTotalCards();
+
+      // Sincronizar en segundo plano con Firebase Firestore (/gersson/gersson)
+      enviarMensaje(nuevo).catch((err) => {
+        console.warn('Error en segundo plano guardando dedicatoria:', err);
+      });
+    });
+
+    // 6. Generar HTML de Tarjeta de Mensaje
+    function insertarTarjetaEnMuro(msg: any, alInicio = false) {
+      if (!wallContainer) return;
+
+      const card = document.createElement('article');
+      card.className = 'geco-message-card';
+      card.dataset.id = msg.id;
+      card.dataset.vinculo = msg.vinculo;
+
+      const isLiked = yaDioLikeLocal(msg.id);
+
+      card.innerHTML = `
+        <div class="geco-msg-top">
+          <div class="geco-msg-author-row">
+            <div class="geco-msg-avatar">
+              <span>${msg.emoji || '🎂'}</span>
+            </div>
+            <div class="geco-msg-author-meta">
+              <span class="geco-msg-name">${escaparHtml(msg.nombre)}</span>
+              <div class="geco-msg-badge-row">
+                <span class="geco-msg-tag geco-tag-${msg.vinculo}">
+                  ${escaparHtml(msg.vinculoTexto || 'Amigos')}
+                </span>
+                <span class="geco-msg-date">${escaparHtml(msg.fechaTexto || 'Hoy')}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="geco-msg-body">${escaparHtml(msg.mensaje)}</div>
+
+        <div class="geco-msg-footer">
+          <button
+            type="button"
+            class="geco-like-btn ${isLiked ? 'liked' : ''}"
+            data-action="like"
+            data-id="${msg.id}"
+            title="Enviar like a este mensaje"
+            aria-label="Me gusta (${msg.likes || 0})"
+          >
+            <i class="${isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>
+            <span class="geco-like-count">${msg.likes || 0}</span>
+          </button>
+        </div>
+      `;
+
+      if (alInicio && wallContainer.firstChild) {
+        wallContainer.insertBefore(card, wallContainer.firstChild);
+      } else {
+        wallContainer.appendChild(card);
+      }
+
+      aplicarFiltroActivo();
+    }
+
+    function escaparHtml(str: string) {
+      const p = document.createElement('p');
+      p.textContent = str || '';
+      return p.innerHTML;
+    }
+
+    function actualizarTotalCards() {
+      if (!wallContainer || !totalWallCount) return;
+      const count = wallContainer.querySelectorAll('.geco-message-card').length;
+      totalWallCount.textContent = `${count} dedicatorias`;
+    }
+
+    // 7. Likes Interactivas
+    wallContainer?.addEventListener('click', async (e: any) => {
+      const likeBtn = e.target.closest('[data-action="like"]');
+      if (!likeBtn) return;
+
+      const id = likeBtn.dataset.id;
+      if (yaDioLikeLocal(id)) {
+        Mensaje('¡Ya enviaste tu like a este mensaje! 👍', 'info');
+        return;
+      }
+
+      const countEl = likeBtn.querySelector('.geco-like-count');
+      const iconEl = likeBtn.querySelector('i');
+      let currentLikes = Number(countEl?.textContent || 0);
+
+      // Actualización optimista
+      currentLikes++;
+      if (countEl) countEl.textContent = String(currentLikes);
+      likeBtn.classList.add('liked');
+      if (iconEl) iconEl.className = 'fa-solid fa-heart';
+
+      Mensaje('¡Like enviado! 👍', 'success');
+
+      await darLikeMensaje(id);
+    });
+
+    // 8. Filtrado de Tarjetas
+    function aplicarFiltroActivo() {
+      if (!wallContainer) return;
+      const cards = wallContainer.querySelectorAll('.geco-message-card');
+      cards.forEach((card: any) => {
+        const v = card.dataset.vinculo;
+        const visible = activeFilter === 'todos' || v === activeFilter;
+        card.style.display = visible ? 'flex' : 'none';
+      });
+    }
+
+    filterChips.forEach((chip: any) => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach((c: any) => {
+          c.classList.remove('active');
+          c.setAttribute('aria-selected', 'false');
+        });
+        chip.classList.add('active');
+        chip.setAttribute('aria-selected', 'true');
+        activeFilter = chip.dataset.filter || 'todos';
+        aplicarFiltroActivo();
+      });
+    });
+
+    // 9. Actualización en Tiempo Real
+    async function sincronizarConFirestore(forzar = false) {
+      if (refreshBtn) refreshBtn.classList.add('rotating');
+
+      try {
+        const remotos = await consultarMensajes(forzar);
+        const combinados = combinarMensajes(remotos);
+
+        if (wallContainer) {
+          wallContainer.innerHTML = '';
+          combinados.forEach(msg => insertarTarjetaEnMuro(msg, false));
+          actualizarTotalCards();
+        }
+      } catch (err) {
+        console.warn('Error sincronizando muro:', err);
+      } finally {
+        if (refreshBtn) refreshBtn.classList.remove('rotating');
+      }
+    }
+
+    refreshBtn?.addEventListener('click', () => {
+      sincronizarConFirestore(true);
+      Mensaje('Muro de dedicatorias actualizado 💌', 'info');
+    });
+
+    // Sincronización suave inicial en segundo plano
+    sincronizarConFirestore(false);
+  }
+
+  document.addEventListener('astro:page-load', initMensajesPage);
+</script>

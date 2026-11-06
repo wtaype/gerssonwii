@@ -16,6 +16,7 @@ const itemsNav = configurar.navegacion || [];
         href={item.href}
         class:list={['geco-nav-dock-btn', { active: isActive }]}
         data-nav-id={item.id}
+        data-astro-prefetch="hover"
         title={item.label}
       >
         <i class:list={['fa-solid', item.icono]}></i>

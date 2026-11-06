@@ -1,45 +1,42 @@
 // src/feature/musica/lib/audioManager.js
-// 🎵 Gestor de Audio Global Persistente para Clayda (BecaWii 2026)
-// Cero Dependencias · Offline First · Compatible con Astro ClientRouter e Inmune a Intercambios de DOM
-// Soporte Completo para MediaSession API (Notificaciones de Celular/Windows con Prev, Next, Play/Pause)
-// Integración con widev.js: savels/getls (duración infinita), Mensaje (toasts feedback)
+// 🎵 Gestor de Audio Global Persistente para CumpleWii (Gersson Collantes 2026)
+// 100% Cero Dependencias Externas · Persistencia SPA con Astro ClientRouter
+// Soporte Completo MediaSession API (Controles nativos Android, iOS y Windows)
 
-import playlistData from '../../../semillas/playlist.json' with { type: 'json' };
+import playlistData from '../../../semillas/musica.json';
 import { app } from '../../../wii.js';
 import { savels, getls } from '../../../core/widev/storage.js';
 import { Mensaje } from '../../../core/widev/mensajes.js';
 
 class AudioManager {
   constructor() {
-    // Normalización resiliente para que sea súper fácil agregar más canciones en playlist.json
     this.playlist = (playlistData || []).map((t, idx) => ({
-      id: t.id || `track-${idx + 1}`,
-      titulo: t.titulo || `Canción ${idx + 1}`,
-      artista: t.artista || 'BecaWii 2026',
+      id: t.id || idx + 1,
+      titulo: t.titulo || `Pista ${idx + 1}`,
+      artista: t.artista || 'Gersson Collantes',
       duracion: t.duracion || '--:--',
       peso: t.peso || '',
-      categoria: t.categoria || 'estudio_tranquilo',
+      categoria: t.categoria || 'cumpleanos',
       icono: t.icono || 'fa-music',
-      color: t.color || 'var(--primary)',
+      color: t.color || 'var(--mco)',
       audioUrl: t.audioUrl || ''
     }));
+
     this.currentIndex = 0;
     this.isPlaying = false;
     this.isShuffle = false;
     this.repeatMode = 'all'; // 'off' | 'all' | 'one'
     this.volume = 0.85;
     this.favorites = new Set();
-    this.bgAudioEnabled = true;
-    this.sleepTimerTimeout = null;
     this.listeners = new Set();
     this.isInitialized = false;
 
-    // Recuperar preferencias persistentes usando savels / getls con duración infinita (null)
+    // 1. Restaurar preferencias locales (sin vencimiento)
     if (typeof localStorage !== 'undefined') {
       try {
         const savedLikes = getls('musicaLikes');
         if (Array.isArray(savedLikes)) {
-          this.favorites = new Set(savedLikes);
+          this.favorites = new Set(savedLikes.map(String));
         }
 
         const savedIndex = getls('becawii_last_track_idx');
@@ -48,25 +45,23 @@ class AudioManager {
         }
 
         const savedRepeat = getls('becawii_repeat_mode');
-        if (savedRepeat === 'off' || savedRepeat === 'all' || savedRepeat === 'one') {
+        if (savedRepeat === 'one' || savedRepeat === 'off') {
           this.repeatMode = savedRepeat;
+        } else {
+          this.repeatMode = 'all'; // Loop continuo activado por defecto
+          savels('becawii_repeat_mode', 'all', null);
         }
 
         const savedVol = getls('becawii_audio_volume');
         if (savedVol !== null && !isNaN(savedVol)) {
           this.volume = Math.max(0, Math.min(1, Number(savedVol)));
         }
-
-        const savedSync = getls('becawii_bg_audio');
-        if (savedSync !== null) {
-          this.bgAudioEnabled = Boolean(savedSync);
-        }
       } catch (e) {
         console.warn('AudioManager: aviso leyendo storage inicial', e);
       }
     }
 
-    // Instancia persistente en memoria global del navegador (nunca se destruye al navegar)
+    // 2. Instancia persistente en memoria global del navegador
     if (typeof window !== 'undefined') {
       if (!window.__becawiiNativeAudio) {
         window.__becawiiNativeAudio = new Audio();
@@ -84,7 +79,6 @@ class AudioManager {
     if (!this.audio || this.isInitialized) return;
     this.isInitialized = true;
 
-    // Escuchadores de eventos nativos
     this.audio.addEventListener('play', () => {
       this.isPlaying = true;
       this.actualizarMediaSession();
@@ -99,37 +93,7 @@ class AudioManager {
 
     this.audio.addEventListener('loadedmetadata', () => {
       const dur = this.audio.duration || 0;
-      this.notificar('metadata', {
-        duration: dur,
-        currentTime: this.audio.currentTime
-      });
-      if (dur > 0) {
-        this.notificar('timeUpdate', {
-          currentTime: this.audio.currentTime,
-          duration: dur,
-          progressPct: (this.audio.currentTime / dur) * 100
-        });
-      }
-    });
-
-    this.audio.addEventListener('durationchange', () => {
-      const dur = this.audio.duration || 0;
-      if (dur > 0) {
-        this.notificar('timeUpdate', {
-          currentTime: this.audio.currentTime,
-          duration: dur,
-          progressPct: (this.audio.currentTime / dur) * 100
-        });
-      }
-    });
-
-    this.audio.addEventListener('seeked', () => {
-      const dur = this.audio.duration || 0;
-      this.notificar('timeUpdate', {
-        currentTime: this.audio.currentTime,
-        duration: dur,
-        progressPct: dur > 0 ? (this.audio.currentTime / dur) * 100 : 0
-      });
+      this.notificar('metadata', { duration: dur, currentTime: this.audio.currentTime });
     });
 
     this.audio.addEventListener('timeupdate', () => {
@@ -161,7 +125,7 @@ class AudioManager {
       console.warn('Error en reproducción de audio:', e);
     });
 
-    // Configurar pista inicial sin disparar autoplay forzado
+    // Cargar pista inicial sin autoplay forzado
     if (!this.audio.src && this.playlist[this.currentIndex]) {
       this.audio.src = this.playlist[this.currentIndex].audioUrl;
       this.audio.load();
@@ -170,28 +134,10 @@ class AudioManager {
     this.actualizarMediaSession();
   }
 
-  /**
-   * Conecta o verifica el audio global (Mantiene compatibilidad con Principal.astro)
-   */
-  conectarElementoAudio(audioEl) {
-    if (!this.isInitialized && typeof window !== 'undefined') {
-      if (!window.__becawiiNativeAudio) {
-        window.__becawiiNativeAudio = audioEl || new Audio();
-      }
-      this.audio = window.__becawiiNativeAudio;
-      this.audio.volume = this.volume;
-      this._inicializarEventosAudio();
-    }
-  }
-
   getPistaActual() {
     return this.playlist[this.currentIndex] || null;
   }
 
-  /**
-   * Sincroniza la barra de notificación del sistema (Android / Windows SMTC / iOS)
-   * con título, artista, app Becawii y arte oficial de diosesamor.png
-   */
   actualizarMediaSession() {
     if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
     const pista = this.getPistaActual();
@@ -201,28 +147,19 @@ class AudioManager {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: pista.titulo,
         artist: pista.artista,
-        album: `${app} 2026 • Música de Paz`,
+        album: `CumpleWii 2026 • Gersson Collantes`,
         artwork: [
-          { src: '/diosesamor.png', sizes: '512x512', type: 'image/png' },
-          { src: '/smile.avif', sizes: '256x256', type: 'image/avif' }
+          { src: '/avatar-oficial.jpg', sizes: '512x512', type: 'image/jpeg' },
+          { src: '/diosesamor.png', sizes: '512x512', type: 'image/png' }
         ]
       });
 
       navigator.mediaSession.playbackState = this.isPlaying ? 'playing' : 'paused';
 
-      // Acciones nativas en notificación móvil, teclado y lockscreen
-      navigator.mediaSession.setActionHandler('play', () => {
-        this.reproducir();
-      });
-      navigator.mediaSession.setActionHandler('pause', () => {
-        this.pausar();
-      });
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        this.anterior();
-      });
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        this.siguiente();
-      });
+      navigator.mediaSession.setActionHandler('play', () => this.reproducir());
+      navigator.mediaSession.setActionHandler('pause', () => this.pausar());
+      navigator.mediaSession.setActionHandler('previoustrack', () => this.anterior());
+      navigator.mediaSession.setActionHandler('nexttrack', () => this.siguiente());
       navigator.mediaSession.setActionHandler('seekto', (details) => {
         if (details.seekTime !== null && details.seekTime !== undefined) {
           this.seek(details.seekTime);
@@ -241,9 +178,6 @@ class AudioManager {
     }
   }
 
-  /**
-   * Suscribe un componente a cambios en el reproductor
-   */
   suscribir(callback) {
     if (typeof callback === 'function') {
       this.listeners.add(callback);
@@ -266,6 +200,12 @@ class AudioManager {
         console.error('Error notificando a listener de audio:', e);
       }
     });
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('geco:audio-update', {
+        detail: { evento, datos, estado }
+      }));
+    }
   }
 
   getEstado() {
@@ -276,12 +216,10 @@ class AudioManager {
       isPlaying: this.isPlaying,
       isShuffle: this.isShuffle,
       repeatMode: this.repeatMode,
-      isRepeat: this.repeatMode !== 'off',
       volume: this.volume,
       favorites: Array.from(this.favorites),
       totalFavorites: this.favorites.size,
       isCurrentFavorite: pistaActual ? this.esFavorito(pistaActual.id) : false,
-      bgAudioEnabled: this.bgAudioEnabled,
       currentTime: this.audio ? this.audio.currentTime : 0,
       duration: this.audio && !isNaN(this.audio.duration) ? this.audio.duration : 0
     };
@@ -293,7 +231,6 @@ class AudioManager {
     const yaTieneMismoSrc = this.audio && this.audio.src && this.audio.src.includes(pista.audioUrl);
     this.currentIndex = index;
 
-    // Persistir índice con savels (horas = null -> infinito)
     savels('becawii_last_track_idx', index, null);
 
     if (this.audio) {
@@ -302,17 +239,16 @@ class AudioManager {
       }
       if (autoPlay) {
         this.reproducir().catch(() => {
-          // Desbloquear al primer gesto si la política de autoplay del navegador interviene
-          if (typeof window !== 'undefined' && !window.__becawiiAutoplayUnlockerBound) {
-            window.__becawiiAutoplayUnlockerBound = true;
-            const desbloquearAudio = () => {
-              window.__becawiiAutoplayUnlockerBound = false;
+          if (typeof window !== 'undefined' && !window.__gecoAutoplayBound) {
+            window.__gecoAutoplayBound = true;
+            const unlockAudio = () => {
+              window.__gecoAutoplayBound = false;
               if (this.currentIndex === index && !this.isPlaying && this.audio) {
                 this.reproducir();
               }
             };
-            window.addEventListener('pointerdown', desbloquearAudio, { once: true });
-            window.addEventListener('keydown', desbloquearAudio, { once: true });
+            window.addEventListener('pointerdown', unlockAudio, { once: true });
+            window.addEventListener('keydown', unlockAudio, { once: true });
           }
         });
       }
@@ -333,7 +269,6 @@ class AudioManager {
       this.actualizarMediaSession();
       this.notificar('playState', { isPlaying: true });
     }).catch((err) => {
-      console.warn('Reproducción de audio pospuesta por política del navegador:', err);
       this.isPlaying = false;
       this.actualizarMediaSession();
       this.notificar('playState', { isPlaying: false });
@@ -380,9 +315,6 @@ class AudioManager {
     return this.isShuffle;
   }
 
-  /**
-   * Cicla entre 3 modos de repetición: 'off' -> 'all' -> 'one'
-   */
   cycleRepeatMode() {
     if (this.repeatMode === 'off') {
       this.repeatMode = 'all';
@@ -419,7 +351,7 @@ class AudioManager {
   }
 
   toggleFavorito(trackId = null) {
-    const id = trackId ? String(trackId) : this.getPistaActual()?.id;
+    const id = trackId ? String(trackId) : String(this.getPistaActual()?.id);
     if (!id) return false;
 
     let isFav = false;
@@ -433,7 +365,6 @@ class AudioManager {
       Mensaje('¡Agregada a tus favoritas! ❤️', 'success');
     }
 
-    // Persistencia infinita (horas = null) con savels
     savels('musicaLikes', Array.from(this.favorites), null);
 
     this.notificar('favoriteChange', {
@@ -443,14 +374,6 @@ class AudioManager {
     });
 
     return isFav;
-  }
-
-  toggleBgSync() {
-    this.bgAudioEnabled = !this.bgAudioEnabled;
-    savels('becawii_bg_audio', this.bgAudioEnabled, null);
-    Mensaje(this.bgAudioEnabled ? 'Música en simulador activada 🎧' : 'Música en simulador pausada', 'info');
-    this.notificar('syncChange', { bgAudioEnabled: this.bgAudioEnabled });
-    return this.bgAudioEnabled;
   }
 
   seek(segundos) {
@@ -467,22 +390,9 @@ class AudioManager {
       this.audio.currentTime = Math.max(0, segundos);
     }
   }
-
-  setSleepTimer(minutos, onComplete) {
-    if (this.sleepTimerTimeout) {
-      clearTimeout(this.sleepTimerTimeout);
-      this.sleepTimerTimeout = null;
-    }
-    if (minutos <= 0) return;
-
-    this.sleepTimerTimeout = setTimeout(() => {
-      this.pausar();
-      if (typeof onComplete === 'function') onComplete();
-    }, minutos * 60 * 1000);
-  }
 }
 
-// Instancia única (Singleton) compartida a nivel de aplicación
+// Singleton global
 export const audioManager = (function() {
   if (typeof window !== 'undefined') {
     if (!window.__becawiiAudioManager) {

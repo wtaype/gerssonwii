@@ -1,0 +1,479 @@
+---
+// src/feature/apoyar/ApoyarPage.astro
+// 🎁 Vista Principal del Módulo Apoyar & Bendición
+// Yape, Plin, QR Vectorial, Cuentas y Encuesta Divertida en Vivo (/encuestas/apoyando)
+// 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados de @semillas/
+import regalos from '@semillas/regalos.json';
+import { OPCIONES_APOYO } from './data/cacheApoyando.js';
+import './apoyar.css';
+
+const titulo = regalos.titulo || 'Bendición & Apoyo Voluntario 🎁';
+const descripcion = regalos.descripcion || 'Tu presencia y oración son mi mayor regalo en esta noche. Si nace de tu corazón hacerme un presente o bendición digital:';
+const yape = regalos.yape || {
+  titular: 'Mary Rosse Katherine Yanayaco Lovaton',
+  numero: '946869939',
+  numeroFormato: '946 869 939',
+  banco: 'BCP / Yape',
+  nota: 'Mary Rosse (Novia de Gersson • Anfitriona 💕)'
+};
+const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multiplique tu generosidad y te colme de infinitas bendiciones!';
+---
+
+<section class="geco-apoyar-feature" aria-label="Módulo de Bendición y Regalos">
+
+  <!-- 1. TARJETA CABECERA -->
+  <article class="geco-apoyar-header-card">
+    <div class="geco-apoyar-badge-top">
+      <i class="fa-solid fa-gift"></i> Muestras de Cariño • Cumpleaños 2026
+    </div>
+    <h2 class="geco-apoyar-title">{titulo}</h2>
+    <p class="geco-apoyar-sub">{descripcion}</p>
+  </article>
+
+  <!-- 2. TARJETA YAPE / PLIN PRINCIPAL DESTACADA CON QR REAL -->
+  <article class="geco-yape-main-card">
+    <!-- QR Oficial de Yape de Mary Rosse -->
+    <div class="geco-yape-qr-box">
+      <div class="geco-yape-frame" id="btnAbrirQrModal" role="button" tabindex="0" title="Toca para ampliar el QR oficial de Yape">
+        <img
+          src="/qr-yape-oficial.jpg"
+          alt="QR Oficial de Yape - Mary Rosse Katherine Yanayaco Lovaton"
+          class="geco-yape-img-real"
+          loading="eager"
+        />
+        <div class="geco-yape-zoom-pill">
+          <i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar QR
+        </div>
+      </div>
+      <a href="/qr-yape-oficial.jpg" download="QR-Yape-MaryRosse-Gersson.jpg" class="geco-yape-download-link" title="Descargar imagen oficial del QR">
+        <i class="fa-solid fa-download"></i> Descargar QR
+      </a>
+    </div>
+
+    <!-- Información del Titular y Acciones -->
+    <div class="geco-yape-content">
+      <div class="geco-yape-chip-row">
+        <span class="geco-yape-chip"><i class="fa-solid fa-qrcode"></i> Yape Oficial</span>
+        <span class="geco-plin-chip"><i class="fa-solid fa-bolt"></i> Plin</span>
+        <span class="geco-novia-chip"><i class="fa-solid fa-heart"></i> Novia de Gersson</span>
+      </div>
+
+      <div class="geco-yape-num-row">
+        <i class="fa-solid fa-mobile-screen-button" style="color: var(--yape-primary);" aria-hidden="true"></i>
+        <span>{yape.numeroFormato}</span>
+      </div>
+
+      <div class="geco-yape-titular-desc">
+        Titular: <strong>{yape.titular}</strong><br />
+        <span class="geco-yape-relacion-text">
+          <i class="fa-solid fa-heart" style="color: #ec4899;"></i> Mary Rosse (Novia de Gersson • Anfitriona 💕)
+        </span>
+      </div>
+
+      <div class="geco-yape-actions">
+        <!-- Copiar Número de Yape -->
+        <button
+          type="button"
+          class="geco-btn-yape-copy"
+          id="btnCopiarYape"
+          data-numero={yape.numero}
+          title="Copiar número para Yape o Plin"
+        >
+          <i class="fa-solid fa-copy"></i>
+          <span>Copiar Número</span>
+        </button>
+
+        <!-- Botón Festivo de Confirmación -->
+        <button
+          type="button"
+          class="geco-btn-yape-celebrate"
+          id="btnCelebrarYape"
+          title="Avisar que enviaste una bendición"
+        >
+          <i class="fa-solid fa-sparkles"></i>
+          <span>¡Ya envié mi cariño! 🎉</span>
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <!-- 3. CUENTAS BANCARIAS SECUNDARIAS (BCP / INTERBANK) -->
+  <div class="geco-bank-grid">
+    <!-- Banco BCP -->
+    <article class="geco-bank-card">
+      <div class="geco-bank-header">
+        <span class="geco-bank-name">
+          <i class="fa-solid fa-building-columns" style="color: #002a8f;"></i> Banco BCP (Soles)
+        </span>
+        <span class="geco-mini-tag geco-tag-faith">Transferencia</span>
+      </div>
+      <div class="geco-bank-num-box">
+        <div>
+          <div class="geco-bank-num-label">Cuenta Corriente / Ahorros</div>
+          <div class="geco-bank-num-val" id="numBcpVal">193-98765432-0-12</div>
+        </div>
+        <button type="button" class="geco-btn-bank-copy" id="btnCopiarBcp" data-copy="193-98765432-0-12" title="Copiar cuenta BCP">
+          <i class="fa-solid fa-copy"></i>
+        </button>
+      </div>
+      <p style="font-size: 0.76rem; color: var(--tx3); margin: 0;">Titular: Mary Rosse Katherine Yanayaco Lovaton (Novia 💕)</p>
+    </article>
+
+    <!-- Banco Interbank / Plin -->
+    <article class="geco-bank-card">
+      <div class="geco-bank-header">
+        <span class="geco-bank-name">
+          <i class="fa-solid fa-building-columns" style="color: #009a44;"></i> Interbank (Soles)
+        </span>
+        <span class="geco-mini-tag geco-tag-fda">Plin / Web</span>
+      </div>
+      <div class="geco-bank-num-box">
+        <div>
+          <div class="geco-bank-num-label">Número de Cuenta</div>
+          <div class="geco-bank-num-val" id="numInterbankVal">200-3001234567</div>
+        </div>
+        <button type="button" class="geco-btn-bank-copy" id="btnCopiarInterbank" data-copy="200-3001234567" title="Copiar cuenta Interbank">
+          <i class="fa-solid fa-copy"></i>
+        </button>
+      </div>
+      <p style="font-size: 0.76rem; color: var(--tx3); margin: 0;">Titular: Gersson Collantes</p>
+    </article>
+  </div>
+
+  <!-- 4. MENSAJE DE GRATITUD ESPIRITUAL -->
+  <aside class="geco-gratitude-banner" aria-label="Mensaje de gratitud">
+    <i class="fa-solid fa-heart-circle-bolt geco-gratitude-icon" aria-hidden="true"></i>
+    <p class="geco-gratitude-text">{fraseAgradecimiento}</p>
+    <span style="font-size: 0.8rem; color: var(--tx2);">¡Gracias infinitas por ser parte de mi vida y celebrar conmigo! 🎉</span>
+  </aside>
+
+  <!-- 5. ENCUESTA FESTIVA DIVERTIDA AL FINAL (/encuestas/apoyando) -->
+  <article class="geco-apoyando-survey-card" id="seccionEncuestaApoyo">
+    <div class="geco-survey-top-bar">
+      <span class="geco-apoyando-badge">
+        <i class="fa-solid fa-face-laugh-beam"></i> Encuesta Festiva • Tu Regalo Especial
+      </span>
+      <span class="geco-live-badge" id="surveyApoyoLiveBadge" title="Sincronización en vivo con Firebase Firestore">
+        <span class="geco-live-dot"></span> En vivo
+      </span>
+    </div>
+
+    <h3 class="geco-apoyando-title">¿Cómo te gustaría bendecir a Gersson? 💕</h3>
+    <p class="geco-apoyando-sub">Elige tu forma favorita de acompañarme y sumar alegría a esta celebración:</p>
+
+    <!-- 5 Opciones Divertidas -->
+    <div class="geco-survey-options" id="listaOpcionesApoyo">
+      {OPCIONES_APOYO.map((opt, idx) => (
+        <button
+          type="button"
+          class="geco-survey-btn"
+          data-index={idx}
+          data-opt-id={opt.id}
+          aria-label={`Opción ${opt.titulo}`}
+        >
+          <div class="geco-survey-progress" id={`apoyoBar-${idx}`}></div>
+          <div class="geco-survey-btn-content">
+            <div class="geco-survey-left">
+              <div class="geco-survey-icon-circle" style={`color: ${opt.color};`}>
+                <i class:list={['fa-solid', opt.icono]}></i>
+              </div>
+              <div>
+                <div class="geco-survey-text-title">{opt.titulo}</div>
+                <div class="geco-survey-text-desc">{opt.descripcion}</div>
+              </div>
+            </div>
+            <div class="geco-survey-pct" id={`apoyoPct-${idx}`}>0%</div>
+          </div>
+        </button>
+      ))}
+    </div>
+
+    <!-- Banner de Feedback Divertido -->
+    <div class="geco-survey-feedback-banner" id="apoyoFeedbackBanner">
+      <i class="fa-solid fa-sparkles geco-heading-icon"></i>
+      <span id="apoyoFeedbackText"></span>
+    </div>
+
+    <!-- Pie de Encuesta de Apoyo -->
+    <div class="geco-survey-footer">
+      <div class="geco-survey-total-label" id="apoyoTotalLabel">
+        <i class="fa-solid fa-chart-pie geco-heading-icon"></i>
+        <span id="apoyoTotalText">Cargando respuestas...</span>
+      </div>
+
+      <div class="geco-survey-actions">
+        <!-- Botón de Actualizar con Cooldown -->
+        <button
+          type="button"
+          class="geco-survey-btn-refresh"
+          id="btnActualizarApoyo"
+          title="Actualizar votos en tiempo real"
+          aria-label="Actualizar resultados de la encuesta de apoyo"
+        >
+          <i class="fa-solid fa-arrows-rotate" id="iconRefreshApoyo"></i>
+          <span>Actualizar</span>
+        </button>
+
+        <!-- Botón de Cambiar / Revertir Elección -->
+        <button
+          type="button"
+          class="geco-survey-btn-reset"
+          id="btnCambiarApoyo"
+          title="Cambiar mi elección"
+          aria-label="Cambiar mi respuesta de apoyo"
+        >
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Cambiar respuesta</span>
+        </button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Modal Lightbox para Ver QR Completo en Alta Definición -->
+  <div class="geco-qr-modal" id="gecoQrModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="geco-qr-modal-dialog">
+      <button type="button" class="geco-qr-modal-close" id="btnCerrarQrModal" aria-label="Cerrar modal de QR">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="geco-qr-modal-header">
+        <span class="geco-yape-chip"><i class="fa-solid fa-qrcode"></i> Yape Oficial</span>
+        <span class="geco-novia-chip"><i class="fa-solid fa-heart"></i> Novia de Gersson</span>
+      </div>
+      <div class="geco-qr-modal-body">
+        <img src="/qr-yape-oficial.jpg" alt="QR Yape Mary Rosse Katherine Yanayaco Lovaton" class="geco-qr-modal-img" />
+      </div>
+      <div class="geco-qr-modal-footer">
+        <div class="geco-qr-modal-titular">
+          <strong>Mary Rosse Katherine Yanayaco Lovaton</strong>
+          <span>Número: 946 869 939</span>
+        </div>
+        <a href="/qr-yape-oficial.jpg" download="QR-Yape-MaryRosse-Gersson.jpg" class="geco-btn-yape-copy" style="text-decoration: none;">
+          <i class="fa-solid fa-download"></i> Descargar Imagen
+        </a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  import {
+    obtenerEstadoLocalApoyo,
+    guardarVotoLocalApoyo,
+    revertirVotoLocalApoyo,
+    sincronizarDesdeFirestoreApoyo,
+    calcularPorcentajesApoyo,
+    FEEDBACK_MSGS_APOYO,
+    OPCIONES_APOYO
+  } from './data/cacheApoyando.js';
+  import { wicopy } from '@widev/copy.js';
+  import { Mensaje } from '@widev/mensajes.js';
+  import { wiSmart } from '@widev';
+
+  let estadoApoyo = obtenerEstadoLocalApoyo();
+  let desuscribirApoyo: (() => void) | null = null;
+  let enfriamientoRefreshApoyo = false;
+
+  function renderizarEncuestaApoyo() {
+    const { votos, usuarioEleccion, total } = estadoApoyo;
+    const porcentajes = calcularPorcentajesApoyo(votos, total);
+
+    const totalTextEl = document.getElementById('apoyoTotalText');
+    if (totalTextEl) {
+      if (total === 0) {
+        totalTextEl.innerHTML = `Total de votos: <strong>0 respuestas</strong> (¡Sé el primero en votar!)`;
+      } else {
+        totalTextEl.innerHTML = `Total de votos: <strong>${total} ${total === 1 ? 'respuesta' : 'respuestas'}</strong>`;
+      }
+    }
+
+    votos.forEach((_, idx) => {
+      const pct = porcentajes[idx] ?? 0;
+      const bar = document.getElementById(`apoyoBar-${idx}`);
+      const pctEl = document.getElementById(`apoyoPct-${idx}`);
+      if (bar) bar.style.width = `${pct}%`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+    });
+
+    document.querySelectorAll('#listaOpcionesApoyo .geco-survey-btn').forEach((btn, idx) => {
+      btn.classList.toggle('voted', usuarioEleccion === idx);
+    });
+
+    const banner = document.getElementById('apoyoFeedbackBanner');
+    const bannerText = document.getElementById('apoyoFeedbackText');
+    const btnReset = document.getElementById('btnCambiarApoyo');
+
+    if (usuarioEleccion !== null) {
+      if (banner && bannerText) {
+        bannerText.textContent = FEEDBACK_MSGS_APOYO[usuarioEleccion] || '¡Gracias por tu bendición!';
+        banner.classList.add('show');
+      }
+      if (btnReset) btnReset.classList.add('visible');
+    } else {
+      if (banner) banner.classList.remove('show');
+      if (btnReset) btnReset.classList.remove('visible');
+    }
+  }
+
+  function setupInteraccionesApoyo() {
+    // 0. Visor / Modal Lightbox de QR Oficial
+    const modalQr = document.getElementById('gecoQrModal');
+    const btnAbrirQr = document.getElementById('btnAbrirQrModal');
+    const btnCerrarQr = document.getElementById('btnCerrarQrModal');
+
+    btnAbrirQr?.addEventListener('click', () => {
+      modalQr?.classList.add('visible');
+    });
+
+    btnCerrarQr?.addEventListener('click', () => {
+      modalQr?.classList.remove('visible');
+    });
+
+    modalQr?.addEventListener('click', (e) => {
+      if (e.target === modalQr) modalQr.classList.remove('visible');
+    });
+
+    // 1. Copiar Yape y Plin
+    const btnYape = document.getElementById('btnCopiarYape');
+    btnYape?.addEventListener('click', () => {
+      const num = btnYape.getAttribute('data-numero') || '946869939';
+      wicopy(num, btnYape);
+      Mensaje('¡Número de Yape copiado: 946 869 939! 💜', 'success');
+    });
+
+    // 2. Celebrar Envío de Bendición
+    document.getElementById('btnCelebrarYape')?.addEventListener('click', () => {
+      if (typeof (window as any).lanzarConfeti === 'function') {
+        (window as any).lanzarConfeti(100);
+      }
+      Mensaje('¡Muchísimas gracias por tu bendición y cariño! Que Dios te multiplique con creces 🙏✨', 'success');
+    });
+
+    // 3. Copiar Cuentas Bancarias
+    document.getElementById('btnCopiarBcp')?.addEventListener('click', (e) => {
+      const el = e.currentTarget as HTMLElement;
+      const num = el?.getAttribute('data-copy') || '193-98765432-0-12';
+      wicopy(num, el);
+      Mensaje('¡Número de cuenta BCP copiado! 🏦', 'success');
+    });
+
+    document.getElementById('btnCopiarInterbank')?.addEventListener('click', (e) => {
+      const el = e.currentTarget as HTMLElement;
+      const num = el?.getAttribute('data-copy') || '200-3001234567';
+      wicopy(num, el);
+      Mensaje('¡Número de cuenta Interbank copiado! 🏦', 'success');
+    });
+
+    // 4. Votación en Encuesta Divertida (/encuestas/apoyando)
+    document.querySelectorAll('#listaOpcionesApoyo .geco-survey-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-index'));
+        if (estadoApoyo.usuarioEleccion === idx) return;
+
+        const prevIdx = estadoApoyo.usuarioEleccion;
+        const prevOptId = prevIdx !== null ? OPCIONES_APOYO[prevIdx]?.id : null;
+        const opt = OPCIONES_APOYO[idx];
+        if (!opt) return;
+
+        // Actualización optimista local
+        estadoApoyo = guardarVotoLocalApoyo(idx);
+        renderizarEncuestaApoyo();
+
+        if (typeof (window as any).lanzarConfeti === 'function') {
+          (window as any).lanzarConfeti(70);
+        }
+
+        Mensaje(FEEDBACK_MSGS_APOYO[idx] || '¡Gracias por tu bendición!', 'success');
+
+        // Sincronización en segundo plano con Firestore
+        import('./data/dataApoyando.js')
+          .then(({ votarApoyandoRemoto }) => {
+            votarApoyandoRemoto({
+              opcionId: opt.id,
+              opcionAnteriorId: prevOptId
+            });
+          })
+          .catch((err) => console.warn('[Apoyando Sync] Error:', err));
+      });
+    });
+
+    // 5. Botón Cambiar / Revertir Elección de Apoyo
+    document.getElementById('btnCambiarApoyo')?.addEventListener('click', () => {
+      if (estadoApoyo.usuarioEleccion === null) return;
+
+      const prevIdx = estadoApoyo.usuarioEleccion;
+      const prevOptId = prevIdx !== null ? OPCIONES_APOYO[prevIdx]?.id : null;
+
+      estadoApoyo = revertirVotoLocalApoyo();
+      renderizarEncuestaApoyo();
+      Mensaje('Puedes elegir nuevamente cómo apoyar a Gersson.', 'info');
+
+      if (prevOptId) {
+        import('./data/dataApoyando.js')
+          .then(({ revertirApoyandoRemoto }) => {
+            revertirApoyandoRemoto(prevOptId);
+          })
+          .catch((err) => console.warn('[Apoyando Revert] Error:', err));
+      }
+    });
+
+    // 6. Botón Manual de Actualizar Encuesta de Apoyo con Cooldown
+    const btnRefresh = document.getElementById('btnActualizarApoyo');
+    btnRefresh?.addEventListener('click', async () => {
+      if (enfriamientoRefreshApoyo) {
+        Mensaje('Resultados al día. Espera un momento para refrescar.', 'info');
+        return;
+      }
+
+      enfriamientoRefreshApoyo = true;
+      btnRefresh.classList.add('cargando');
+
+      try {
+        const { consultarApoyando } = await import('./data/dataApoyando.js');
+        const datosRemotos = await consultarApoyando();
+        if (datosRemotos) {
+          estadoApoyo = sincronizarDesdeFirestoreApoyo(datosRemotos);
+          renderizarEncuestaApoyo();
+          Mensaje('Resultados de apoyo actualizados en vivo ✨', 'success');
+        }
+      } catch {
+        Mensaje('Resultados sincronizados localmente.', 'info');
+      } finally {
+        setTimeout(() => btnRefresh.classList.remove('cargando'), 400);
+        setTimeout(() => { enfriamientoRefreshApoyo = false; }, 3500);
+      }
+    });
+  }
+
+  function conectarTiempoRealApoyo() {
+    wiSmart({
+      js: [
+        async () => {
+          try {
+            const { escucharApoyando } = await import('./data/dataApoyando.js');
+            if (desuscribirApoyo) desuscribirApoyo();
+
+            desuscribirApoyo = escucharApoyando((datosRemotos) => {
+              if (datosRemotos) {
+                estadoApoyo = sincronizarDesdeFirestoreApoyo(datosRemotos);
+                renderizarEncuestaApoyo();
+              }
+            });
+          } catch (e) {
+            console.warn('[wiSmart Apoyando] Listener diferido no disponible:', e);
+          }
+        }
+      ]
+    });
+  }
+
+  function inicializarModuloApoyar() {
+    estadoApoyo = obtenerEstadoLocalApoyo();
+    renderizarEncuestaApoyo();
+    setupInteraccionesApoyo();
+    conectarTiempoRealApoyo();
+  }
+
+  inicializarModuloApoyar();
+  document.addEventListener('astro:page-load', inicializarModuloApoyar);
+</script>

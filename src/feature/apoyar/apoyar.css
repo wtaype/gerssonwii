@@ -1,11 +1,761 @@
-/* ========================================================
-   🎨 APOYAR.CSS - FEATURE APOYAR & REGALOS (GERSSON 2026)
-   Tokens específicos y aislados para Yape y Plin
-   ======================================================== */
+/* src/feature/apoyar/apoyar.css */
+/* 🎁 Estilos de Alta Fidelidad para Feature Apoyar & Bendición */
+/* 100% Tokens WiTema - Cero CSS Inline - Totalmente Responsivo */
 
 :root {
   --yape-primary: #742284;
   --yape-hover:   #5b1968;
   --yape-light:   rgba(116, 34, 132, 0.08);
   --yape-border:  rgba(116, 34, 132, 0.25);
+  --plin-primary: #00b4d8;
+  --plin-light:   rgba(0, 180, 216, 0.1);
+}
+
+.geco-apoyar-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  animation: fadeInApoyar 0.4s ease;
+}
+
+@keyframes fadeInApoyar {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 1. TARJETA CABECERA */
+.geco-apoyar-header-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 24px 20px;
+  box-shadow: var(--sh_card);
+  position: relative;
+  overflow: hidden;
+}
+
+.geco-apoyar-header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--yape-primary), var(--mco), transparent);
+}
+
+.geco-apoyar-badge-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--yape-primary);
+  background: var(--yape-light);
+  border: 1px solid var(--yape-border);
+  padding: 4px 12px;
+  border-radius: var(--r_pill);
+  margin-bottom: 12px;
+}
+
+[data-theme="noche"] .geco-apoyar-badge-top {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+  border-color: rgba(192, 132, 252, 0.3);
+}
+
+.geco-apoyar-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--tx1);
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.geco-apoyar-sub {
+  font-size: 0.92rem;
+  color: var(--tx2);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 2. TARJETA YAPE OFICIAL DESTACADA */
+.geco-yape-main-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--yape-border);
+  border-radius: var(--r_card);
+  padding: 24px 20px;
+  box-shadow: var(--sh_card);
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+}
+
+.geco-yape-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.geco-yape-frame {
+  width: 145px;
+  height: 205px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  border: 2.5px solid var(--yape-primary);
+  box-shadow: 0 8px 24px rgba(116, 34, 132, 0.25);
+  cursor: pointer;
+  background: var(--yape-primary);
+  transition: transform var(--tr_f), box-shadow var(--tr_f);
+}
+
+.geco-yape-frame:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(116, 34, 132, 0.4);
+}
+
+.geco-yape-img-real {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.geco-yape-zoom-pill {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r_pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.geco-yape-download-link {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--yape-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--r_pill);
+  background: var(--yape-light);
+  border: 1px solid var(--yape-border);
+  transition: all var(--tr_f);
+}
+
+.geco-yape-download-link:hover {
+  background: var(--yape-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.geco-novia-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ec4899;
+  background: rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(236, 72, 153, 0.28);
+  padding: 3px 10px;
+  border-radius: var(--r_pill);
+}
+
+.geco-yape-relacion-text {
+  font-size: 0.82rem;
+  color: var(--tx2);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.geco-yape-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.geco-yape-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.geco-yape-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--yape-primary);
+  padding: 3px 10px;
+  border-radius: var(--r_pill);
+}
+
+.geco-plin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--plin-primary);
+  padding: 3px 10px;
+  border-radius: var(--r_pill);
+}
+
+.geco-yape-num-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--tx1);
+  letter-spacing: 0.04em;
+}
+
+.geco-yape-titular-desc {
+  font-size: 0.86rem;
+  color: var(--tx2);
+  line-height: 1.45;
+}
+
+.geco-yape-titular-desc strong {
+  color: var(--tx1);
+}
+
+.geco-yape-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.geco-btn-yape-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: var(--r_pill);
+  background: var(--yape-primary);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-btn-yape-copy:hover {
+  background: var(--yape-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(116, 34, 132, 0.3);
+}
+
+.geco-btn-yape-celebrate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--r_pill);
+  background: var(--gold-vip-bg);
+  border: 1px solid var(--gold-vip-border);
+  color: var(--mco);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-btn-yape-celebrate:hover {
+  background: var(--mco);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* 3. ENCUESTA FESTIVA DIVERTIDA (/encuestas/apoyando) */
+.geco-apoyando-survey-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 24px 20px;
+  box-shadow: var(--sh_card);
+}
+
+.geco-survey-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.geco-apoyando-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ec4899;
+  background: rgba(236, 72, 153, 0.1);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+  padding: 4px 12px;
+  border-radius: var(--r_pill);
+}
+
+.geco-apoyando-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--tx1);
+  margin: 0 0 6px;
+}
+
+.geco-apoyando-sub {
+  font-size: 0.88rem;
+  color: var(--tx2);
+  margin: 0 0 18px;
+}
+
+/* Opciones de la Encuesta de Apoyo */
+.geco-survey-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.geco-survey-btn {
+  position: relative;
+  background: var(--glass-raised);
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: all var(--tr_f);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.geco-survey-btn:hover {
+  border-color: var(--yape-primary);
+  background: var(--glass-card-hover);
+  transform: translateY(-1px);
+}
+
+.geco-survey-btn.voted {
+  border-color: var(--yape-primary);
+  background: rgba(116, 34, 132, 0.08);
+  box-shadow: 0 0 12px rgba(116, 34, 132, 0.2);
+}
+
+.geco-survey-progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(116, 34, 132, 0.12), rgba(192, 132, 252, 0.25));
+  border-radius: var(--r_card);
+  transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.geco-survey-btn.voted .geco-survey-progress {
+  background: linear-gradient(90deg, rgba(116, 34, 132, 0.25), rgba(192, 132, 252, 0.45));
+}
+
+.geco-survey-btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.geco-survey-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.geco-survey-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r_m);
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.geco-survey-text-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--tx1);
+  line-height: 1.2;
+}
+
+.geco-survey-text-desc {
+  font-size: 0.76rem;
+  color: var(--tx3);
+  margin-top: 2px;
+}
+
+.geco-survey-pct {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--yape-primary);
+  min-width: 44px;
+  text-align: right;
+}
+
+[data-theme="noche"] .geco-survey-pct {
+  color: #c084fc;
+}
+
+.geco-survey-feedback-banner {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--r_card);
+  background: var(--yape-light);
+  border: 1px solid var(--yape-border);
+  color: var(--tx1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: fadeInApoyar 0.3s ease;
+}
+
+.geco-survey-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.geco-survey-total-label {
+  font-size: 0.82rem;
+  color: var(--tx3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.geco-survey-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.geco-survey-btn-refresh,
+.geco-survey-btn-reset {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--r_pill);
+  border: 1px solid var(--border-card);
+  background: var(--glass-card);
+  color: var(--tx2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--tr_f);
+}
+
+.geco-survey-btn-refresh:hover,
+.geco-survey-btn-reset:hover {
+  color: var(--tx1);
+  border-color: var(--yape-primary);
+  background: var(--glass-card-hover);
+}
+
+/* 4. CUENTAS BANCARIAS SECUNDARIAS */
+.geco-bank-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.geco-bank-card {
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color var(--tr_f), transform var(--tr_f);
+}
+
+.geco-bank-card:hover {
+  border-color: var(--mco);
+  transform: translateY(-2px);
+}
+
+.geco-bank-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.geco-bank-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.geco-bank-num-box {
+  background: var(--glass-raised);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r_pill);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.geco-bank-num-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--tx3);
+  text-transform: uppercase;
+}
+
+.geco-bank-num-val {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--tx1);
+  font-family: monospace;
+}
+
+.geco-btn-bank-copy {
+  background: none;
+  border: none;
+  color: var(--mco);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  transition: color var(--tr_f);
+}
+
+.geco-btn-bank-copy:hover {
+  color: var(--tx1);
+}
+
+/* 5. MENSAJE FINAL DE GRATITUD */
+.geco-gratitude-banner {
+  background: var(--gold-vip-bg);
+  border: 1px solid var(--gold-vip-border);
+  border-radius: var(--r_card);
+  padding: 18px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.geco-gratitude-icon {
+  font-size: 1.5rem;
+  color: var(--mco);
+}
+
+.geco-gratitude-text {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--tx1);
+  margin: 0;
+}
+
+/* Modal Lightbox QR Oficial */
+.geco-qr-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.geco-qr-modal.visible {
+  display: flex;
+  animation: fadeInApoyar 0.25s ease;
+}
+
+.geco-qr-modal-dialog {
+  background: var(--glass-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--yape-border);
+  border-radius: var(--r_card);
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: popInQr 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popInQr {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.geco-qr-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-card);
+  background: var(--glass-raised);
+  color: var(--tx1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all var(--tr_f);
+}
+
+.geco-qr-modal-close:hover {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.geco-qr-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+}
+
+.geco-qr-modal-body {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.geco-qr-modal-img {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(116, 34, 132, 0.25);
+  border: 2px solid var(--yape-primary);
+  display: block;
+}
+
+.geco-qr-modal-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.geco-qr-modal-titular {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.88rem;
+  color: var(--tx1);
+}
+
+.geco-qr-modal-titular span {
+  font-size: 0.8rem;
+  color: var(--tx3);
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .geco-yape-main-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .geco-yape-qr-box {
+    margin: 0 auto;
+  }
+
+  .geco-yape-chip-row {
+    justify-content: center;
+  }
+
+  .geco-yape-num-row {
+    justify-content: center;
+  }
+
+  .geco-yape-actions {
+    justify-content: center;
+  }
 }

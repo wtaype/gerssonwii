@@ -21,7 +21,7 @@ const {
 ---
 
 <!DOCTYPE html>
-<html lang="es" data-theme="luz">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
@@ -31,7 +31,7 @@ const {
   <meta name="theme-color" content="#fcfbf7" />
 
   <!-- Script Anti-FOUC de Cero Latencia (Ejecución Síncrona Inmediata) -->
-  <script is:inline>
+  <script is:inline data-astro-rerun>
     (function () {
       try {
         var guardado = localStorage.getItem('wiTema');
@@ -44,6 +44,24 @@ const {
       } catch (e) {}
     })();
   </script>
+
+  <!-- Open Graph & WhatsApp Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CumpleWii • Gersson Collantes" />
+  <meta property="og:title" content={titulo} />
+  <meta property="og:description" content={descripcion} />
+  <meta property="og:image" content="https://gerssonwii.web.app/avatar-oficial.jpg" />
+  <meta property="og:url" content="https://gerssonwii.web.app" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={titulo} />
+  <meta name="twitter:description" content={descripcion} />
+  <meta name="twitter:image" content="https://gerssonwii.web.app/avatar-oficial.jpg" />
+
+  <!-- Optimización de Carga Crítica (Preload Eager) -->
+  <link rel="preload" href="/google/fonts.min.css" as="style" />
+  <link rel="preload" href="/avatar-oficial.jpg" as="image" type="image/jpeg" />
 
   <!-- Fuentes Locales 0ms Latencia & FontAwesome -->
   <link rel="stylesheet" href="/google/fonts.min.css" />
@@ -75,6 +93,43 @@ const {
 
   <!-- 4. Lienzo Global de Confeti -->
   <Confetti />
+
+  <!-- Gestor Global y Reactivo de Tema (Delegación de Eventos 0ms) -->
+  <script>
+    import { alternarTema, obtenerTema } from '@widev/tema.js';
+
+    function sincronizarUI() {
+      const t = document.documentElement.dataset.theme || obtenerTema();
+      const esNoche = t === 'noche';
+
+      // Header
+      const txtH = document.getElementById('textoTemaHeader');
+      const icoH = document.getElementById('iconoTemaHeader');
+      if (txtH) txtH.textContent = esNoche ? 'Noche' : 'Luz';
+      if (icoH) icoH.className = esNoche ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+
+      // Sidebar
+      const txtS = document.getElementById('textoTemaSidebar');
+      const icoS = document.getElementById('iconoTemaSidebar');
+      if (txtS) txtS.textContent = esNoche ? 'Tema Noche' : 'Tema Luz';
+      if (icoS) icoS.className = esNoche ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    }
+
+    if (typeof window !== 'undefined' && !(window as any).__gecoTemaDelegated) {
+      (window as any).__gecoTemaDelegated = true;
+      document.addEventListener('click', (e: any) => {
+        const btn = e.target.closest('#btnTemaHeader, #btnTemaSidebar');
+        if (btn) {
+          e.preventDefault();
+          alternarTema();
+          sincronizarUI();
+        }
+      });
+      window.addEventListener('witema-changed', sincronizarUI);
+    }
+
+    document.addEventListener('astro:page-load', sincronizarUI);
+  </script>
 </body>
 </html>
 

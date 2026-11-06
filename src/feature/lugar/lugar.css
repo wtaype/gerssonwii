@@ -1,0 +1,653 @@
+/* src/feature/lugar/lugar.css */
+/* 📍 Estilos de Alta Fidelidad para Feature Lugar & Gala */
+/* 100% Tokens WiTema - Cero CSS Inline - Totalmente Responsivo */
+
+.geco-lugar-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  animation: fadeInLugar 0.4s ease;
+}
+
+@keyframes fadeInLugar {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 1. TARJETA CABECERA DE GALA */
+.geco-lugar-header-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 24px 20px;
+  box-shadow: var(--sh_card);
+  position: relative;
+  overflow: hidden;
+}
+
+.geco-lugar-header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--mco), transparent);
+}
+
+.geco-lugar-badge-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mco);
+  background: var(--gold-vip-bg);
+  border: 1px solid var(--gold-vip-border);
+  padding: 4px 12px;
+  border-radius: var(--r_pill);
+  margin-bottom: 12px;
+}
+
+.geco-lugar-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--tx1);
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.geco-lugar-sub {
+  font-size: 0.92rem;
+  color: var(--tx2);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* 2. CUENTA REGRESIVA DINÁMICA */
+.geco-countdown-wrap {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--glass-raised);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r_card);
+}
+
+.geco-countdown-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mco);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.geco-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  text-align: center;
+}
+
+.geco-countdown-box {
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_pill);
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--tr_f);
+}
+
+.geco-countdown-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--mco);
+}
+
+.geco-countdown-num {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--mco);
+  line-height: 1;
+}
+
+.geco-countdown-lbl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-top: 4px;
+}
+
+/* 3. CONTENEDOR DEL MAPA INTERACTIVO */
+.geco-map-interactive-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 20px;
+  box-shadow: var(--sh_card);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.geco-map-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.geco-map-heading-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.geco-map-heading-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r_pill);
+  background: var(--gold-vip-bg);
+  border: 1px solid var(--gold-vip-border);
+  color: var(--mco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.geco-map-heading-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--tx1);
+  margin: 0;
+}
+
+.geco-map-heading-desc {
+  font-size: 0.8rem;
+  color: var(--tx3);
+  margin: 2px 0 0;
+}
+
+.geco-map-frame-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: var(--r_card);
+  overflow: hidden;
+  border: 1px solid var(--border-card);
+  background: var(--bg2);
+}
+
+.geco-map-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* BOTONES DE NAVEGACIÓN Y APPS */
+.geco-route-actions-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.geco-route-actions-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--tx2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.geco-route-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.geco-btn-route {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--r_pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--tr_f);
+}
+
+.geco-btn-route-maps {
+  background: var(--glass-raised);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+.geco-btn-route-maps:hover {
+  background: rgba(59, 130, 246, 0.12);
+  transform: translateY(-2px);
+}
+
+.geco-btn-route-waze {
+  background: var(--glass-raised);
+  color: #06b6d4;
+  border-color: rgba(6, 182, 212, 0.25);
+}
+.geco-btn-route-waze:hover {
+  background: rgba(6, 182, 212, 0.12);
+  transform: translateY(-2px);
+}
+
+.geco-btn-route-uber {
+  background: var(--glass-raised);
+  color: var(--tx1);
+  border-color: var(--border-card);
+}
+.geco-btn-route-uber:hover {
+  background: var(--glass-card);
+  border-color: var(--mco);
+  transform: translateY(-2px);
+}
+
+.geco-btn-route-wa {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.geco-btn-route-wa:hover {
+  background: rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+}
+
+.geco-btn-copy-address {
+  background: var(--gold-vip-bg);
+  color: var(--mco);
+  border: 1px solid var(--gold-vip-border);
+}
+.geco-btn-copy-address:hover {
+  background: var(--mco);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* 4. TARJETAS DE PROTOCOLO Y RECOMENDACIONES */
+.geco-protocol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.geco-protocol-card {
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: border-color var(--tr_f), transform var(--tr_f);
+}
+
+.geco-protocol-card:hover {
+  border-color: var(--mco);
+  transform: translateY(-2px);
+}
+
+.geco-protocol-icon-circle {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: var(--r_pill);
+  background: var(--glass-raised);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: var(--mco);
+}
+
+.geco-protocol-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tx3);
+  margin-bottom: 2px;
+}
+
+.geco-protocol-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--tx1);
+  margin-bottom: 4px;
+}
+
+.geco-protocol-desc {
+  font-size: 0.82rem;
+  color: var(--tx2);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* 5. AVISO DE SEGURIDAD */
+.geco-security-banner {
+  background: var(--gold-vip-bg);
+  border: 1px solid var(--gold-vip-border);
+  border-radius: var(--r_card);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--tx1);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.geco-security-banner i {
+  color: var(--mco);
+  font-size: 1.3rem;
+}
+
+/* 6. ENCUESTA FESTIVA DE ASISTENCIA (/encuestas/asistencia) */
+.geco-asistencia-survey-card {
+  background: var(--glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 24px 20px;
+  box-shadow: var(--sh_card);
+}
+
+.geco-asistencia-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  padding: 4px 12px;
+  border-radius: var(--r_pill);
+}
+
+.geco-asistencia-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--tx1);
+  margin: 0 0 6px;
+}
+
+.geco-asistencia-sub {
+  font-size: 0.88rem;
+  color: var(--tx2);
+  margin: 0 0 18px;
+}
+
+.geco-survey-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.geco-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 3px 10px;
+  border-radius: var(--r_pill);
+}
+
+.geco-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: pulseLiveDot 1.8s infinite;
+}
+
+@keyframes pulseLiveDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.geco-survey-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.geco-survey-btn {
+  position: relative;
+  background: var(--glass-raised);
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: all var(--tr_f);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.geco-survey-btn:hover {
+  border-color: var(--mco);
+  background: var(--glass-card-hover);
+  transform: translateY(-1px);
+}
+
+.geco-survey-btn.voted {
+  border-color: var(--mco);
+  background: var(--gold-vip-bg);
+  box-shadow: 0 0 12px var(--gold-vip-border);
+}
+
+.geco-survey-progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(217, 119, 6, 0.12), rgba(245, 158, 11, 0.25));
+  border-radius: var(--r_card);
+  transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.geco-survey-btn.voted .geco-survey-progress {
+  background: linear-gradient(90deg, rgba(217, 119, 6, 0.25), rgba(245, 158, 11, 0.45));
+}
+
+.geco-survey-btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.geco-survey-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.geco-survey-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r_m);
+  background: var(--glass-card);
+  border: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.geco-survey-text-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--tx1);
+  line-height: 1.2;
+}
+
+.geco-survey-text-desc {
+  font-size: 0.76rem;
+  color: var(--tx3);
+  margin-top: 2px;
+}
+
+.geco-survey-pct {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--mco);
+  min-width: 44px;
+  text-align: right;
+}
+
+.geco-survey-feedback-banner {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--r_card);
+  background: var(--gold-vip-bg);
+  border: 1px solid var(--gold-vip-border);
+  color: var(--tx1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: fadeInLugar 0.3s ease;
+}
+
+.geco-survey-feedback-banner.show {
+  display: flex;
+}
+
+.geco-survey-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.geco-survey-total-label {
+  font-size: 0.82rem;
+  color: var(--tx3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.geco-survey-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.geco-survey-btn-refresh,
+.geco-survey-btn-reset {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--r_pill);
+  border: 1px solid var(--border-card);
+  background: var(--glass-card);
+  color: var(--tx2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--tr_f);
+}
+
+.geco-survey-btn-refresh:hover,
+.geco-survey-btn-reset:hover {
+  color: var(--tx1);
+  border-color: var(--mco);
+  background: var(--glass-card-hover);
+}
+
+.geco-survey-btn-reset {
+  display: none;
+}
+
+.geco-survey-btn-reset.visible {
+  display: inline-flex;
+}
+
+.geco-survey-btn-refresh.cargando i {
+  animation: spinLugar 0.8s linear infinite;
+}
+
+@keyframes spinLugar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .geco-lugar-header-card {
+    padding: 20px 16px;
+  }
+
+  .geco-lugar-title {
+    font-size: 1.35rem;
+  }
+
+  .geco-map-frame-container {
+    height: 300px;
+  }
+
+  .geco-route-buttons-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .geco-protocol-grid {
+    grid-template-columns: 1fr;
+  }
+}

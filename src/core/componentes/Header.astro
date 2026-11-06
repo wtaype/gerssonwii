@@ -26,31 +26,3 @@ const avatarAlt = cumple.persona.nombreCorto;
     </a>
   </div>
 </header>
-
-<script>
-  import { alternarTema, obtenerTemaPreferido } from '@widev/tema.js';
-
-  function sincronizarHeaderTema() {
-    const temaActual = document.documentElement.dataset.theme || obtenerTemaPreferido();
-    const icono = document.getElementById('iconoTemaHeader');
-    const texto = document.getElementById('textoTemaHeader');
-    if (icono && texto) {
-      if (temaActual === 'noche') {
-        icono.className = 'fa-solid fa-moon';
-        texto.textContent = 'Noche';
-      } else {
-        icono.className = 'fa-solid fa-sun';
-        texto.textContent = 'Luz';
-      }
-    }
-  }
-
-  sincronizarHeaderTema();
-  window.addEventListener('witema-changed', sincronizarHeaderTema);
-  document.addEventListener('astro:page-load', sincronizarHeaderTema);
-
-  document.getElementById('btnTemaHeader')?.addEventListener('click', () => {
-    alternarTema();
-    sincronizarHeaderTema();
-  });
-</script>

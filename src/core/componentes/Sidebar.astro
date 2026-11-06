@@ -42,7 +42,7 @@ const evento = cumple.evento;
     {itemsNav.map((item) => {
       const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
       return (
-        <a href={item.href} class:list={['geco-nav-item', { active: isActive }]} data-tab={item.id}>
+        <a href={item.href} class:list={['geco-nav-item', { active: isActive }]} data-tab={item.id} data-astro-prefetch="hover">
           <i class:list={['fa-solid', item.icono]}></i>
           <span>{item.label}</span>
           {item.badge && <span class="geco-nav-badge">{item.badge}</span>}
@@ -64,31 +64,3 @@ const evento = cumple.evento;
     </button>
   </div>
 </aside>
-
-<script>
-  import { alternarTema, obtenerTemaPreferido } from '@widev/tema.js';
-
-  function sincronizarSidebarTema() {
-    const temaActual = document.documentElement.dataset.theme || obtenerTemaPreferido();
-    const icono = document.getElementById('iconoTemaSidebar');
-    const texto = document.getElementById('textoTemaSidebar');
-    if (icono && texto) {
-      if (temaActual === 'noche') {
-        icono.className = 'fa-solid fa-moon';
-        texto.textContent = 'Tema Noche';
-      } else {
-        icono.className = 'fa-solid fa-sun';
-        texto.textContent = 'Tema Luz';
-      }
-    }
-  }
-
-  sincronizarSidebarTema();
-  window.addEventListener('witema-changed', sincronizarSidebarTema);
-  document.addEventListener('astro:page-load', sincronizarSidebarTema);
-
-  document.getElementById('btnTemaSidebar')?.addEventListener('click', () => {
-    alternarTema();
-    sincronizarSidebarTema();
-  });
-</script>

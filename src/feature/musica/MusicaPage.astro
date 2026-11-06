@@ -1,269 +1,534 @@
 ---
 // src/feature/musica/MusicaPage.astro
-// 🎵 Módulo Oficial de Música & Concentración Offline para Clayda · BecaWii 2026
-// - Póster cinematográfico con metadatos integrados sobre la imagen
-// - Scrubber de tiempo cómodo, alto y táctil con Pointer Events y seeking en vivo
-// - Barra horizontal en una sola línea (Todos, Favoritos, Buscador)
-// - Lista de canciones en contenedor unificado de var(--surface) con dividers sutiles
-// - 100% tokens de witema.css y unidades vh/vw
-
-import playlistData from '../../semillas/playlist.json' with { type: 'json' };
+// 🎵 Módulo de Música & Celebración VIP • CumpleWii (Gersson Collantes 2026)
+// 100% Cero CSS Inline · 0ms Latencia SPA · 25 Canciones Curadas · Persistencia de Audio
+import playlist from '@semillas/musica.json';
+import { OPCIONES_MUSICA_ENCUESTA } from './data/cacheMusicaEncuesta.js';
 import './musica.css';
 
-const playlistJson = JSON.stringify(playlistData);
-const totalCanciones = playlistData.length;
+const totalCanciones = playlist.length;
+const totalCumple = playlist.filter(t => t.categoria === 'cumpleanos').length;
+const totalAdoracion = playlist.filter(t => t.categoria === 'adoracion').length;
+const totalAcustico = playlist.filter(t => t.categoria === 'acustico' || t.categoria === 'piano').length;
+const totalLofi = playlist.filter(t => t.categoria === 'lofi').length;
+
+// Serializar para consumo rápido e inmutable en el cliente
+const playlistJson = JSON.stringify(playlist);
 ---
 
-<div class="musica-container appwii" id="musicaRoot">
+<div class="geco-music-container" id="gecoMusicRoot">
 
   <!-- ========================================================
-       1. REPRODUCTOR MAESTRO (POSTER CINEMÁTICO + CONTROLES)
+       1. REPRODUCTOR MAESTRO (HERO PLAYER VIP)
        ======================================================== -->
-  <section class="musica-player-card" aria-label="Reproductor principal de música">
+  <section class="geco-music-player" aria-label="Reproductor principal de música">
     
-    <!-- Póster Panorámico con Título Superpuesto -->
-    <div class="musica-poster-box">
-      <img 
-        src="/diosesamor.png" 
-        alt="Arte de portada - Santuario de Paz" 
-        class="musica-poster-img"
-        id="musicaPosterImg"
+    <!-- Póster Cinematográfico con Arte y Ecualizador -->
+    <div class="geco-music-poster">
+      <img
+        src="/avatar-oficial.jpg"
+        alt="Gersson Collantes - Celebración de Cumpleaños"
+        class="geco-music-poster-img"
+        id="gecoPosterImg"
+        loading="eager"
       />
-      <div class="musica-poster-gradient"></div>
+      <div class="geco-music-poster-overlay"></div>
 
-      <!-- Cabecera de estado superior -->
-      <div class="musica-poster-head">
-        <div class="musica-status-pill" id="musicaStatusPill">
-          <span class="musica-pulse-dot" id="musicaPulseDot"></span>
-          <span id="musicaStatusText">REPRODUCIENDO AHORA</span>
+      <!-- Cabecera de Estado y Ecualizador de 4 Barras -->
+      <div class="geco-poster-top">
+        <div class="geco-status-pill" id="gecoStatusPill">
+          <span class="geco-pulse-dot" id="gecoPulseDot"></span>
+          <span id="gecoStatusText">LISTO PARA ESCUCHAR</span>
         </div>
-        <!-- Ecualizador miniatura en póster -->
-        <div class="musica-header-eq" id="musicaHeaderEq">
+        <div class="geco-eq-bars" id="gecoEqBars" title="Ecualizador estéreo">
           <span></span><span></span><span></span><span></span>
         </div>
       </div>
 
-      <!-- Metadatos de la canción sobre el póster -->
-      <div class="musica-poster-info">
-        <h1 class="musica-track-title" id="musicaTrackTitle">Océanos (Donde mis pies pueden fallar)</h1>
-        <p class="musica-track-artist" id="musicaTrackArtist">Evan Craft &amp; Carley Redpath • Hillsong</p>
+      <!-- Metadatos de la Pista Superpuestos -->
+      <div class="geco-poster-meta">
+        <h1 class="geco-track-title" id="gecoTrackTitle">{playlist[0]?.titulo || 'Cumpleaños Cristiano'}</h1>
+        <p class="geco-track-artist" id="gecoTrackArtist">
+          <span id="gecoArtistName">{playlist[0]?.artista || 'Alabanza & Jubileo Especial'}</span>
+          <span>•</span>
+          <span id="gecoCategoryBadge">Celebración 🎂</span>
+        </p>
       </div>
     </div>
 
-    <!-- Barra de Progreso Cómoda, Táctil y Alta (Scrubber) -->
-    <div class="musica-scrubber-section">
-      <div 
-        class="musica-scrubber-hitbox" 
-        id="musicaScrubberBar" 
-        role="slider" 
+    <!-- Scrubber Ergonómico Táctil & Puntero -->
+    <div class="geco-scrubber-box">
+      <div
+        class="geco-scrubber-track-area"
+        id="gecoScrubberTrackArea"
+        role="slider"
         tabindex="0"
-        aria-label="Barra de progreso de canción"
-        aria-valuemin="0" 
-        aria-valuemax="100" 
+        aria-label="Barra de avance de audio"
+        aria-valuemin="0"
+        aria-valuemax="100"
         aria-valuenow="0"
       >
-        <div class="musica-scrubber-track">
-          <div class="musica-scrubber-fill" id="musicaScrubberFill"></div>
-          <div class="musica-scrubber-thumb" id="musicaScrubberThumb"></div>
+        <div class="geco-scrubber-rail">
+          <div class="geco-scrubber-fill" id="gecoScrubberFill"></div>
+          <div class="geco-scrubber-thumb" id="gecoScrubberThumb"></div>
         </div>
       </div>
-      <div class="musica-time-row">
-        <span class="musica-time-text" id="musicaCurrentTime">00:00</span>
-        <span class="musica-time-text" id="musicaTotalDuration">07:08</span>
+      <div class="geco-time-row">
+        <span id="gecoCurrentTime">00:00</span>
+        <span id="gecoTotalDuration">{playlist[0]?.duracion || '02:20'}</span>
       </div>
     </div>
 
-    <!-- Muelle de Controles Unificado (Like al costado de Loop) -->
-    <div class="musica-controls-dock">
+    <!-- Muelle de Controles Central -->
+    <div class="geco-controls-dock">
       <!-- Aleatorio -->
-      <button type="button" class="musica-btn-round" id="musicaBtnShuffle" title="Modo aleatorio" aria-label="Modo aleatorio">
+      <button type="button" class="geco-ctrl-btn" id="gecoBtnShuffle" title="Modo aleatorio" aria-label="Modo aleatorio">
         <i class="fa-solid fa-shuffle"></i>
       </button>
 
-      <!-- Canción Anterior -->
-      <button type="button" class="musica-btn-round" id="musicaBtnPrev" title="Canción anterior" aria-label="Canción anterior">
+      <!-- Pista Anterior -->
+      <button type="button" class="geco-ctrl-btn" id="gecoBtnPrev" title="Canción anterior" aria-label="Canción anterior">
         <i class="fa-solid fa-backward-step"></i>
       </button>
 
-      <!-- Hero Play / Pausa -->
-      <button type="button" class="musica-hero-play" id="musicaBtnPlay" title="Reproducir / Pausar" aria-label="Reproducir o pausar">
-        <i class="fa-solid fa-play" id="musicaPlayIcon"></i>
+      <!-- Play / Pause Hero Principal con Aura Dorada -->
+      <button type="button" class="geco-hero-play-btn" id="gecoBtnPlay" title="Reproducir / Pausar" aria-label="Reproducir o pausar">
+        <i class="fa-solid fa-play" id="gecoPlayIcon"></i>
       </button>
 
-      <!-- Siguiente Canción -->
-      <button type="button" class="musica-btn-round" id="musicaBtnNext" title="Siguiente canción" aria-label="Siguiente canción">
+      <!-- Siguiente Pista -->
+      <button type="button" class="geco-ctrl-btn" id="gecoBtnNext" title="Siguiente canción" aria-label="Siguiente canción">
         <i class="fa-solid fa-forward-step"></i>
       </button>
 
-      <!-- Repetir (Loop) -->
-      <button type="button" class="musica-btn-round" id="musicaBtnRepeat" title="Repetir canción" aria-label="Repetir canción">
+      <!-- Repetir Modo con Badge (Loop Automático Activo por Defecto) -->
+      <button type="button" class="geco-ctrl-btn active" id="gecoBtnRepeat" title="Loop automático activado (Lista continua) 🔁" aria-label="Loop automático continuo">
         <i class="fa-solid fa-repeat"></i>
-        <span class="musica-repeat-badge" id="musicaRepeatBadge">1</span>
+        <span class="geco-repeat-badge" id="gecoRepeatBadge">1</span>
       </button>
 
-      <!-- Botón de Like directo al lado de Loop -->
-      <button type="button" class="musica-btn-round musica-btn-like" id="musicaBtnHeart" title="Me gusta / Favorita" aria-label="Marcar como favorita">
-        <i class="fa-regular fa-heart" id="musicaHeartIcon"></i>
+      <!-- Favorita (Heart) -->
+      <button type="button" class="geco-ctrl-btn geco-btn-heart" id="gecoBtnHeart" title="Guardar en favoritas" aria-label="Guardar en favoritas">
+        <i class="fa-regular fa-heart" id="gecoHeartIcon"></i>
       </button>
     </div>
 
-    <!-- Control de Volumen Compacto -->
-    <div class="musica-volume-row">
-      <button type="button" class="musica-mute-btn" id="musicaBtnMute" aria-label="Silenciar">
-        <i class="fa-solid fa-volume-high" id="musicaVolIcon"></i>
+    <!-- Control de Volumen Ergonómico -->
+    <div class="geco-volume-bar">
+      <button type="button" class="geco-vol-icon-btn" id="gecoBtnMute" aria-label="Silenciar o reactivar sonido">
+        <i class="fa-solid fa-volume-high" id="gecoVolIcon"></i>
       </button>
-      <input 
-        type="range" 
-        class="musica-volume-slider" 
-        id="musicaVolSlider" 
-        min="0" 
-        max="100" 
-        value="85" 
-        aria-label="Volumen de audio"
+      <input
+        type="range"
+        class="geco-vol-slider"
+        id="gecoVolSlider"
+        min="0"
+        max="100"
+        value="85"
+        aria-label="Ajustar volumen"
       />
-      <span class="musica-volume-text" id="musicaVolText">85%</span>
+      <span class="geco-vol-pct" id="gecoVolPct">85%</span>
     </div>
 
   </section>
 
   <!-- ========================================================
-       2. BARRA DE HERRAMIENTAS EN UNA SOLA LÍNEA (TODOS, FAVORITOS, BUSCADOR)
+       2. BARRA DE FILTROS & BUSCADOR EN TIEMPO REAL
        ======================================================== -->
-  <section class="musica-single-toolbar" aria-label="Filtros y Búsqueda">
-    <!-- Botón Todos -->
-    <button type="button" class="musica-nav-pill active" id="musicaTabTodas" title="Ver todas las canciones">
-      <i class="fa-solid fa-music"></i>
-      <span class="musica-pill-text">Todos</span>
-      <span class="musica-pill-badge" id="musicaCountTodas">{totalCanciones}</span>
-    </button>
+  <section class="geco-filter-toolbar" aria-label="Filtros de pistas">
+    <!-- Chips Horizontales Deslizables -->
+    <div class="geco-filter-chips" role="tablist">
+      <button type="button" class="geco-chip-btn active" data-category="todas" role="tab" aria-selected="true">
+        <i class="fa-solid fa-music"></i>
+        <span>Todas</span>
+        <span class="geco-chip-count">{totalCanciones}</span>
+      </button>
+      <button type="button" class="geco-chip-btn" data-category="cumpleanos" role="tab" aria-selected="false">
+        <i class="fa-solid fa-cake-candles"></i>
+        <span>Cumpleaños 🎂</span>
+        <span class="geco-chip-count">{totalCumple}</span>
+      </button>
+      <button type="button" class="geco-chip-btn" data-category="adoracion" role="tab" aria-selected="false">
+        <i class="fa-solid fa-hands-praying"></i>
+        <span>Adoración 🙏</span>
+        <span class="geco-chip-count">{totalAdoracion}</span>
+      </button>
+      <button type="button" class="geco-chip-btn" data-category="acustico" role="tab" aria-selected="false">
+        <i class="fa-solid fa-guitar"></i>
+        <span>Acústico & Piano 🎹</span>
+        <span class="geco-chip-count">{totalAcustico}</span>
+      </button>
+      <button type="button" class="geco-chip-btn" data-category="lofi" role="tab" aria-selected="false">
+        <i class="fa-solid fa-headphones"></i>
+        <span>Lofi Beats 🎧</span>
+        <span class="geco-chip-count">{totalLofi}</span>
+      </button>
+      <button type="button" class="geco-chip-btn" data-category="favoritas" role="tab" aria-selected="false">
+        <i class="fa-solid fa-heart"></i>
+        <span>Favoritas ❤️</span>
+        <span class="geco-chip-count" id="gecoFavsChipCount">0</span>
+      </button>
+    </div>
 
-    <!-- Botón Favoritos separado y nativo -->
-    <button type="button" class="musica-nav-pill" id="musicaTabFavoritas" title="Ver canciones favoritas">
-      <i class="fa-solid fa-heart"></i>
-      <span class="musica-pill-text">Favoritos</span>
-      <span class="musica-pill-badge" id="musicaCountFavs">0</span>
-    </button>
-
-    <!-- Buscador integrado ocupando el resto de la misma línea -->
-    <div class="musica-inline-search">
-      <i class="fa-solid fa-magnifying-glass musica-inline-search-icon"></i>
-      <input 
-        type="text" 
-        id="musicaSearchInput" 
-        class="musica-inline-search-input" 
-        placeholder="Buscar..." 
+    <!-- Buscador en Vivo -->
+    <div class="geco-search-bar">
+      <i class="fa-solid fa-magnifying-glass geco-search-icon"></i>
+      <input
+        type="search"
+        id="gecoSearchInput"
+        class="geco-search-input"
+        placeholder="Buscar por canción, artista o género..."
         autocomplete="off"
-        aria-label="Buscar canción por título o artista"
+        aria-label="Buscar canciones"
       />
-      <button type="button" class="musica-inline-clear-btn" id="musicaSearchClear" aria-label="Limpiar búsqueda">
+      <button type="button" class="geco-search-clear" id="gecoSearchClear" aria-label="Limpiar búsqueda">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
   </section>
 
   <!-- ========================================================
-       3. LISTA DE CANCIONES (EN CONTENEDOR UNIFICADO)
+       3. LISTA DE CANCIONES (25 PISTAS VIP UNIFICADAS)
        ======================================================== -->
-  <section class="musica-playlist-wrapper" aria-label="Lista de canciones">
-    <div class="musica-tracks-box" id="musicaTracksContainer">
-      {playlistData.map((track, i) => {
-        const idxStr = String(i + 1).padStart(2, '0');
-        const trackId = track.id || `track-${i + 1}`;
-        const trackTitle = track.titulo || `Pista ${i + 1}`;
-        const trackArtist = track.artista || 'BecaWii 2026';
-        const trackDur = track.duracion || '--:--';
-        const trackPeso = track.peso || '';
-        return (
-          <div 
-            class={`musica-song-card ${i === 0 ? 'playing' : ''}`} 
-            data-id={trackId} 
-            data-title={trackTitle.toLowerCase()} 
-            data-artist={trackArtist.toLowerCase()}
-            data-index={i}
-            data-duration={trackDur}
-            tabindex="0"
-            role="button"
-            aria-label={`Reproducir ${trackTitle} de ${trackArtist}`}
-          >
-            <!-- Indicador numérico o ecualizador saltarín -->
-            <div class="musica-song-idx-box">
-              <span class="musica-song-num">{idxStr}</span>
-              <div class="musica-song-eq">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
+  <section class="geco-tracklist-box" id="gecoTracksContainer" aria-label="Lista de canciones">
+    {playlist.map((track, i) => {
+      const idxStr = String(i + 1).padStart(2, '0');
+      const isBirthday = track.categoria === 'cumpleanos';
+      const tagLabel = isBirthday
+        ? 'Cumpleaños'
+        : track.categoria === 'adoracion'
+        ? 'Adoración'
+        : track.categoria === 'alegria'
+        ? 'Alegría'
+        : track.categoria === 'lofi'
+        ? 'Lofi Chill'
+        : 'Acústico';
 
-            <!-- Título y datos de la pista -->
-            <div class="musica-song-details">
-              <span class="musica-song-title">{trackTitle}</span>
-              <div class="musica-song-meta-row">
-                <span class="musica-song-artist">{trackArtist}</span>
-                {trackDur && trackDur !== '--:--' && (
-                  <>
-                    <span class="musica-meta-dot">•</span>
-                    <span class="musica-meta-val">{trackDur}</span>
-                  </>
-                )}
-                {trackPeso && (
-                  <>
-                    <span class="musica-meta-dot">•</span>
-                    <span class="musica-meta-val">{trackPeso}</span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <!-- Acciones: Like y Play -->
-            <div class="musica-song-actions">
-              <button 
-                type="button" 
-                class="musica-song-btn-like" 
-                data-action="like" 
-                data-id={trackId} 
-                title="Marcar favorita"
-                aria-label={`Marcar favorita ${trackTitle}`}
-              >
-                <i class="fa-regular fa-heart"></i>
-              </button>
-              <button 
-                type="button" 
-                class="musica-song-btn-play" 
-                data-action="play" 
-                data-id={trackId} 
-                title="Reproducir"
-                aria-label={`Reproducir ${trackTitle}`}
-              >
-                <i class="fa-solid fa-play"></i>
-              </button>
+      return (
+        <div
+          class="geco-track-row"
+          data-id={String(track.id)}
+          data-index={i}
+          data-title={track.titulo.toLowerCase()}
+          data-artist={track.artista.toLowerCase()}
+          data-category={track.categoria}
+          tabindex="0"
+          role="button"
+          aria-label={`Reproducir ${track.titulo} de ${track.artista}`}
+        >
+          <!-- Índice Numérico o Ecualizador 3-Barras -->
+          <div class="geco-row-idx-box">
+            <span class="geco-row-num">{idxStr}</span>
+            <div class="geco-row-eq">
+              <span></span><span></span><span></span>
             </div>
           </div>
-        );
-      })}
-    </div>
 
-    <!-- Estado vacío si la búsqueda no encuentra canciones -->
-    <div class="musica-empty-state" id="musicaEmptyState" style="display: none;">
+          <!-- Información de la Canción -->
+          <div class="geco-row-info">
+            <span class="geco-row-title">{track.titulo}</span>
+            <div class="geco-row-meta">
+              <span>{track.artista}</span>
+              <span class="geco-row-meta-dot">•</span>
+              <span>{track.duracion}</span>
+              <span class="geco-row-meta-dot">•</span>
+              <span class:list={['geco-row-tag', `geco-tag-${track.categoria}`]}>{tagLabel}</span>
+            </div>
+          </div>
+
+          <!-- Acciones Rápidas -->
+          <div class="geco-row-actions">
+            <button
+              type="button"
+              class="geco-row-btn geco-row-btn-like"
+              data-action="like"
+              data-id={String(track.id)}
+              title="Guardar en favoritas"
+              aria-label={`Guardar en favoritas ${track.titulo}`}
+            >
+              <i class="fa-regular fa-heart"></i>
+            </button>
+            <button
+              type="button"
+              class="geco-row-btn geco-row-btn-play"
+              data-action="play"
+              data-id={String(track.id)}
+              title="Reproducir ahora"
+              aria-label={`Reproducir ${track.titulo}`}
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+        </div>
+      );
+    })}
+
+    <!-- Estado Vacío Cuando la Búsqueda no Arroja Resultados -->
+    <div class="geco-music-empty" id="gecoMusicEmpty">
       <i class="fa-solid fa-music-slash"></i>
-      <p class="musica-empty-text">No se encontraron canciones</p>
-      <button type="button" class="musica-btn-reset-search" id="musicaBtnResetFilters">Ver todas las canciones</button>
+      <p class="geco-empty-text">No se encontraron pistas que coincidan con tu búsqueda</p>
+      <button type="button" class="geco-reset-filters-btn" id="gecoResetFiltersBtn">
+        Ver todas las 25 canciones
+      </button>
     </div>
   </section>
 
+  <!-- ENCUESTA FESTIVA MUSICAL (/encuestas/musica) -->
+  <article class="geco-musica-survey-card" id="seccionEncuestaMusica">
+    <div class="geco-survey-top-bar">
+      <span class="geco-musica-survey-badge">
+        <i class="fa-solid fa-compact-disc"></i> Encuesta Musical • Tu Ambiente Favorito
+      </span>
+      <span class="geco-live-badge" id="surveyMusicaLiveBadge" title="Sincronización en vivo con Firebase Firestore">
+        <span class="geco-live-dot"></span> En vivo
+      </span>
+    </div>
+
+    <h3 class="geco-musica-survey-title">¿Qué música prefieres para esta noche de gala? 🎶</h3>
+    <p class="geco-musica-survey-sub">Cuéntanos qué estilo de alabanza y ritmo te inspira más para celebrar junto a Gersson:</p>
+
+    <!-- 5 Opciones Divertidas -->
+    <div class="geco-survey-options" id="listaOpcionesMusica">
+      {OPCIONES_MUSICA_ENCUESTA.map((opt, idx) => (
+        <button
+          type="button"
+          class="geco-survey-btn"
+          data-index={idx}
+          data-opt-id={opt.id}
+          aria-label={`Opción ${opt.titulo}`}
+        >
+          <div class="geco-survey-progress" id={`musicaBar-${idx}`}></div>
+          <div class="geco-survey-btn-content">
+            <div class="geco-survey-left">
+              <div class="geco-survey-icon-circle" style={`color: ${opt.color};`}>
+                <i class:list={['fa-solid', opt.icono]}></i>
+              </div>
+              <div>
+                <div class="geco-survey-text-title">{opt.titulo}</div>
+                <div class="geco-survey-text-desc">{opt.descripcion}</div>
+              </div>
+            </div>
+            <div class="geco-survey-pct" id={`musicaPct-${idx}`}>0%</div>
+          </div>
+        </button>
+      ))}
+    </div>
+
+    <!-- Banner de Feedback Divertido -->
+    <div class="geco-survey-feedback-banner" id="musicaFeedbackBanner">
+      <i class="fa-solid fa-sparkles geco-heading-icon"></i>
+      <span id="musicaFeedbackText"></span>
+    </div>
+
+    <!-- Pie de Encuesta Musical -->
+    <div class="geco-survey-footer">
+      <div class="geco-survey-total-label" id="musicaTotalLabel">
+        <i class="fa-solid fa-headphones geco-heading-icon"></i>
+        <span id="musicaTotalText">Cargando respuestas...</span>
+      </div>
+
+      <div class="geco-survey-actions">
+        <!-- Botón de Actualizar con Cooldown -->
+        <button
+          type="button"
+          class="geco-survey-btn-refresh"
+          id="btnActualizarMusica"
+          title="Actualizar votos en tiempo real"
+          aria-label="Actualizar resultados de la encuesta musical"
+        >
+          <i class="fa-solid fa-arrows-rotate" id="iconRefreshMusica"></i>
+          <span>Actualizar</span>
+        </button>
+
+        <!-- Botón de Cambiar / Revertir Elección -->
+        <button
+          type="button"
+          class="geco-survey-btn-reset"
+          id="btnCambiarMusica"
+          title="Cambiar mi elección"
+          aria-label="Cambiar mi preferencia musical"
+        >
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Cambiar respuesta</span>
+        </button>
+      </div>
+    </div>
+  </article>
+
 </div>
 
-<!-- DATOS DE LA LISTA EN JSON PARA CONSUMO INICIAL -->
-<script is:inline id="musicaPlaylistJsonData" type="application/json" set:html={playlistJson}></script>
+<!-- Datos Inmutables para el Cliente -->
+<script is:inline id="gecoMusicaSeedData" type="application/json" set:html={playlistJson}></script>
 
 <script>
   import { audioManager } from './lib/audioManager.js';
+  import {
+    obtenerEstadoLocalMusicaEncuesta,
+    guardarVotoLocalMusicaEncuesta,
+    revertirVotoLocalMusicaEncuesta,
+    sincronizarDesdeFirestoreMusicaEncuesta,
+    calcularPorcentajesMusicaEncuesta,
+    FEEDBACK_MSGS_MUSICA,
+    OPCIONES_MUSICA_ENCUESTA
+  } from './data/cacheMusicaEncuesta.js';
+  import { Mensaje } from '@widev/mensajes.js';
+  import { wiSmart } from '@widev';
 
-  function initMusicaFeature() {
-    const musicaRoot = document.getElementById('musicaRoot');
-    if (!musicaRoot) return;
-    if (musicaRoot.dataset.initialized === 'true') return;
-    musicaRoot.dataset.initialized = 'true';
+  let estadoMusicaEncuesta = obtenerEstadoLocalMusicaEncuesta();
+  let desuscribirMusicaEncuesta: (() => void) | null = null;
+  let enfriamientoRefreshMusica = false;
 
-    const rawData = document.getElementById('musicaPlaylistJsonData')?.textContent;
+  function renderizarEncuestaMusica() {
+    const { votos, usuarioEleccion, total } = estadoMusicaEncuesta;
+    const porcentajes = calcularPorcentajesMusicaEncuesta(votos, total);
+
+    const totalTextEl = document.getElementById('musicaTotalText');
+    if (totalTextEl) {
+      if (total === 0) {
+        totalTextEl.innerHTML = `Total de votos: <strong>0 respuestas</strong> (¡Sé el primero en votar!)`;
+      } else {
+        totalTextEl.innerHTML = `Total de votos: <strong>${total} ${total === 1 ? 'respuesta' : 'respuestas'}</strong>`;
+      }
+    }
+
+    votos.forEach((_, idx) => {
+      const bar = document.getElementById(`musicaBar-${idx}`);
+      const pctEl = document.getElementById(`musicaPct-${idx}`);
+      const pct = porcentajes[idx] || 0;
+
+      if (bar) bar.style.width = `${pct}%`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+    });
+
+    document.querySelectorAll('#listaOpcionesMusica .geco-survey-btn').forEach((btn, idx) => {
+      btn.classList.toggle('voted', usuarioEleccion === idx);
+    });
+
+    const banner = document.getElementById('musicaFeedbackBanner');
+    const bannerText = document.getElementById('musicaFeedbackText');
+    const btnReset = document.getElementById('btnCambiarMusica');
+
+    if (usuarioEleccion !== null) {
+      if (banner && bannerText) {
+        bannerText.textContent = FEEDBACK_MSGS_MUSICA[usuarioEleccion] || '¡Gracias por votar!';
+        banner.classList.add('show');
+      }
+      if (btnReset) btnReset.classList.add('visible');
+    } else {
+      if (banner) banner.classList.remove('show');
+      if (btnReset) btnReset.classList.remove('visible');
+    }
+  }
+
+  function setupInteraccionesMusicaEncuesta() {
+    // 1. Votación en Opciones de Música
+    document.querySelectorAll('#listaOpcionesMusica .geco-survey-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-index'));
+        if (estadoMusicaEncuesta.usuarioEleccion === idx) return;
+
+        const prevIdx = estadoMusicaEncuesta.usuarioEleccion;
+        const prevOptId = prevIdx !== null ? OPCIONES_MUSICA_ENCUESTA[prevIdx]?.id : null;
+        const opt = OPCIONES_MUSICA_ENCUESTA[idx];
+        if (!opt) return;
+
+        // Actualización optimista local
+        estadoMusicaEncuesta = guardarVotoLocalMusicaEncuesta(idx);
+        renderizarEncuestaMusica();
+
+        if (typeof (window as any).lanzarConfeti === 'function') {
+          (window as any).lanzarConfeti(70);
+        }
+
+        Mensaje(FEEDBACK_MSGS_MUSICA[idx] || '¡Preferencia musical registrada!', 'success');
+
+        // Sincronización en segundo plano con Firestore
+        import('./data/dataMusicaEncuesta.js')
+          .then(({ votarMusicaRemoto }) => {
+            votarMusicaRemoto({
+              opcionId: opt.id,
+              opcionAnteriorId: prevOptId
+            });
+          })
+          .catch((err) => console.warn('[Musica Encuesta Sync] Error:', err));
+      });
+    });
+
+    // 2. Botón Cambiar / Revertir Elección de Música
+    document.getElementById('btnCambiarMusica')?.addEventListener('click', () => {
+      if (estadoMusicaEncuesta.usuarioEleccion === null) return;
+
+      const prevIdx = estadoMusicaEncuesta.usuarioEleccion;
+      const prevOptId = prevIdx !== null ? OPCIONES_MUSICA_ENCUESTA[prevIdx]?.id : null;
+
+      estadoMusicaEncuesta = revertirVotoLocalMusicaEncuesta();
+      renderizarEncuestaMusica();
+      Mensaje('Puedes elegir nuevamente tu preferencia musical.', 'info');
+
+      if (prevOptId) {
+        import('./data/dataMusicaEncuesta.js')
+          .then(({ revertirMusicaRemoto }) => {
+            revertirMusicaRemoto(prevOptId);
+          })
+          .catch((err) => console.warn('[Musica Encuesta Revert] Error:', err));
+      }
+    });
+
+    // 3. Botón Manual de Actualizar con Cooldown
+    const btnRefresh = document.getElementById('btnActualizarMusica');
+    btnRefresh?.addEventListener('click', async () => {
+      if (enfriamientoRefreshMusica) {
+        Mensaje('Resultados al día. Espera un momento para refrescar.', 'info');
+        return;
+      }
+
+      enfriamientoRefreshMusica = true;
+      btnRefresh.classList.add('cargando');
+
+      try {
+        const { consultarMusicaEncuesta } = await import('./data/dataMusicaEncuesta.js');
+        const datosRemotos = await consultarMusicaEncuesta();
+        if (datosRemotos) {
+          estadoMusicaEncuesta = sincronizarDesdeFirestoreMusicaEncuesta(datosRemotos);
+          renderizarEncuestaMusica();
+          Mensaje('Resultados musicales actualizados en vivo 🎶', 'success');
+        }
+      } catch {
+        Mensaje('Resultados sincronizados localmente.', 'info');
+      } finally {
+        setTimeout(() => btnRefresh.classList.remove('cargando'), 400);
+        setTimeout(() => { enfriamientoRefreshMusica = false; }, 3500);
+      }
+    });
+  }
+
+  function conectarTiempoRealMusicaEncuesta() {
+    wiSmart({
+      js: [
+        async () => {
+          try {
+            const { escucharMusicaEncuesta } = await import('./data/dataMusicaEncuesta.js');
+            if (desuscribirMusicaEncuesta) desuscribirMusicaEncuesta();
+
+            desuscribirMusicaEncuesta = escucharMusicaEncuesta((datosRemotos) => {
+              if (datosRemotos) {
+                estadoMusicaEncuesta = sincronizarDesdeFirestoreMusicaEncuesta(datosRemotos);
+                renderizarEncuestaMusica();
+              }
+            });
+          } catch (e) {
+            console.warn('[wiSmart Musica Encuesta] Listener no disponible:', e);
+          }
+        }
+      ]
+    });
+  }
+
+  function initMusicaPage() {
+    const root = document.getElementById('gecoMusicRoot');
+    if (!root) return;
+
+    const rawData = document.getElementById('gecoMusicaSeedData')?.textContent;
     let playlist = [];
     try {
       playlist = rawData ? JSON.parse(rawData) : [];
@@ -272,522 +537,373 @@ const totalCanciones = playlistData.length;
     }
     if (!playlist.length) return;
 
-    let filterMode = 'todas'; // 'todas' | 'favoritas'
+    // Referencias DOM Principales
+    const gecoPosterImg = document.getElementById('gecoPosterImg') as HTMLImageElement | null;
+    const gecoStatusPill = document.getElementById('gecoStatusPill');
+    const gecoStatusText = document.getElementById('gecoStatusText');
+    const gecoPulseDot = document.getElementById('gecoPulseDot');
+    const gecoEqBars = document.getElementById('gecoEqBars');
+    const gecoTrackTitle = document.getElementById('gecoTrackTitle');
+    const gecoArtistName = document.getElementById('gecoArtistName');
+    const gecoCategoryBadge = document.getElementById('gecoCategoryBadge');
+
+    const gecoScrubberTrackArea = document.getElementById('gecoScrubberTrackArea');
+    const gecoScrubberFill = document.getElementById('gecoScrubberFill');
+    const gecoScrubberThumb = document.getElementById('gecoScrubberThumb');
+    const gecoCurrentTime = document.getElementById('gecoCurrentTime');
+    const gecoTotalDuration = document.getElementById('gecoTotalDuration');
+
+    const gecoBtnShuffle = document.getElementById('gecoBtnShuffle');
+    const gecoBtnPrev = document.getElementById('gecoBtnPrev');
+    const gecoBtnPlay = document.getElementById('gecoBtnPlay');
+    const gecoPlayIcon = document.getElementById('gecoPlayIcon');
+    const gecoBtnNext = document.getElementById('gecoBtnNext');
+    const gecoBtnRepeat = document.getElementById('gecoBtnRepeat');
+    const gecoRepeatBadge = document.getElementById('gecoRepeatBadge');
+    const gecoBtnHeart = document.getElementById('gecoBtnHeart');
+    const gecoHeartIcon = document.getElementById('gecoHeartIcon');
+
+    const gecoBtnMute = document.getElementById('gecoBtnMute');
+    const gecoVolIcon = document.getElementById('gecoVolIcon');
+    const gecoVolSlider = document.getElementById('gecoVolSlider') as HTMLInputElement | null;
+    const gecoVolPct = document.getElementById('gecoVolPct');
+
+    const gecoSearchInput = document.getElementById('gecoSearchInput') as HTMLInputElement | null;
+    const gecoSearchClear = document.getElementById('gecoSearchClear');
+    const gecoTracksContainer = document.getElementById('gecoTracksContainer');
+    const gecoMusicEmpty = document.getElementById('gecoMusicEmpty');
+    const gecoResetFiltersBtn = document.getElementById('gecoResetFiltersBtn');
+    const gecoFavsChipCount = document.getElementById('gecoFavsChipCount');
+
+    const filterChips = root.querySelectorAll('.geco-chip-btn');
+    const trackRows = root.querySelectorAll('.geco-track-row');
+
+    let activeCategory = 'todas';
     let searchQuery = '';
-    let isDraggingScrubber = false;
+    let isScrubbing = false;
 
-    // Referencias DOM
-    const musicaTrackTitle = document.getElementById('musicaTrackTitle');
-    const musicaTrackArtist = document.getElementById('musicaTrackArtist');
-    const musicaStatusText = document.getElementById('musicaStatusText');
-    const musicaHeaderEq = document.getElementById('musicaHeaderEq');
-
-    const musicaScrubberBar = document.getElementById('musicaScrubberBar');
-    const musicaScrubberFill = document.getElementById('musicaScrubberFill');
-    const musicaScrubberThumb = document.getElementById('musicaScrubberThumb');
-    const musicaCurrentTime = document.getElementById('musicaCurrentTime');
-    const musicaTotalDuration = document.getElementById('musicaTotalDuration');
-
-    const musicaBtnPlay = document.getElementById('musicaBtnPlay');
-    const musicaPlayIcon = document.getElementById('musicaPlayIcon');
-    const musicaBtnPrev = document.getElementById('musicaBtnPrev');
-    const musicaBtnNext = document.getElementById('musicaBtnNext');
-    const musicaBtnShuffle = document.getElementById('musicaBtnShuffle');
-    const musicaBtnRepeat = document.getElementById('musicaBtnRepeat');
-    const musicaRepeatBadge = document.getElementById('musicaRepeatBadge');
-    const musicaBtnHeart = document.getElementById('musicaBtnHeart');
-    const musicaHeartIcon = document.getElementById('musicaHeartIcon');
-
-    const musicaBtnMute = document.getElementById('musicaBtnMute');
-    const musicaVolIcon = document.getElementById('musicaVolIcon');
-    const musicaVolSlider = document.getElementById('musicaVolSlider');
-    const musicaVolText = document.getElementById('musicaVolText');
-
-    const musicaTabTodas = document.getElementById('musicaTabTodas');
-    const musicaTabFavoritas = document.getElementById('musicaTabFavoritas');
-    const musicaCountTodas = document.getElementById('musicaCountTodas');
-    const musicaCountFavs = document.getElementById('musicaCountFavs');
-
-    const musicaSearchInput = document.getElementById('musicaSearchInput');
-    const musicaSearchClear = document.getElementById('musicaSearchClear');
-    const musicaTracksContainer = document.getElementById('musicaTracksContainer');
-    const musicaEmptyState = document.getElementById('musicaEmptyState');
-    const musicaBtnResetFilters = document.getElementById('musicaBtnResetFilters');
-
-    // Parsear mm:ss a segundos
-    function parseDurationStr(str: string | any) {
-      if (!str) return 0;
-      const parts = str.split(':').map(Number);
-      if (parts.length === 2) return (parts[0] * 60) + parts[1];
-      if (parts.length === 3) return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
-      return 0;
-    }
-
-    // Formatear segundos a mm:ss
-    function formatTime(sec: number | any) {
+    function formatTime(sec: number) {
       if (!sec || isNaN(sec) || sec < 0) return '00:00';
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
-    // Obtener duración confiable actual
-    function getDuracionActual(track: any) {
-      if (audioManager.audio && !isNaN(audioManager.audio.duration) && audioManager.audio.duration > 0) {
-        return audioManager.audio.duration;
-      }
-      const st = audioManager.getEstado();
-      if (st.duration && !isNaN(st.duration) && st.duration > 0) {
-        return st.duration;
-      }
-      if (track && track.duracion) {
-        return parseDurationStr(track.duracion);
-      }
-      return 0;
-    }
-
-    // Actualizar visualmente la barra del scrubber
-    function updateScrubberVisual(pct: number | any, curSec: number | null | any = null) {
-      const clampedPct = Math.min(100, Math.max(0, pct));
-      if (musicaScrubberFill) musicaScrubberFill.style.width = `${clampedPct}%`;
-      if (musicaScrubberThumb) musicaScrubberThumb.style.left = `${clampedPct}%`;
-      if (musicaScrubberBar) musicaScrubberBar.setAttribute('aria-valuenow', String(Math.round(clampedPct)));
-      if (curSec !== null && musicaCurrentTime) {
-        musicaCurrentTime.textContent = formatTime(curSec);
+    function renderScrubber(pct: number, curSec?: number) {
+      const clamped = Math.max(0, Math.min(100, pct));
+      if (gecoScrubberFill) gecoScrubberFill.style.width = `${clamped}%`;
+      if (gecoScrubberThumb) gecoScrubberThumb.style.left = `${clamped}%`;
+      if (gecoScrubberTrackArea) gecoScrubberTrackArea.setAttribute('aria-valuenow', String(Math.round(clamped)));
+      if (curSec !== undefined && gecoCurrentTime) {
+        gecoCurrentTime.textContent = formatTime(curSec);
       }
     }
 
-    // Detección de parámetro en URL: ?1, ?2, ?track=1, ?id=track-1
-    function obtenerIndiceDesdeUrl() {
-      const search = window.location.search;
-      if (!search) return null;
+    function syncStateUI(state: any) {
+      if (!state || !state.pista) return;
+      const { pista, isPlaying, isShuffle, repeatMode, volume, isCurrentFavorite, totalFavorites } = state;
 
-      // 1. Formato directo pedido por el usuario: ?1, ?2, ?10
-      const matchDirecto = search.match(/^\?([0-9]+)$/);
-      if (matchDirecto) {
-        const num = parseInt(matchDirecto[1], 10);
-        return num - 1; // 1-based (usuario) a 0-based (array)
+      // Metadatos de la Pista
+      if (gecoTrackTitle) gecoTrackTitle.textContent = pista.titulo;
+      if (gecoArtistName) gecoArtistName.textContent = pista.artista;
+      if (gecoTotalDuration) gecoTotalDuration.textContent = pista.duracion;
+
+      if (gecoCategoryBadge) {
+        gecoCategoryBadge.textContent = pista.categoria === 'cumpleanos'
+          ? 'Celebración 🎂'
+          : pista.categoria === 'adoracion'
+          ? 'Adoración 🙏'
+          : pista.categoria === 'alegria'
+          ? 'Alegría 🎉'
+          : pista.categoria === 'lofi'
+          ? 'Lofi Chill 🎧'
+          : 'Acústico 🎸';
       }
 
-      // 2. Parámetros estándar clave=valor (?track=1, ?id=1, ?cancion=1, ?p=1)
-      const params = new URLSearchParams(search);
-      const paramVal = params.get('track') || params.get('id') || params.get('p') || params.get('cancion') || params.get('song');
-      if (paramVal) {
-        if (/^[0-9]+$/.test(paramVal)) {
-          return parseInt(paramVal, 10) - 1;
+      // Poster dinámico (avatar de cumpleañero para canciones de cumple o Dios es Amor para alabanza)
+      if (gecoPosterImg) {
+        const targetSrc = pista.categoria === 'cumpleanos' ? '/avatar-oficial.jpg' : '/diosesamor.png';
+        if (!gecoPosterImg.src.endsWith(targetSrc)) {
+          gecoPosterImg.src = targetSrc;
         }
-        const idxPorId = playlist.findIndex((t: any) => t.id === paramVal);
-        if (idxPorId !== -1) return idxPorId;
-      }
-
-      // 3. Clave suelta sin valor (?1= o ?2)
-      for (const key of params.keys()) {
-        if (/^[0-9]+$/.test(key)) {
-          return parseInt(key, 10) - 1;
-        }
-        const idxPorId = playlist.findIndex((t: any) => t.id === key);
-        if (idxPorId !== -1) return idxPorId;
-      }
-
-      return null;
-    }
-
-    // Sincronizar URL de forma limpia y transparente sin recargar
-    function actualizarUrlConPista(index: number) {
-      if (index < 0 || index >= playlist.length) return;
-      const numPista = index + 1;
-      const targetQuery = `?${numPista}`;
-      if (window.location.search !== targetQuery) {
-        window.history.replaceState({ track: numPista }, '', `${window.location.pathname}${targetQuery}`);
-      }
-    }
-
-    // Sincronizar UI del reproductor y filas
-    function syncPlayerUI(estado?: any) {
-      if (!estado) estado = audioManager.getEstado();
-      const track = estado.pista || (audioManager.playlist ? audioManager.playlist[audioManager.currentIndex] : null);
-
-      if (track) {
-        if (musicaTrackTitle) musicaTrackTitle.textContent = track.titulo;
-        if (musicaTrackArtist) musicaTrackArtist.textContent = track.artista;
-        if (musicaTotalDuration) musicaTotalDuration.textContent = track.duracion || '--:--';
       }
 
       // Estado Play / Pausa
-      if (musicaPlayIcon) {
-        musicaPlayIcon.className = estado.isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
-      }
-      if (musicaStatusText) {
-        musicaStatusText.textContent = estado.isPlaying ? 'REPRODUCIENDO AHORA' : 'EN PAUSA';
-      }
-      if (musicaHeaderEq) {
-        musicaHeaderEq.className = estado.isPlaying ? 'musica-header-eq playing' : 'musica-header-eq';
-      }
-
-      // Shuffle & Repeat
-      if (musicaBtnShuffle) {
-        musicaBtnShuffle.classList.toggle('active', !!estado.isShuffle);
-      }
-      if (musicaBtnRepeat) {
-        musicaBtnRepeat.classList.toggle('active', estado.repeatMode !== 'off');
-        if (musicaRepeatBadge) {
-          musicaRepeatBadge.className = estado.repeatMode === 'one' ? 'musica-repeat-badge visible' : 'musica-repeat-badge';
+      if (isPlaying) {
+        if (gecoStatusText) gecoStatusText.textContent = 'REPRODUCIENDO AHORA';
+        gecoPulseDot?.classList.add('playing');
+        gecoEqBars?.classList.add('playing');
+        gecoBtnPlay?.classList.add('playing');
+        if (gecoPlayIcon) {
+          gecoPlayIcon.classList.remove('fa-play');
+          gecoPlayIcon.classList.add('fa-pause');
+        }
+      } else {
+        if (gecoStatusText) gecoStatusText.textContent = 'PAUSADO';
+        gecoPulseDot?.classList.remove('playing');
+        gecoEqBars?.classList.remove('playing');
+        gecoBtnPlay?.classList.remove('playing');
+        if (gecoPlayIcon) {
+          gecoPlayIcon.classList.remove('fa-pause');
+          gecoPlayIcon.classList.add('fa-play');
         }
       }
 
-      // Botón Like en controles
-      const isFav = track ? audioManager.esFavorito(track.id) : false;
-      if (musicaBtnHeart && musicaHeartIcon) {
-        musicaBtnHeart.classList.toggle('active', isFav);
-        musicaHeartIcon.className = isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+      // Shuffle
+      gecoBtnShuffle?.classList.toggle('active', Boolean(isShuffle));
+
+      // Repeat Mode
+      gecoBtnRepeat?.classList.toggle('active', repeatMode !== 'off');
+      if (gecoRepeatBadge) {
+        gecoRepeatBadge.classList.toggle('visible', repeatMode === 'one');
       }
 
-      // Conteos de toolbar
-      if (musicaCountFavs) {
-        musicaCountFavs.textContent = String(audioManager.favorites.size || 0);
-      }
-      if (musicaCountTodas) {
-        musicaCountTodas.textContent = String(playlist.length);
+      // Heart / Favorite
+      gecoBtnHeart?.classList.toggle('favorited', Boolean(isCurrentFavorite));
+      if (gecoHeartIcon) {
+        gecoHeartIcon.className = isCurrentFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
       }
 
-      // Progreso inicial si no estamos arrastrando
-      if (!isDraggingScrubber) {
-        const cur = audioManager.audio ? audioManager.audio.currentTime : (estado.currentTime || 0);
-        const dur = getDuracionActual(track);
-        if (dur > 0) {
-          const pct = (cur / dur) * 100;
-          updateScrubberVisual(pct, cur);
-          if (musicaTotalDuration) musicaTotalDuration.textContent = formatTime(dur);
+      // Contador de favoritas
+      if (gecoFavsChipCount) {
+        gecoFavsChipCount.textContent = String(totalFavorites || 0);
+      }
+
+      // Volumen
+      const volPct = Math.round(volume * 100);
+      if (gecoVolSlider) gecoVolSlider.value = String(volPct);
+      if (gecoVolPct) gecoVolPct.textContent = `${volPct}%`;
+      if (gecoVolIcon) {
+        gecoVolIcon.className = volPct === 0
+          ? 'fa-solid fa-volume-xmark'
+          : volPct < 50
+          ? 'fa-solid fa-volume-low'
+          : 'fa-solid fa-volume-high';
+      }
+
+      // Actualizar filas activas en el tracklist
+      trackRows.forEach((row: any) => {
+        const rowId = row.dataset.id;
+        const isCurrent = String(rowId) === String(pista.id);
+        row.classList.toggle('playing', isCurrent && isPlaying);
+
+        const playBtn = row.querySelector('.geco-row-btn-play i');
+        if (playBtn) {
+          playBtn.className = (isCurrent && isPlaying) ? 'fa-solid fa-pause' : 'fa-solid fa-play';
         }
-      }
 
-      // Sincronizar tarjetas de canciones
-      document.querySelectorAll('.musica-song-card').forEach((card: any) => {
-        const id = card.getAttribute('data-id');
-        const isCurrent = track && track.id === id;
-        card.classList.toggle('playing', isCurrent);
-
-        const playBtnIcon = card.querySelector('.musica-song-btn-play i');
-        if (playBtnIcon) {
-          playBtnIcon.className = isCurrent && estado.isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
-        }
-
-        const likeBtn = card.querySelector('.musica-song-btn-like');
-        const likeIcon = card.querySelector('.musica-song-btn-like i');
-        const itemIsFav = audioManager.esFavorito(id);
-        if (likeBtn && likeIcon) {
-          likeBtn.classList.toggle('active', itemIsFav);
-          likeIcon.className = itemIsFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+        const likeBtn = row.querySelector('.geco-row-btn-like');
+        const likeIcon = row.querySelector('.geco-row-btn-like i');
+        const isFav = audioManager.esFavorito(rowId);
+        likeBtn?.classList.toggle('favorited', isFav);
+        if (likeIcon) {
+          likeIcon.className = isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
         }
       });
     }
 
-    // Filtrar canciones en la lista
-    function filterCards() {
-      let visibleCount = 0;
-      const q = searchQuery.toLowerCase().trim();
-
-      document.querySelectorAll('.musica-song-card').forEach((card: any) => {
-        const id = card.getAttribute('data-id');
-        const title = card.getAttribute('data-title') || '';
-        const artist = card.getAttribute('data-artist') || '';
-
-        let matchesTab = true;
-        if (filterMode === 'favoritas') {
-          matchesTab = audioManager.esFavorito(id);
-        }
-
-        let matchesSearch = true;
-        if (q) {
-          matchesSearch = title.includes(q) || artist.includes(q);
-        }
-
-        if (matchesTab && matchesSearch) {
-          card.style.display = 'flex';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      if (musicaTracksContainer) {
-        musicaTracksContainer.style.display = visibleCount === 0 ? 'none' : 'flex';
+    // Suscribir al audioManager (recibe init y actualizaciones en tiempo real)
+    const desuscribir = audioManager.suscribir((evento: string, datos: any, estado: any) => {
+      if (evento === 'timeUpdate' && !isScrubbing) {
+        renderScrubber(datos.progressPct || 0, datos.currentTime);
+      } else if (evento !== 'timeUpdate') {
+        syncStateUI(estado);
       }
-      if (musicaEmptyState) {
-        musicaEmptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
-      }
-      if (musicaCountTodas) musicaCountTodas.textContent = String(playlist.length);
-      if (musicaCountFavs) musicaCountFavs.textContent = String(audioManager.favorites.size || 0);
-    }
+    });
 
-    // ========================================================
-    // CONTROL DEL SCRUBBER CON POINTER EVENTS DE ALTA PRECISIÓN
-    // ========================================================
-    function calculateSeekPosition(e: any) {
-      if (!musicaScrubberBar) return 0;
-      const rect = musicaScrubberBar.getBoundingClientRect();
+    // Control de Controles Hero
+    gecoBtnPlay?.addEventListener('click', () => audioManager.togglePlay());
+    gecoBtnPrev?.addEventListener('click', () => audioManager.anterior());
+    gecoBtnNext?.addEventListener('click', () => audioManager.siguiente());
+    gecoBtnShuffle?.addEventListener('click', () => audioManager.toggleShuffle());
+    gecoBtnRepeat?.addEventListener('click', () => audioManager.cycleRepeatMode());
+    gecoBtnHeart?.addEventListener('click', () => audioManager.toggleFavorito());
+
+    // Control de Volumen
+    gecoVolSlider?.addEventListener('input', (e: any) => {
+      audioManager.setVolume(Number(e.target.value) / 100);
+    });
+
+    gecoBtnMute?.addEventListener('click', () => {
+      const curVol = audioManager.getEstado().volume;
+      audioManager.setVolume(curVol > 0 ? 0 : 0.85);
+    });
+
+    // Scrubber Táctil / Puntero
+    function getScrubberFraction(e: PointerEvent) {
+      if (!gecoScrubberTrackArea) return 0;
+      const rect = gecoScrubberTrackArea.getBoundingClientRect();
       const clientX = e.clientX;
-      const pos = (clientX - rect.left) / rect.width;
-      return Math.max(0, Math.min(1, pos));
+      const pos = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      return pos / rect.width;
     }
 
-    if (musicaScrubberBar) {
-      musicaScrubberBar.addEventListener('pointerdown', (e: PointerEvent) => {
-        isDraggingScrubber = true;
-        try {
-          musicaScrubberBar.setPointerCapture(e.pointerId);
-        } catch (_) {}
+    if (gecoScrubberTrackArea) {
+      gecoScrubberTrackArea.addEventListener('pointerdown', (e: PointerEvent) => {
+        isScrubbing = true;
+        gecoScrubberTrackArea.classList.add('scrubbing');
+        gecoScrubberTrackArea.setPointerCapture(e.pointerId);
 
-        const pos = calculateSeekPosition(e);
-        const track = audioManager.getPistaActual();
-        const dur = getDuracionActual(track);
-        const targetSec = pos * dur;
-
-        updateScrubberVisual(pos * 100, targetSec);
+        const frac = getScrubberFraction(e);
+        const dur = audioManager.getEstado().duration || 140;
+        renderScrubber(frac * 100, frac * dur);
       });
 
-      musicaScrubberBar.addEventListener('pointermove', (e: PointerEvent) => {
-        if (!isDraggingScrubber) return;
-        const pos = calculateSeekPosition(e);
-        const track = audioManager.getPistaActual();
-        const dur = getDuracionActual(track);
-        const targetSec = pos * dur;
-
-        updateScrubberVisual(pos * 100, targetSec);
+      gecoScrubberTrackArea.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!isScrubbing) return;
+        const frac = getScrubberFraction(e);
+        const dur = audioManager.getEstado().duration || 140;
+        renderScrubber(frac * 100, frac * dur);
       });
 
-      const finishSeek = (e: any) => {
-        if (!isDraggingScrubber) return;
-        isDraggingScrubber = false;
+      const finalizarScrub = (e: PointerEvent) => {
+        if (!isScrubbing) return;
+        isScrubbing = false;
+        gecoScrubberTrackArea.classList.remove('scrubbing');
         try {
-          musicaScrubberBar.releasePointerCapture(e.pointerId);
-        } catch (_) {}
+          gecoScrubberTrackArea.releasePointerCapture(e.pointerId);
+        } catch (err) {}
 
-        const pos = calculateSeekPosition(e);
-        const track = audioManager.getPistaActual();
-        const dur = getDuracionActual(track);
-        const targetSec = pos * dur;
-
-        if (dur > 0) {
-          audioManager.seek(targetSec);
-        }
+        const frac = getScrubberFraction(e);
+        const dur = audioManager.getEstado().duration || 140;
+        audioManager.seek(frac * dur);
       };
 
-      musicaScrubberBar.addEventListener('pointerup', finishSeek);
-      musicaScrubberBar.addEventListener('pointercancel', finishSeek);
+      gecoScrubberTrackArea.addEventListener('pointerup', finalizarScrub);
+      gecoScrubberTrackArea.addEventListener('pointercancel', finalizarScrub);
     }
 
-    // ========================================================
-    // EVENTOS DE BOTONES
-    // ========================================================
+    // Filtrado de Pistas (Categorías y Buscador)
+    function aplicarFiltros() {
+      let matches = 0;
+      const query = searchQuery.trim().toLowerCase();
 
-    musicaBtnPlay?.addEventListener('click', () => audioManager.togglePlay());
-    musicaBtnNext?.addEventListener('click', () => audioManager.siguiente());
-    musicaBtnPrev?.addEventListener('click', () => audioManager.anterior());
-    musicaBtnShuffle?.addEventListener('click', () => audioManager.toggleShuffle());
-    musicaBtnRepeat?.addEventListener('click', () => audioManager.cycleRepeatMode());
+      trackRows.forEach((row: any) => {
+        const id = row.dataset.id;
+        const title = row.dataset.title;
+        const artist = row.dataset.artist;
+        const cat = row.dataset.category;
+        const isFav = audioManager.esFavorito(id);
 
-    musicaBtnHeart?.addEventListener('click', () => {
-      audioManager.toggleFavorito();
-      syncPlayerUI(audioManager.getEstado());
-      filterCards();
-    });
+        let pasaCategoria = false;
+        if (activeCategory === 'todas') {
+          pasaCategoria = true;
+        } else if (activeCategory === 'favoritas') {
+          pasaCategoria = isFav;
+        } else if (activeCategory === 'acustico') {
+          pasaCategoria = (cat === 'acustico' || cat === 'piano');
+        } else {
+          pasaCategoria = (cat === activeCategory);
+        }
 
-    // Control de volumen
-    musicaVolSlider?.addEventListener('input', (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      if (!target) return;
-      const val = Number(target.value) / 100;
-      audioManager.setVolume(val);
-      if (musicaVolText) musicaVolText.textContent = `${Math.round(val * 100)}%`;
-      if (musicaVolIcon) {
-        musicaVolIcon.className = val === 0 ? 'fa-solid fa-volume-xmark' : val < 0.5 ? 'fa-solid fa-volume-low' : 'fa-solid fa-volume-high';
+        let pasaBusqueda = true;
+        if (query) {
+          pasaBusqueda = title.includes(query) || artist.includes(query) || cat.includes(query);
+        }
+
+        const visible = pasaCategoria && pasaBusqueda;
+        row.style.display = visible ? 'flex' : 'none';
+        if (visible) matches++;
+      });
+
+      if (gecoMusicEmpty) {
+        gecoMusicEmpty.classList.toggle('visible', matches === 0);
       }
-    });
+    }
 
-    let prevVolume = 0.85;
-    musicaBtnMute?.addEventListener('click', () => {
-      if (audioManager.volume > 0) {
-        prevVolume = audioManager.volume;
-        audioManager.setVolume(0);
-        if (musicaVolSlider) (musicaVolSlider as HTMLInputElement).value = '0';
-        if (musicaVolText) musicaVolText.textContent = '0%';
-        if (musicaVolIcon) musicaVolIcon.className = 'fa-solid fa-volume-xmark';
-      } else {
-        const nextV = prevVolume || 0.85;
-        audioManager.setVolume(nextV);
-        if (musicaVolSlider) (musicaVolSlider as HTMLInputElement).value = String(Math.round(nextV * 100));
-        if (musicaVolText) musicaVolText.textContent = `${Math.round(nextV * 100)}%`;
-        if (musicaVolIcon) musicaVolIcon.className = 'fa-solid fa-volume-high';
-      }
-    });
-
-    // Filtros de Pestaña Todos / Favoritos
-    musicaTabTodas?.addEventListener('click', () => {
-      filterMode = 'todas';
-      musicaTabTodas.classList.add('active');
-      musicaTabFavoritas?.classList.remove('active');
-      filterCards();
-    });
-
-    musicaTabFavoritas?.addEventListener('click', () => {
-      filterMode = 'favoritas';
-      musicaTabFavoritas.classList.add('active');
-      musicaTabTodas?.classList.remove('active');
-      filterCards();
+    // Chips de Categoría
+    filterChips.forEach((chip: any) => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach((c: any) => {
+          c.classList.remove('active');
+          c.setAttribute('aria-selected', 'false');
+        });
+        chip.classList.add('active');
+        chip.setAttribute('aria-selected', 'true');
+        activeCategory = chip.dataset.category || 'todas';
+        aplicarFiltros();
+      });
     });
 
     // Buscador
-    musicaSearchInput?.addEventListener('input', (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      if (!target) return;
-      searchQuery = target.value;
-      if (musicaSearchClear) {
-        musicaSearchClear.classList.toggle('visible', searchQuery.length > 0);
+    gecoSearchInput?.addEventListener('input', (e: any) => {
+      searchQuery = e.target.value;
+      gecoSearchClear?.classList.toggle('visible', Boolean(searchQuery));
+      aplicarFiltros();
+    });
+
+    gecoSearchClear?.addEventListener('click', () => {
+      if (gecoSearchInput) gecoSearchInput.value = '';
+      searchQuery = '';
+      gecoSearchClear.classList.remove('visible');
+      aplicarFiltros();
+    });
+
+    gecoResetFiltersBtn?.addEventListener('click', () => {
+      if (gecoSearchInput) gecoSearchInput.value = '';
+      searchQuery = '';
+      gecoSearchClear?.classList.remove('visible');
+      activeCategory = 'todas';
+      filterChips.forEach((c: any) => {
+        c.classList.toggle('active', c.dataset.category === 'todas');
+      });
+      aplicarFiltros();
+    });
+
+    // Interacción con Filas del Tracklist
+    gecoTracksContainer?.addEventListener('click', (e: any) => {
+      const btnLike = e.target.closest('[data-action="like"]');
+      if (btnLike) {
+        e.stopPropagation();
+        const id = btnLike.dataset.id;
+        audioManager.toggleFavorito(id);
+        return;
       }
-      filterCards();
-    });
 
-    musicaSearchClear?.addEventListener('click', () => {
-      if (musicaSearchInput) (musicaSearchInput as HTMLInputElement).value = '';
-      searchQuery = '';
-      musicaSearchClear.classList.remove('visible');
-      filterCards();
-      musicaSearchInput?.focus();
-    });
-
-    musicaBtnResetFilters?.addEventListener('click', () => {
-      filterMode = 'todas';
-      searchQuery = '';
-      if (musicaSearchInput) (musicaSearchInput as HTMLInputElement).value = '';
-      musicaTabTodas?.classList.add('active');
-      musicaTabFavoritas?.classList.remove('active');
-      filterCards();
-    });
-
-    // Delegación unificada en el contenedor (¡garantiza play instantáneo al primer clic!)
-    if (musicaTracksContainer) {
-      musicaTracksContainer.addEventListener('click', (e: MouseEvent) => {
-        const target = e.target as HTMLElement;
-        if (!target) return;
-
-        // Botón de Like
-        const likeBtn = target.closest('[data-action="like"]');
-        if (likeBtn) {
-          e.stopPropagation();
-          const id = likeBtn.getAttribute('data-id');
-          audioManager.toggleFavorito(id);
-          syncPlayerUI(audioManager.getEstado());
-          filterCards();
-          return;
-        }
-
-        // Clic en la tarjeta de canción o en su botón de play
-        const card = target.closest('.musica-song-card') as HTMLElement;
-        if (!card) return;
-
-        const idx = Number(card.getAttribute('data-index'));
-        if (isNaN(idx)) return;
-
-        if (audioManager.currentIndex === idx) {
+      const row = e.target.closest('.geco-track-row');
+      if (row) {
+        const idx = Number(row.dataset.index);
+        const currentState = audioManager.getEstado();
+        if (currentState.indice === idx) {
           audioManager.togglePlay();
         } else {
           audioManager.cargarPista(idx, true);
-          actualizarUrlConPista(idx);
         }
-      });
+      }
+    });
 
-      // Accesibilidad con teclado: Enter o Espacio sobre tarjeta seleccionada
-      musicaTracksContainer.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          const target = e.target as HTMLElement;
-          if (target && target.classList.contains('musica-song-card')) {
-            e.preventDefault();
-            const idx = Number(target.getAttribute('data-index'));
-            if (!isNaN(idx)) {
-              if (audioManager.currentIndex === idx) {
-                audioManager.togglePlay();
-              } else {
-                audioManager.cargarPista(idx, true);
-                actualizarUrlConPista(idx);
-              }
-            }
-          }
-        }
-      });
-    }
-
-    // Atajos de teclado web super profesionales (Espacio = Play/Pausa, Flechas = Prev/Next, M = Mute)
-    const manejarAtajosTeclado = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
-      if (isInput) return;
-
+    // Atajos de Teclado
+    const onKeydown = (e: KeyboardEvent) => {
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
       if (e.code === 'Space') {
         e.preventDefault();
         audioManager.togglePlay();
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
-        audioManager.siguiente();
+        const cur = audioManager.getEstado().currentTime || 0;
+        audioManager.seek(cur + 5);
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        audioManager.anterior();
-      } else if (e.key === 'm' || e.key === 'M') {
-        e.preventDefault();
-        musicaBtnMute?.click();
+        const cur = audioManager.getEstado().currentTime || 0;
+        audioManager.seek(Math.max(0, cur - 5));
       }
     };
-    window.addEventListener('keydown', manejarAtajosTeclado);
+    window.addEventListener('keydown', onKeydown);
 
-    // Navegación con historial de navegador (Atrás / Adelante)
-    const manejarPopState = () => {
-      const urlIdx = obtenerIndiceDesdeUrl();
-      if (urlIdx !== null && urlIdx >= 0 && urlIdx < playlist.length && urlIdx !== audioManager.currentIndex) {
-        audioManager.cargarPista(urlIdx, true);
-      }
-    };
-    window.addEventListener('popstate', manejarPopState);
+    // Inicializar encuesta musical festiva
+    estadoMusicaEncuesta = obtenerEstadoLocalMusicaEncuesta();
+    renderizarEncuestaMusica();
+    setupInteraccionesMusicaEncuesta();
+    conectarTiempoRealMusicaEncuesta();
 
-    // Suscripción al gestor de audio global para tiempo real
-    audioManager.suscribir((evento: string, datos?: any, estado?: any) => {
-      try {
-        if (!estado) estado = audioManager.getEstado();
-        syncPlayerUI(estado);
-
-        // Al cambiar de pista, mantener la URL sincronizada (?1, ?2)
-        if (evento === 'trackChange' && datos && typeof datos.indice === 'number') {
-          actualizarUrlConPista(datos.indice);
-        }
-
-        // Notificación de tiempo de reproducción en vivo
-        if ((evento === 'timeUpdate' || evento === 'metadata') && datos && !isDraggingScrubber) {
-          const cur = datos.currentTime || 0;
-          const dur = datos.duration || getDuracionActual(estado.pista);
-          if (musicaCurrentTime) musicaCurrentTime.textContent = formatTime(cur);
-          if (musicaTotalDuration && dur > 0) musicaTotalDuration.textContent = formatTime(dur);
-
-          if (dur > 0) {
-            const pct = (cur / dur) * 100;
-            updateScrubberVisual(pct, cur);
-          }
-        }
-      } catch (err) {
-        console.warn('Error en listener de musica:', err);
-      }
-    });
-
-    // Inicialización inmediata de filtros e interfaz
-    filterCards();
-    syncPlayerUI(audioManager.getEstado());
-
-    // Cargar parámetro de URL al entrar a la página (?1, ?2, ?track=1, etc.)
-    const indiceUrl = obtenerIndiceDesdeUrl();
-    if (indiceUrl !== null && indiceUrl >= 0 && indiceUrl < playlist.length) {
-      audioManager.cargarPista(indiceUrl, true);
-      actualizarUrlConPista(indiceUrl);
-    }
+    // Limpieza al cambiar de página en Astro ClientRouter
+    document.addEventListener('astro:before-swap', () => {
+      desuscribir();
+      if (desuscribirMusicaEncuesta) desuscribirMusicaEncuesta();
+      window.removeEventListener('keydown', onKeydown);
+    }, { once: true });
   }
 
-  // En Astro con ClientRouter, escuchar astro:page-load para inicializar sin duplicaciones
-  document.addEventListener('astro:page-load', initMusicaFeature);
+  // Inicializar en carga directa o navegación SPA
+  document.addEventListener('astro:page-load', initMusicaPage);
 </script>

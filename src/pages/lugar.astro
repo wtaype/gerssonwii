@@ -1,0 +1,14 @@
+---
+// src/pages/lugar.astro
+// 📍 Ruta SPA Directa: Ubicación & Gala
+// 100% Cero CSS Inline - Enrutamiento Instantáneo con ClientRouter
+import Principal from '@core/layouts/Principal.astro';
+import LugarPage from '@feature/lugar/LugarPage.astro';
+---
+
+<Principal
+  titulo="Lugar & Ubicación • Cumpleaños Gersson Collantes"
+  descripcion="Mapa interactivo en vivo, rutas en Waze/Google Maps/Uber y detalles de llegada para la fiesta de Gersson en La Molina."
+>
+  <LugarPage />
+</Principal>

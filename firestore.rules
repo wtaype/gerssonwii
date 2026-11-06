@@ -3,16 +3,21 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Colección de Encuestas: /encuestas/conocemos
+    // Colección de Encuestas: /encuestas/conocemos y /encuestas/apoyando
     match /encuestas/{encuestaId} {
       allow read, write: if true;
     }
 
-    // Mensajes y Saludos de Cumpleaños (Fase 6)
+    // Colección Centralizada Gersson (Fase 7 / Punto 4: /gersson/gersson)
+    match /gersson/{docId} {
+      allow read, create, update: if true;
+      allow delete: if false;
+    }
+
+    // Mensajes y Saludos de Cumpleaños (Compatibilidad)
     match /mensajes/{docId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if false;
+      allow read, create, update: if true;
+      allow delete: if false;
     }
     
     // Regla de cierre por seguridad

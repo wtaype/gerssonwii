@@ -1,0 +1,684 @@
+/* src/feature/mensajes/mensajes.css */
+/* 💌 Módulo Muro de Dedicatorias & Amor en Vivo • CumpleWii 2026 */
+/* 100% Cero CSS Inline · 100% Variables WiTema · Animaciones de 60 FPS */
+
+.geco-mensajes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2vh;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding-bottom: 4vh;
+}
+
+/* ==========================================================================
+   1. HERO CARD DEL MURO DE DEDICATORIAS
+   ========================================================================== */
+.geco-wall-hero {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 2.4vh 2.6vw;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4vh;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  align-items: center;
+  transition: border-color var(--tr_m);
+}
+
+.geco-wall-hero:hover {
+  border-color: var(--border-accent);
+}
+
+.geco-wall-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6vw;
+  padding: 0.4vh 1.4vw;
+  border-radius: var(--r_full);
+  background: var(--mbg);
+  border: 1px solid var(--border-accent);
+  color: var(--mco);
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.geco-wall-title {
+  font-size: var(--fz_t1);
+  font-weight: 800;
+  color: var(--tx1);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.geco-wall-desc {
+  font-size: var(--fz_b2);
+  color: var(--tx2);
+  margin: 0;
+  max-width: 580px;
+  line-height: 1.5;
+}
+
+.geco-wall-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1vw;
+  padding-top: 0.6vh;
+}
+
+.geco-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_full);
+  padding: 0.35vh 1vw;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx2);
+}
+
+/* ==========================================================================
+   2. FORMULARIO SÚPER AMIGABLE PARA DEJAR MENSAJE
+   ========================================================================== */
+.geco-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 2.2vh 2.4vw;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.8vh;
+  transition: border-color var(--tr_m), box-shadow var(--tr_m);
+}
+
+.geco-form-card:hover {
+  border-color: var(--border-accent);
+}
+
+.geco-form-header {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  border-bottom: 1px solid var(--border-card);
+  padding-bottom: 1.2vh;
+}
+
+.geco-form-header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r_field);
+  background: var(--mbg);
+  border: 1px solid var(--border-accent);
+  color: var(--mco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.geco-form-header-text h2 {
+  font-size: var(--fz_b1);
+  font-weight: 700;
+  color: var(--tx1);
+  margin: 0;
+}
+
+.geco-form-header-text p {
+  font-size: var(--fz_s2);
+  color: var(--tx2);
+  margin: 0;
+}
+
+/* Campo de Nombre */
+.geco-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vh;
+}
+
+.geco-label {
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  color: var(--tx1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.geco-input-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_field);
+  padding: 1vh 1.2vw;
+  transition: border-color var(--tr_f), box-shadow var(--tr_f);
+}
+
+.geco-input-box:focus-within {
+  border-color: var(--mco);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+}
+
+.geco-input-box i {
+  color: var(--tx2);
+  font-size: var(--fz_b2);
+}
+
+.geco-text-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--tx1);
+  font-size: var(--fz_b2);
+  font-family: inherit;
+}
+
+.geco-text-input::placeholder {
+  color: var(--tx2);
+  opacity: 0.7;
+}
+
+/* Selector de Vínculo */
+.geco-vinculo-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8vw;
+}
+
+.geco-vinculo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  padding: 0.7vh 1.2vw;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_full);
+  color: var(--tx2);
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-vinculo-btn:hover {
+  border-color: var(--border-accent);
+  color: var(--tx1);
+}
+
+.geco-vinculo-btn.selected {
+  background: var(--mbg);
+  border-color: var(--mco);
+  color: var(--mco);
+  font-weight: 700;
+}
+
+/* Selector de Stickers / Emojis de Ánimo */
+.geco-stickers-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+  overflow-x: auto;
+  padding: 0.4vh 0.2vw;
+  scrollbar-width: none;
+}
+
+.geco-stickers-row::-webkit-scrollbar {
+  display: none;
+}
+
+.geco-sticker-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border-card);
+  background: var(--raised);
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  flex-shrink: 0;
+}
+
+.geco-sticker-btn:hover {
+  transform: scale(1.15);
+  border-color: var(--border-accent);
+}
+
+.geco-sticker-btn.selected {
+  background: var(--mbg);
+  border-color: var(--mco);
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
+  transform: scale(1.12);
+}
+
+/* Plantillas Rápidas de Un Toque */
+.geco-templates-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vh;
+}
+
+.geco-templates-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  overflow-x: auto;
+  padding: 0.2vh 0.1vw;
+  scrollbar-width: none;
+}
+
+.geco-templates-row::-webkit-scrollbar {
+  display: none;
+}
+
+.geco-template-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5vh 1vw;
+  background: var(--raised);
+  border: 1px dashed var(--border-card);
+  border-radius: var(--r_full);
+  color: var(--tx2);
+  font-size: var(--fz_s2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--tr_f);
+  flex-shrink: 0;
+}
+
+.geco-template-pill:hover {
+  border-style: solid;
+  border-color: var(--mco);
+  color: var(--mco);
+  background: var(--mbg);
+  transform: translateY(-1px);
+}
+
+/* Área de Mensaje (Textarea) */
+.geco-textarea-box {
+  display: flex;
+  flex-direction: column;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_field);
+  padding: 1.2vh 1.4vw;
+  transition: border-color var(--tr_f), box-shadow var(--tr_f);
+}
+
+.geco-textarea-box:focus-within {
+  border-color: var(--mco);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+}
+
+.geco-textarea {
+  width: 100%;
+  min-height: 90px;
+  max-height: 200px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--tx1);
+  font-size: var(--fz_b2);
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.geco-textarea::placeholder {
+  color: var(--tx2);
+  opacity: 0.7;
+}
+
+.geco-textarea-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.6vh;
+  border-top: 1px solid var(--border-card);
+  font-size: var(--fz_s2);
+  color: var(--tx2);
+}
+
+/* Botón de Envío Celebratorio */
+.geco-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8vw;
+  padding: 1.4vh 2vw;
+  background: linear-gradient(135deg, var(--mco), #d97706);
+  border: none;
+  border-radius: var(--r_full);
+  color: #ffffff;
+  font-size: var(--fz_b1);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0.8vh 2.5vh rgba(217, 119, 6, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.geco-submit-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 1vh 3vh rgba(217, 119, 6, 0.6);
+}
+
+.geco-submit-btn:active {
+  transform: scale(0.97);
+}
+
+.geco-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==========================================================================
+   3. BARRA DE FILTROS DEL MURO
+   ========================================================================== */
+.geco-wall-filters-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1vw;
+  flex-wrap: wrap;
+}
+
+.geco-wall-chips {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  overflow-x: auto;
+  padding: 0.4vh 0.2vw;
+  scrollbar-width: none;
+}
+
+.geco-wall-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.geco-wall-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  padding: 0.7vh 1.2vw;
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_full);
+  color: var(--tx2);
+  font-size: var(--fz_s1);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--tr_f);
+  flex-shrink: 0;
+}
+
+.geco-wall-chip:hover {
+  border-color: var(--border-accent);
+  color: var(--tx1);
+}
+
+.geco-wall-chip.active {
+  background: var(--mbg);
+  border-color: var(--mco);
+  color: var(--mco);
+}
+
+.geco-refresh-wall-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_full);
+  padding: 0.7vh 1.2vw;
+  font-size: var(--fz_s2);
+  font-weight: 600;
+  color: var(--tx2);
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-refresh-wall-btn:hover {
+  color: var(--mco);
+  border-color: var(--border-accent);
+}
+
+.geco-refresh-wall-btn.rotating i {
+  animation: gecoSpin 1s infinite linear;
+}
+
+@keyframes gecoSpin {
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   4. MURO DE DEDICATORIAS (CARDS VIVAS)
+   ========================================================================== */
+.geco-messages-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6vh;
+}
+
+.geco-message-card {
+  background: var(--surface);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_card);
+  padding: 1.8vh 2.2vw;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2vh;
+  position: relative;
+  transition: border-color var(--tr_m), transform 0.25s ease;
+  animation: gecoCardFadeIn 0.4s ease-out;
+}
+
+@keyframes gecoCardFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.geco-message-card:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+
+.geco-msg-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1vw;
+}
+
+.geco-msg-author-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8vw;
+}
+
+.geco-msg-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.geco-msg-author-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2vh;
+}
+
+.geco-msg-name {
+  font-size: var(--fz_b1);
+  font-weight: 700;
+  color: var(--tx1);
+}
+
+.geco-msg-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  font-size: var(--fz_s2);
+}
+
+.geco-msg-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1vh 0.6vw;
+  border-radius: var(--r_full);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.geco-tag-iglesia {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.geco-tag-familia {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.geco-tag-amigos {
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--mco);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+.geco-tag-trabajo {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.geco-tag-estudios {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.geco-tag-novia {
+  background: rgba(236, 72, 153, 0.12);
+  color: #ec4899;
+  border: 1px solid rgba(236, 72, 153, 0.25);
+}
+
+.geco-msg-date {
+  color: var(--tx2);
+  font-size: var(--fz_s2);
+}
+
+.geco-msg-body {
+  font-size: var(--fz_b2);
+  line-height: 1.6;
+  color: var(--tx1);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.geco-msg-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1vw;
+  padding-top: 0.6vh;
+  border-top: 1px solid var(--border-card);
+}
+
+.geco-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vw;
+  background: var(--raised);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r_full);
+  padding: 0.4vh 1vw;
+  font-size: var(--fz_s2);
+  font-weight: 700;
+  color: var(--tx2);
+  cursor: pointer;
+  transition: all var(--tr_f);
+}
+
+.geco-like-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.geco-like-btn.liked {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.geco-like-btn.liked i {
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   5. RESPONSIVIDAD MÓVIL
+   ========================================================================== */
+@media (max-width: 640px) {
+  .geco-wall-hero {
+    padding: 2vh 4vw;
+  }
+
+  .geco-form-card {
+    padding: 1.8vh 3.5vw;
+  }
+
+  .geco-message-card {
+    padding: 1.6vh 3.5vw;
+  }
+
+  .geco-vinculo-selector {
+    gap: 1.4vw;
+  }
+
+  .geco-vinculo-btn {
+    padding: 0.6vh 2.5vw;
+    font-size: 0.8rem;
+  }
+
+  .geco-sticker-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+
+  .geco-msg-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+}
