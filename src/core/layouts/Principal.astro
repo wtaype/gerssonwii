@@ -26,9 +26,12 @@ const {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <title>{titulo}</title>
-  <meta name="description" content={descripcion} />
+  <title>Cumpleaños Gersson 2026</title>
+  <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#fcfbf7" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <!-- Script Anti-FOUC de Cero Latencia (Ejecución Síncrona Inmediata) -->
   <script is:inline data-astro-rerun>
@@ -44,20 +47,6 @@ const {
       } catch (e) {}
     })();
   </script>
-
-  <!-- Open Graph & WhatsApp Preview -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CumpleWii • Gersson Collantes" />
-  <meta property="og:title" content={titulo} />
-  <meta property="og:description" content={descripcion} />
-  <meta property="og:image" content="https://gerssonwii.web.app/avatar-oficial.jpg" />
-  <meta property="og:url" content="https://gerssonwii.web.app" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={titulo} />
-  <meta name="twitter:description" content={descripcion} />
-  <meta name="twitter:image" content="https://gerssonwii.web.app/avatar-oficial.jpg" />
 
   <!-- Optimización de Carga Crítica (Preload Eager) -->
   <link rel="preload" href="/google/fonts.min.css" as="style" />
@@ -94,9 +83,10 @@ const {
   <!-- 4. Lienzo Global de Confeti -->
   <Confetti />
 
-  <!-- Gestor Global y Reactivo de Tema (Delegación de Eventos 0ms) -->
+  <!-- Gestor Global de Tema y Navegación Táctil Móvil (Swipe 0ms) -->
   <script>
     import { alternarTema, obtenerTema } from '@widev/tema.js';
+    import { iniciarGestosSwipe } from '@widev/gestos.js';
 
     function sincronizarUI() {
       const t = document.documentElement.dataset.theme || obtenerTema();
@@ -123,10 +113,20 @@ const {
           e.preventDefault();
           alternarTema();
           sincronizarUI();
+          return;
+        }
+
+        // Micro-vibración háptica al pulsar el menú inferior
+        const dockBtn = e.target.closest('.geco-nav-dock-btn, .geco-nav-item');
+        if (dockBtn && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+          navigator.vibrate(8);
         }
       });
       window.addEventListener('witema-changed', sincronizarUI);
     }
+
+    // Inicializar Motor de Gestos Swipe
+    iniciarGestosSwipe();
 
     document.addEventListener('astro:page-load', sincronizarUI);
   </script>

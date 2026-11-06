@@ -2556,3 +2556,24 @@ img {
     transform: scale(1.1);
   }
 }
+
+/* ============================================================ */
+/* ?? MICRO-INTERACCIONES MÓVILES NATIVAS & TOUCH ACTION       */
+/* ============================================================ */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+html, body {
+  touch-action: pan-y;
+}
+
+.geco-nav-bottom {
+  touch-action: manipulation;
+}
+
+.geco-nav-dock-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}

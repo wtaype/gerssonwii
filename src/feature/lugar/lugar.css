@@ -629,6 +629,26 @@
   to { transform: rotate(360deg); }
 }
 
+.geco-lugar-driver-tip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--mco-light);
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--r_m, 1vh);
+  padding: 10px 14px;
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: var(--tx1);
+  line-height: 1.4;
+}
+
+.geco-lugar-driver-tip i {
+  color: var(--mco);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
 /* RESPONSIVE */
 @media (max-width: 640px) {
   .geco-lugar-header-card {
