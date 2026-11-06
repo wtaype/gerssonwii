@@ -3,6 +3,7 @@
 // 💌 Muro de Dedicatorias & Amor en Vivo • CumpleWii (Gersson Collantes 2026)
 // 100% Cero CSS Inline · 0ms Latencia Inicial · Sincronización en Tiempo Real con Firestore
 import semillas from '@semillas/mensajes.json';
+import Confetti from '../cumple/lib/Confetti.astro';
 import './mensajes.css';
 
 const totalMensajes = semillas.length;
@@ -247,6 +248,8 @@ const templates = [
     ))}
   </section>
 
+  <!-- Lienzo de Confeti Festivo -->
+  <Confetti />
 </div>
 
 <!-- Semilla Inmutable para el Cliente -->

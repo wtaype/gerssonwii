@@ -5,17 +5,21 @@
 import HeroCard from './HeroCard.astro';
 import HistoriaTimeline from './HistoriaTimeline.astro';
 import EncuestaCard from './EncuestaCard.astro';
+import Confetti from './lib/Confetti.astro';
 ---
 
 <section class="geco-cumple-feature" aria-label="Invitación e Historia de Cumpleaños">
   <!-- 1. Tarjeta Hero de Invitación VIP -->
   <HeroCard />
 
-  <!-- 2. Línea de Tiempo: 5 Pasitos de Bendición (Fotos Grandes) -->
+  <!-- 2. Historia y Gratitud: Comunidad de Bendición -->
   <HistoriaTimeline />
 
   <!-- 3. Encuesta Interactiva de Vínculo -->
   <EncuestaCard />
+
+  <!-- Lienzo de Confeti Festivo -->
+  <Confetti />
 </section>
 
 <style is:global>

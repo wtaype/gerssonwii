@@ -1,57 +1,76 @@
-// src/lib/widev/seometa.js
-// seometa v10.1: Gestor dinámico de metaetiquetas SEO y esquemas JSON-LD (Schema.org) en el cliente
-
-import { app, linkweb } from '../../wii.js';
-const descri = 'Solgas Surquillo Distribuidor';
-const keywii = 'gas glp surquillo';
+// src/core/widev/seometa.js
+// seometa v10.2: Gestor dinámico universal de metaetiquetas SEO y Schema.org en el cliente
+// 100% Agnóstico · Cero dependencias de proyecto · Parámetros configurables
 
 const setTag = (id, val) => {
-  if (typeof document === 'undefined') return;
+  if (typeof document === 'undefined' || !val) return;
   const el = document.getElementById(id);
   if (el) el.setAttribute('content', val);
 };
 
 const setHref = (id, val) => {
-  if (typeof document === 'undefined') return;
+  if (typeof document === 'undefined' || !val) return;
   const el = document.getElementById(id);
   if (el) el.setAttribute('href', val);
 };
 
 /**
+ * Establece metaetiquetas dinámicas (Title, OpenGraph, Twitter, Canonical, Schema.org)
  * @param {Object} [config]
  * @param {string} [config.title]
  * @param {string} [config.desc]
  * @param {string} [config.keywords]
  * @param {string} [config.img]
  * @param {string} [config.path]
+ * @param {string} [config.baseUrl]
+ * @param {string} [config.author]
  * @param {string} [config.type]
  * @param {any} [config.datePublished]
  */
-export const setMeta = ({ title, desc, keywords, img, path, type = 'WebSite', datePublished = null } = {}) => {
+export const setMeta = ({
+  title = '',
+  desc = '',
+  keywords = '',
+  img = '',
+  path = '/',
+  baseUrl = '',
+  author = '',
+  type = 'WebSite',
+  datePublished = null
+} = {}) => {
   if (typeof document === 'undefined') return;
 
-  const t = title ?? `${app} — ${descri}`;
-  const d = desc ?? `${descri}`;
-  const k = keywords ?? keywii;
-  const i = img ?? `${linkweb}/poster.webp`;
-  const p = path ?? '/';
-  const url = `${linkweb}${p}`;
+  const origin = baseUrl || (typeof window !== 'undefined' ? window.location.origin : '');
+  const url = `${origin}${path}`;
 
-  document.title = t;
-  setTag('wi_desc', d);
-  setTag('wi_keywords', k);
-  setHref('wi_canonical', url);
+  if (title) {
+    document.title = title;
+    setTag('wi_og_title', title);
+    setTag('wi_tw_title', title);
+  }
 
-  setTag('wi_og_title', t);
-  setTag('wi_og_desc', d);
-  setTag('wi_og_url', url);
-  setTag('wi_og_img', i);
+  if (desc) {
+    setTag('wi_desc', desc);
+    setTag('wi_og_desc', desc);
+    setTag('wi_tw_desc', desc);
+  }
 
-  setTag('wi_tw_title', t);
-  setTag('wi_tw_desc', d);
-  setTag('wi_tw_img', i);
+  if (keywords) {
+    setTag('wi_keywords', keywords);
+  }
 
-  // Schema Dinámico
+  if (url) {
+    setHref('wi_canonical', url);
+    setTag('wi_og_url', url);
+  }
+
+  if (img) {
+    const fullImg = img.startsWith('http') ? img : `${origin}${img}`;
+    setTag('wi_og_img', fullImg);
+    setTag('wi_tw_img', fullImg);
+  }
+
+  // Schema Dinámico JSON-LD
   const oldSchema = document.getElementById('wi_schema_art');
   if (oldSchema) oldSchema.remove();
 
@@ -59,14 +78,17 @@ export const setMeta = ({ title, desc, keywords, img, path, type = 'WebSite', da
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'wi_schema_art';
-    script.textContent = JSON.stringify({
+    const schemaData = {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": t,
-      "image": i,
-      "datePublished": datePublished ? new Date(datePublished).toISOString() : new Date().toISOString(),
-      "author": { "@type": "Person", "name": "Wilder Taype" }
-    });
+      "headline": title,
+      "image": img ? (img.startsWith('http') ? img : `${origin}${img}`) : undefined,
+      "datePublished": datePublished ? new Date(datePublished).toISOString() : new Date().toISOString()
+    };
+    if (author) {
+      schemaData.author = { "@type": "Person", "name": author };
+    }
+    script.textContent = JSON.stringify(schemaData);
     document.head.appendChild(script);
   }
 };

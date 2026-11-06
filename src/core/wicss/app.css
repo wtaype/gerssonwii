@@ -1,5 +1,5 @@
-/* ==========================================================================
-   APP.CSS - SOLGAS SURQUILLO (GASWII)
+ï»¿/* ==========================================================================
+   APP.CSS - MOTOR UNIVERSAL WIDEV
    Estilos Core Globales: Variables de Tema, Reset, Componentes y Layout
    (100% Cero CSS Inline - Arquitectura set:html & ?inline)
    ========================================================================== */
@@ -2558,7 +2558,7 @@ img {
 }
 
 /* ============================================================ */
-/* ?? MICRO-INTERACCIONES MÓVILES NATIVAS & TOUCH ACTION       */
+/* ?? MICRO-INTERACCIONES Mï¿½VILES NATIVAS & TOUCH ACTION       */
 /* ============================================================ */
 *, *::before, *::after {
   -webkit-tap-highlight-color: transparent !important;

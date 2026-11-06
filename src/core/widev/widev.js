@@ -1,6 +1,6 @@
-// src/lib/widev/widev.js
+// src/core/widev/widev.js
 // El cerebro del módulo que une y expone las utilidades segmentadas de widev/
-// v1.0.1: Añadido export de atajos.js y abrirGaleria
+// v1.1.0: Añadido export de gestos táctiles universales (iniciarGestosSwipe, obtenerRutasActivas, ejecutarSwipe)
 
 export { Saludar, saludoSmile } from './saludo.js';
 export { wiTip } from './witip.js';
@@ -35,3 +35,4 @@ export { wiSugerencias } from './sugerencias.js';
 export { wiAtajo } from './atajos.js';
 export { wiGaleria, abrirGaleria } from './galeria.js';
 export { wiEditor } from './editor.js';
+export { iniciarGestosSwipe, obtenerRutasActivas, ejecutarSwipe } from './gestos.js';

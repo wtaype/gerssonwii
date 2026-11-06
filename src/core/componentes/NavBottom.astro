@@ -1,7 +1,7 @@
 ---
 // src/core/componentes/NavBottom.astro
-// 📱 Barra de Navegación Inferior Móvil (Dock Ergonómico VIP)
-// z-index: 9999 · 100% Cero CSS Inline - Estilos centralizados en app.css
+// 📱 Barra de Navegación Inferior Móvil Universal (Dock Ergonómico VIP)
+// z-index: 9999 · 100% Cero CSS Inline · 100% Agnóstico
 import configurar from '@semillas/configurar.js';
 
 const currentPath = Astro.url.pathname;
@@ -20,7 +20,7 @@ const itemsNav = configurar.navegacion || [];
         title={item.label}
       >
         <i class:list={['fa-solid', item.icono]}></i>
-        <span>{item.id === 'cumple' ? 'Cumple' : item.id === 'lugar' ? 'Lugar' : item.id === 'apoyar' ? 'Regalo' : 'Mensajes'}</span>
+        <span>{item.labelCorto || item.label || ''}</span>
       </a>
     );
   })}

@@ -1,17 +1,20 @@
 ---
 // src/core/componentes/Header.astro
-// 👑 Cabecera Oficial: Título "Feliz Cumpleaños" + Switcher Luz/Noche + Avatar Geco
-// 100% Cero CSS Inline - Estilos centralizados en app.css
+// 👑 Cabecera Universal Agnóstica (Brand + Theme Switcher + User Pill)
+// 100% Cero CSS Inline · Desacoplado de Semillas Específicas
 import configurar from '@semillas/configurar.js';
-import cumple from '@semillas/cumple.json';
 
-const tituloHeader = configurar.app;
-const avatarSrc = cumple.persona.avatar;
-const avatarAlt = cumple.persona.nombreCorto;
+const marca = configurar.marca || {};
+const perfil = configurar.perfil || {};
+
+const tituloHeader = marca.titulo || configurar.app || '';
+const enlaceMarca = marca.enlace || '/';
+const avatarSrc = perfil.avatar || perfil.avatarSm || '';
+const avatarAlt = perfil.nombreCorto || perfil.nombre || '';
 ---
 
 <header class="geco-header">
-  <a href="/" class="geco-header-brand-link" title="Inicio - Feliz Cumpleaños">
+  <a href={enlaceMarca} class="geco-header-brand-link" title={tituloHeader}>
     <span class="geco-header-brand-title">{tituloHeader}</span>
   </a>
 
@@ -21,8 +24,10 @@ const avatarAlt = cumple.persona.nombreCorto;
       <span id="textoTemaHeader">Luz</span>
     </button>
 
-    <a href="/" class="geco-header-avatar-link" title={avatarAlt}>
-      <img src={avatarSrc} alt={avatarAlt} class="geco-avatar-header" />
-    </a>
+    {avatarSrc && (
+      <a href={enlaceMarca} class="geco-header-avatar-link" title={avatarAlt}>
+        <img src={avatarSrc} alt={avatarAlt} class="geco-avatar-header" />
+      </a>
+    )}
   </div>
 </header>

@@ -1,39 +1,54 @@
 ---
 // src/core/componentes/Sidebar.astro
-// 🧭 Barra Lateral de Navegación Desktop (>= 901px)
-// 100% Cero CSS Inline - Estilos centralizados en app.css
+// 🧭 Barra Lateral de Navegación Desktop Universal (>= 901px)
+// 100% Cero CSS Inline · Desacoplado de Semillas Específicas
 import configurar from '@semillas/configurar.js';
-import cumple from '@semillas/cumple.json';
 
 const currentPath = Astro.url.pathname;
 const itemsNav = configurar.navegacion || [];
-const persona = cumple.persona;
-const evento = cumple.evento;
+const marca = configurar.marca || {};
+const perfil = configurar.perfil || {};
+const widget = configurar.widgetSidebar || {};
+const badges = perfil.badges || [];
+
+const tituloBrand = marca.titulo || configurar.app || '';
+const subtituloBrand = marca.subtitulo || '';
+const avatarSrc = perfil.avatar || perfil.avatarSm || '';
+const nombrePerfil = perfil.nombreCorto || perfil.nombre || '';
 ---
 
 <aside class="geco-sidebar" aria-label="Menú principal desktop">
-  <!-- 1. Marca / Logo Superior -->
+  <!-- 1. Marca / Logo Superior Dinámico -->
   <div class="geco-brand">
-    <div class="geco-brand-icon">
-      <i class="fa-solid fa-cake-candles"></i>
-    </div>
+    {marca.icono && (
+      <div class="geco-brand-icon">
+        <i class:list={['fa-solid', marca.icono]}></i>
+      </div>
+    )}
     <div>
-      <h1 class="geco-brand-title">Cumpleaños</h1>
-      <p class="geco-brand-sub">{persona.nombreCorto}</p>
+      <h1 class="geco-brand-title">{tituloBrand}</h1>
+      {subtituloBrand && <p class="geco-brand-sub">{subtituloBrand}</p>}
     </div>
   </div>
 
-  <!-- 2. Perfil Resumido -->
-  <div class="geco-profile-pill">
-    <img src={persona.avatar} alt={persona.nombreCorto} class="geco-avatar-sm" />
-    <div>
-      <div class="geco-profile-name">{persona.nombreCorto}</div>
-      <div class="geco-profile-badges">
-        <span class="geco-mini-tag geco-tag-faith"><i class="fa-solid fa-cross"></i> Fe</span>
-        <span class="geco-mini-tag geco-tag-fda"><i class="fa-solid fa-shield"></i> FDA</span>
+  <!-- 2. Perfil Resumido Dinámico -->
+  {(avatarSrc || nombrePerfil) && (
+    <div class="geco-profile-pill">
+      {avatarSrc && <img src={avatarSrc} alt={nombrePerfil} class="geco-avatar-sm" />}
+      <div>
+        <div class="geco-profile-name">{nombrePerfil}</div>
+        {badges.length > 0 && (
+          <div class="geco-profile-badges">
+            {badges.map((b) => (
+              <span class:list={['geco-mini-tag', b.clase]}>
+                {b.icono && <i class:list={['fa-solid', b.icono]}></i>} {b.texto}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  </div>
+  )}
 
   <!-- 3. Menú de Navegación Desacoplado -->
   <nav class="geco-nav-menu">
@@ -51,12 +66,14 @@ const evento = cumple.evento;
     })}
   </nav>
 
-  <!-- 4. Pie de Barra: Fecha Destacada y Cambio de Tema -->
+  <!-- 4. Pie de Barra: Widget Destacado y Cambio de Tema -->
   <div class="geco-sidebar-footer">
-    <div class="geco-event-box">
-      <div class="geco-event-sub">🎉 La Gran Fiesta</div>
-      <div class="geco-event-val">{evento.fecha} • {evento.hora}</div>
-    </div>
+    {widget.activo && (
+      <div class="geco-event-box">
+        {widget.subtitulo && <div class="geco-event-sub">{widget.subtitulo}</div>}
+        {widget.valor && <div class="geco-event-val">{widget.valor}</div>}
+      </div>
+    )}
 
     <button type="button" class="geco-theme-toggle-btn" id="btnTemaSidebar" title="Alternar Modo Luz y Noche">
       <i class="fa-solid fa-sun" id="iconoTemaSidebar"></i>

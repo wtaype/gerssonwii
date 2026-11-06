@@ -1,10 +1,14 @@
 // src/core/widev/modales.js
 // 🪟 Gestor Universal de Modales (wiModal) - On-Demand & Ultra-Rápido
+// 100% Agnóstico · Zero Hardcoding
+
 let escapeActivo = false;
 
 const manejarEscape = (e) => {
   if (e.key === 'Escape') wiModal.closeAll();
 };
+
+const SELECTOR_MODALES_ABIERTOS = '.modal-overlay.open, .wiModal.active, .modal.open, [data-modal].open, [data-drawer].open';
 
 export const wiModal = {
   open: (id, selectorFoco) => {
@@ -35,7 +39,7 @@ export const wiModal = {
     m?.classList.remove('open', 'active');
 
     // Restaurar scroll si ya no quedan modales abiertos
-    if (!document.querySelector('.modal-overlay.open, .wiModal.active, .modal.open, #mobileDrawer.open')) {
+    if (!document.querySelector(SELECTOR_MODALES_ABIERTOS)) {
       document.body.classList.remove('modal-open');
       document.body.style.overflow = '';
       if (escapeActivo) {
@@ -47,8 +51,8 @@ export const wiModal = {
 
   closeAll: () => {
     if (typeof document === 'undefined') return;
-    document.querySelectorAll('.modal-overlay.open, .wiModal.active, .modal.open, #mobileDrawer.open').forEach(m => m.classList.remove('open', 'active'));
-    document.getElementById('drawerBackdrop')?.classList.remove('active');
+    document.querySelectorAll(SELECTOR_MODALES_ABIERTOS).forEach(m => m.classList.remove('open', 'active'));
+    document.querySelectorAll('.drawer-backdrop.active, [data-drawer-backdrop].active').forEach(b => b.classList.remove('active'));
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
     if (escapeActivo) {

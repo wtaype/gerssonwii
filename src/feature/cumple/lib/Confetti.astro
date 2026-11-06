@@ -1,7 +1,8 @@
 ---
 // src/feature/cumple/lib/Confetti.astro
-// 🎊 Motor Ligero de Confeti Festivo (Canvas 60fps)
-// Expone window.lanzarConfeti(cantidad) globalmente
+// 🎊 Motor de Confeti y Celebración (Canvas 60fps)
+// Expone window.lanzarConfeti(cantidad) y window.__gecoDispararConfetti() globalmente
+// Feature-scoped para CumpleWii
 ---
 
 <canvas id="confettiCanvas" aria-hidden="true"></canvas>
@@ -104,9 +105,9 @@
     }
   }
 
-  // Registrar en window para llamadas desde cualquier componente
   if (typeof window !== 'undefined') {
     (window as any).lanzarConfeti = lanzarConfeti;
+    (window as any).__gecoDispararConfetti = () => lanzarConfeti(90);
   }
 
   initConfetti();

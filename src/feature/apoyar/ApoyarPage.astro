@@ -5,10 +5,11 @@
 // 100% Cero CSS Inline - Tokens WiTema y Datos Desacoplados de @semillas/
 import regalos from '@semillas/regalos.json';
 import { OPCIONES_APOYO } from './data/cacheApoyando.js';
+import Confetti from '../cumple/lib/Confetti.astro';
 import './apoyar.css';
 
-const titulo = regalos.titulo || 'Bendición & Apoyo Voluntario 🎁';
-const descripcion = regalos.descripcion || 'Tu presencia y oración son mi mayor regalo en esta noche. Si nace de tu corazón hacerme un presente o bendición digital:';
+const titulo = regalos.titulo || '';
+const descripcion = regalos.descripcion || '';
 const yape = regalos.yape || {
   titular: 'Mary Rosse Katherine Yanayaco Lovaton',
   numero: '946869939',
@@ -254,6 +255,8 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
     </div>
   </div>
 
+  <!-- Lienzo de Confeti Festivo -->
+  <Confetti />
 </section>
 
 <script>

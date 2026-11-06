@@ -1,14 +1,14 @@
-// src/lib/widev/navegador.js
-// navegador v10.2: Controladores y limpiadores de rutas/URL agnósticos
+// src/core/widev/navegador.js
+// navegador v10.3: Controladores y limpiadores de rutas/URL 100% agnósticos
 
 export const wiPath = {
   // Limpia rutas especiales, por ejemplo, eliminando subdirectorios base redundantes
-  limpiar(ruta) {
-    const base = '/';
+  limpiar(ruta, prefijoBase = '') {
+    const base = prefijoBase || '/';
     const guar = typeof sessionStorage !== 'undefined' ? sessionStorage.ghPath : null;
     if (guar) {
       sessionStorage.removeItem('ghPath');
-      return guar.replace(/^\/wiiprime(\/v\d+)?/, '') || '/';
+      return (prefijoBase ? guar.replace(new RegExp(`^${prefijoBase}`), '') : guar) || '/';
     }
     let r = base !== '/' && ruta?.startsWith(base) ? ruta.slice(base.length - 1) || '/' : ruta || '/';
     if (r !== '/' && !r.startsWith('/')) r = '/' + r;
@@ -20,7 +20,7 @@ export const wiPath = {
     if (typeof history !== 'undefined') {
       history.pushState({ ruta }, titulo, ruta);
       if (titulo) document.title = titulo;
-      
+
       // Lanzar evento nativo popstate para alertar a otros escuchas de que el historial cambió
       window.dispatchEvent(new PopStateEvent('popstate', { state: { ruta } }));
     }
@@ -36,3 +36,5 @@ export const wiPath = {
     return typeof location !== 'undefined' ? this.limpiar(location.pathname) : '/';
   }
 };
+
+export default wiPath;

@@ -1,12 +1,11 @@
 ---
 // src/core/layouts/Principal.astro
-// 🏛️ Layout Maestro Modular de CumpleWii (Gersson 2026)
+// 🏛️ Layout Maestro Modular Agnóstico (WiDev App Engine)
 // Soporta: View Transitions SPA (0ms), Anti-FOUC, Shell Responsivo y Dock Móvil
 import { ClientRouter } from 'astro:transitions';
 import Header from '@core/componentes/Header.astro';
 import Sidebar from '@core/componentes/Sidebar.astro';
 import NavBottom from '@core/componentes/NavBottom.astro';
-import Confetti from '@feature/cumple/lib/Confetti.astro';
 import configurar from '@semillas/configurar.js';
 
 interface Props {
@@ -15,9 +14,13 @@ interface Props {
 }
 
 const {
-  titulo = configurar.nombre,
-  descripcion = configurar.descripcion
+  titulo = configurar.nombre || configurar.app || '',
+  descripcion = configurar.descripcion || ''
 } = Astro.props;
+
+const avatarPreload = configurar.perfil?.avatar || configurar.perfil?.avatarSm || '';
+const colorLuz = configurar.tema?.colorLuz || '#fcfbf7';
+const colorNoche = configurar.tema?.colorNoche || '#080d1a';
 ---
 
 <!DOCTYPE html>
@@ -26,15 +29,16 @@ const {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <title>Cumpleaños Gersson 2026</title>
+  <title>{titulo}</title>
+  {descripcion && <meta name="description" content={descripcion} />}
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#fcfbf7" />
+  <meta name="theme-color" content={colorLuz} />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <!-- Script Anti-FOUC de Cero Latencia (Ejecución Síncrona Inmediata) -->
-  <script is:inline data-astro-rerun>
+  <script is:inline define:vars={{ colorLuz, colorNoche }} data-astro-rerun>
     (function () {
       try {
         var guardado = localStorage.getItem('wiTema');
@@ -43,14 +47,14 @@ const {
           : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'noche' : 'luz');
         document.documentElement.dataset.theme = tema;
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.content = tema === 'noche' ? '#080d1a' : '#fcfbf7';
+        if (meta) meta.content = tema === 'noche' ? colorNoche : colorLuz;
       } catch (e) {}
     })();
   </script>
 
   <!-- Optimización de Carga Crítica (Preload Eager) -->
   <link rel="preload" href="/google/fonts.min.css" as="style" />
-  <link rel="preload" href="/avatar-oficial.jpg" as="image" type="image/jpeg" />
+  {avatarPreload && <link rel="preload" href={avatarPreload} as="image" type="image/jpeg" />}
 
   <!-- Fuentes Locales 0ms Latencia & FontAwesome -->
   <link rel="stylesheet" href="/google/fonts.min.css" />
@@ -80,9 +84,6 @@ const {
   <!-- 3. Barra Inferior Móvil Fija (z-index: 9999) -->
   <NavBottom />
 
-  <!-- 4. Lienzo Global de Confeti -->
-  <Confetti />
-
   <!-- Gestor Global de Tema y Navegación Táctil Móvil (Swipe 0ms) -->
   <script>
     import { alternarTema, obtenerTema } from '@widev/tema.js';
@@ -105,8 +106,8 @@ const {
       if (icoS) icoS.className = esNoche ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     }
 
-    if (typeof window !== 'undefined' && !(window as any).__gecoTemaDelegated) {
-      (window as any).__gecoTemaDelegated = true;
+    if (typeof window !== 'undefined' && !(window as any).__wiTemaDelegated) {
+      (window as any).__wiTemaDelegated = true;
       document.addEventListener('click', (e: any) => {
         const btn = e.target.closest('#btnTemaHeader, #btnTemaSidebar');
         if (btn) {
@@ -116,7 +117,7 @@ const {
           return;
         }
 
-        // Micro-vibración háptica al pulsar el menú inferior
+        // Micro-vibración háptica al pulsar el dock inferior o ítems de navegación
         const dockBtn = e.target.closest('.geco-nav-dock-btn, .geco-nav-item');
         if (dockBtn && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
           navigator.vibrate(8);
@@ -125,7 +126,7 @@ const {
       window.addEventListener('witema-changed', sincronizarUI);
     }
 
-    // Inicializar Motor de Gestos Swipe
+    // Inicializar Motor Universal de Gestos Swipe con autodetección de rutas
     iniciarGestosSwipe();
 
     document.addEventListener('astro:page-load', sincronizarUI);
