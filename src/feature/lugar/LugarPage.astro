@@ -11,7 +11,13 @@ const evento = cumple.evento;
 const lugarNombre = evento.lugarNombre;
 const lugarSubtitulo = evento.lugarSubtitulo;
 const direccion = evento.direccion;
+const referenciaVisual = evento.referenciaVisual || "Puerta con columnas griegas";
+const dressCodeTitulo = evento.dressCodeTitulo || "Plan Casual / Como desees 👟👕";
+const dressCodeDesc = evento.dressCodeDesc || "¡Normal y tranqui amigos, vengan como deseen! Es un plan casual y cómodo para pasarla genial juntos.";
+const paraCompartirTitulo = evento.paraCompartirTitulo || "Para Compartir (Opcional) 🍟";
+const paraCompartirDesc = evento.paraCompartirDesc || "Los que gusten pueden traer algo pequeño para picar o compartir con el grupo como se conversó al principio.";
 const anfitriona = evento.anfitriona;
+const anfitrionaAgradecimiento = evento.anfitrionaAgradecimiento || "Gracias a Mery por organizar la fiesta y poner la casa con tanto amor.";
 const telefonoAnfitriona = evento.telefonoAnfitriona;
 const fecha = evento.fecha;
 const hora = evento.hora;
@@ -22,7 +28,7 @@ const queryLugar = encodeURIComponent("Calle los molinos de san miguel 131, urba
 const linkGoogleMaps = `https://www.google.com/maps/search/?api=1&query=${queryLugar}`;
 const linkWaze = `https://waze.com/ul?q=${queryLugar}`;
 const linkUber = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[formatted_address]=${queryLugar}`;
-const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('¡Hola Mary Rosse! Ya voy en camino al cumpleaños de Gersson 🎉')}`;
+const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('¡Hola Mery! Ya voy en camino al cumpleaños de Gersson 🎉')}`;
 ---
 
 <section class="geco-lugar-feature" aria-label="Ubicación y Protocolo del Evento">
@@ -38,6 +44,10 @@ const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}
       <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
       <span>{direccion}</span>
     </p>
+    <div class="geco-lugar-ref-pill">
+      <i class="fa-solid fa-archway" aria-hidden="true"></i>
+      <span>Fachada: <strong>{referenciaVisual}</strong></span>
+    </div>
 
     <!-- Cuenta Regresiva en Vivo -->
     <div class="geco-countdown-wrap" id="countdownWrap">
@@ -108,7 +118,7 @@ const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}
     <!-- Barra de Accesos Rápidos de Navegación -->
     <div class="geco-route-actions-wrap">
       <span class="geco-route-actions-label">
-        <i class="fa-solid fa-diamond-turn-right"></i> ¿Cómo prefieres llegar a la gala?
+        <i class="fa-solid fa-diamond-turn-right"></i> ¿Cómo prefieres llegar a la fiesta?
       </span>
 
       <div class="geco-route-buttons-grid">
@@ -150,17 +160,17 @@ const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}
           target="_blank"
           rel="noopener noreferrer"
           class="geco-btn-route geco-btn-route-wa"
-          title="Avisar a Mary Rosse (Novia de Gersson) por WhatsApp"
+          title="Avisar a Mery Yanayaco (Novia de Gersson) por WhatsApp"
         >
           <i class="fa-brands fa-whatsapp"></i>
-          <span>Avisar a Mary Rosse 💕</span>
+          <span>Avisar a Mery 💕</span>
         </a>
       </div>
 
       <!-- Tip destacado para conductores y taxis -->
       <div class="geco-lugar-driver-tip">
         <i class="fa-solid fa-circle-info"></i>
-        <span><strong>Dato para tu conductor o taxi:</strong> Ingreso por la tranquera de vigilancia de la Urb. Las Lomas (La Molina). Lugar residencial tranquilo y seguro.</span>
+        <span><strong>Dato para tu conductor o taxi:</strong> Ingreso por la tranquera de vigilancia de la Urb. Las Lomas (La Molina). Buscar la casa con <em>columnas griegas</em> (Calle Los Molinos de San Miguel 131).</span>
       </div>
     </div>
   </article>
@@ -175,19 +185,31 @@ const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}
       <div>
         <div class="geco-protocol-label">Horario Oficial</div>
         <div class="geco-protocol-title">{fecha} • {hora}</div>
-        <p class="geco-protocol-desc">Agradecemos la máxima puntualidad para el inicio del programa, alabanzas y cena de gala.</p>
+        <p class="geco-protocol-desc">Agradecemos la máxima puntualidad para el inicio del programa, alabanzas y cena de confraternidad.</p>
       </div>
     </article>
 
-    <!-- Código de Vestimenta -->
+    <!-- Código de Vestimenta Casual -->
     <article class="geco-protocol-card">
       <div class="geco-protocol-icon-circle">
         <i class="fa-solid fa-shirt"></i>
       </div>
       <div>
         <div class="geco-protocol-label">Dress Code</div>
-        <div class="geco-protocol-title">Gala / Elegante Sport</div>
-        <p class="geco-protocol-desc">¡Ven con tus mejores prendas festivas para celebrar y salir radiante en todas las fotos!</p>
+        <div class="geco-protocol-title">{dressCodeTitulo}</div>
+        <p class="geco-protocol-desc">{dressCodeDesc}</p>
+      </div>
+    </article>
+
+    <!-- Para Compartir (Opcional) -->
+    <article class="geco-protocol-card">
+      <div class="geco-protocol-icon-circle" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+        <i class="fa-solid fa-bowl-food"></i>
+      </div>
+      <div>
+        <div class="geco-protocol-label">Para Compartir</div>
+        <div class="geco-protocol-title">{paraCompartirTitulo}</div>
+        <p class="geco-protocol-desc">{paraCompartirDesc}</p>
       </div>
     </article>
 
@@ -199,28 +221,28 @@ const linkWhatsApp = `https://wa.me/${telefonoAnfitriona.replace(/[^0-9]/g, '')}
       <div>
         <div class="geco-protocol-label">Clima Nocturno</div>
         <div class="geco-protocol-title">Fresco en La Molina (~17°C)</div>
-        <p class="geco-protocol-desc">Se sugiere traer saco, blazer o abrigo ligero para disfrutar con comodidad en los espacios abiertos.</p>
+        <p class="geco-protocol-desc">Se sugiere traer casaca, blazer o abrigo ligero para disfrutar con comodidad en los espacios abiertos.</p>
       </div>
     </article>
 
     <!-- Anfitriona de Recepción -->
     <article class="geco-protocol-card">
-      <div class="geco-protocol-icon-circle">
-        <i class="fa-solid fa-user-shield"></i>
+      <div class="geco-protocol-icon-circle" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
+        <i class="fa-solid fa-heart"></i>
       </div>
       <div>
         <div class="geco-protocol-label">Anfitriona Oficial</div>
         <div class="geco-protocol-title">{anfitriona}</div>
-        <p class="geco-protocol-desc">Número de contacto: {telefonoAnfitriona}. En puerta habrá personal para recibirte cordialmente.</p>
+        <p class="geco-protocol-desc">{anfitrionaAgradecimiento} (Contacto: {telefonoAnfitriona}).</p>
       </div>
     </article>
   </div>
 
-  <!-- 4. AVISO DE SEGURIDAD Y PARQUEO -->
-  <aside class="geco-security-banner" aria-label="Información de seguridad">
-    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+  <!-- 4. AVISO DE PORTÓN Y ESTACIONAMIENTO ADENTRO -->
+  <aside class="geco-security-banner" aria-label="Información de llegada y estacionamiento">
+    <i class="fa-solid fa-square-parking" aria-hidden="true" style="color: #10b981; font-size: 1.4rem;"></i>
     <span>
-      <strong>Zona Residencial & Parqueo:</strong> Urbanización Las Lomas de La Molina cuenta con control de acceso, vigilancia permanente y facilidad de estacionamiento seguro en los alrededores de la casa.
+      <strong>🚗 Si vienes en auto:</strong> Entran directamente por el <strong>portón</strong>, <em>¡hay estacionamiento adentro para ustedes!</em> La zona residencial cuenta con control de acceso y máxima seguridad.
     </span>
   </aside>
 

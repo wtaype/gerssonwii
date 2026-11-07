@@ -25,15 +25,15 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
   <!-- 1. TARJETA CABECERA -->
   <article class="geco-apoyar-header-card">
     <div class="geco-apoyar-badge-top">
-      <i class="fa-solid fa-gift"></i> Regalo Especial • Organiza Mary Rosse 💕
+      <i class="fa-solid fa-gift"></i> Regalo Especial • Organiza Mery Yanayaco 💕
     </div>
     <h2 class="geco-apoyar-title">{titulo}</h2>
     <p class="geco-apoyar-sub">{descripcion}</p>
   </article>
 
-  <!-- 2. TARJETA YAPE / PLIN PRINCIPAL DESTACADA CON QR REAL -->
+  <!-- 2. TARJETA YAPE PRINCIPAL DESTACADA CON QR REAL -->
   <article class="geco-yape-main-card">
-    <!-- QR Oficial de Yape de Mary Rosse -->
+    <!-- QR Oficial de Yape de Mery Yanayaco -->
     <div class="geco-yape-qr-box">
       <div class="geco-yape-frame" id="btnAbrirQrModal" role="button" tabindex="0" title="Toca para ampliar el QR oficial de Yape">
         <img
@@ -46,7 +46,7 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
           <i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar QR
         </div>
       </div>
-      <a href="/qr-yape-oficial.jpg" download="QR-Yape-MaryRosse-Gersson.jpg" class="geco-yape-download-link" title="Descargar imagen oficial del QR">
+      <a href="/qr-yape-oficial.jpg" download="QR-Yape-MeryYanayaco-Gersson.jpg" class="geco-yape-download-link" title="Descargar imagen oficial del QR">
         <i class="fa-solid fa-download"></i> Descargar QR
       </a>
     </div>
@@ -55,8 +55,10 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
     <div class="geco-yape-content">
       <div class="geco-yape-chip-row">
         <span class="geco-yape-chip"><i class="fa-solid fa-qrcode"></i> Yape Oficial</span>
-        <span class="geco-plin-chip"><i class="fa-solid fa-bolt"></i> Plin</span>
-        <span class="geco-novia-chip"><i class="fa-solid fa-heart"></i> Regalo de Mary</span>
+        <span class="geco-novia-chip"><i class="fa-solid fa-heart"></i> Regalo Sorpresa de Mery</span>
+        <span class="geco-plin-chip" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25);">
+          <i class="fa-solid fa-hand-holding-heart"></i> 100% Voluntario
+        </span>
       </div>
 
       <div class="geco-yape-num-row">
@@ -67,7 +69,7 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
       <div class="geco-yape-titular-desc">
         Titular: <strong>{yape.titular}</strong><br />
         <span class="geco-yape-relacion-text">
-          <i class="fa-solid fa-heart" style="color: #ec4899;"></i> Mary Rosse (Novia de Gersson • Organizadora del Regalo Especial 💕)
+          <i class="fa-solid fa-heart" style="color: #ec4899;"></i> Mery Yanayaco (Mary Rosse) • Organizadora del Regalo Especial 💕
         </span>
       </div>
 
@@ -78,10 +80,10 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
           class="geco-btn-yape-copy"
           id="btnCopiarYape"
           data-numero={yape.numero}
-          title="Copiar número para Yape o Plin"
+          title="Copiar número de Yape"
         >
           <i class="fa-solid fa-copy"></i>
-          <span>Copiar Número</span>
+          <span>Copiar Número Yape</span>
         </button>
 
         <!-- Botón Festivo de Confirmación -->
@@ -98,48 +100,13 @@ const fraseAgradecimiento = regalos.fraseAgradecimiento || '¡Que Dios multipliq
     </div>
   </article>
 
-  <!-- 3. CUENTAS BANCARIAS SECUNDARIAS (BCP / INTERBANK) -->
-  <div class="geco-bank-grid">
-    <!-- Banco BCP -->
-    <article class="geco-bank-card">
-      <div class="geco-bank-header">
-        <span class="geco-bank-name">
-          <i class="fa-solid fa-building-columns" style="color: #002a8f;"></i> Banco BCP (Soles)
-        </span>
-        <span class="geco-mini-tag geco-tag-faith">Transferencia</span>
-      </div>
-      <div class="geco-bank-num-box">
-        <div>
-          <div class="geco-bank-num-label">Cuenta Corriente / Ahorros</div>
-          <div class="geco-bank-num-val" id="numBcpVal">193-98765432-0-12</div>
-        </div>
-        <button type="button" class="geco-btn-bank-copy" id="btnCopiarBcp" data-copy="193-98765432-0-12" title="Copiar cuenta BCP">
-          <i class="fa-solid fa-copy"></i>
-        </button>
-      </div>
-      <p style="font-size: 0.76rem; color: var(--tx3); margin: 0;">Titular: Mary Rosse Katherine Yanayaco Lovaton (Novia 💕)</p>
-    </article>
-
-    <!-- Banco Interbank / Plin -->
-    <article class="geco-bank-card">
-      <div class="geco-bank-header">
-        <span class="geco-bank-name">
-          <i class="fa-solid fa-building-columns" style="color: #009a44;"></i> Interbank (Soles)
-        </span>
-        <span class="geco-mini-tag geco-tag-fda">Plin / Web</span>
-      </div>
-      <div class="geco-bank-num-box">
-        <div>
-          <div class="geco-bank-num-label">Número de Cuenta</div>
-          <div class="geco-bank-num-val" id="numInterbankVal">200-3001234567</div>
-        </div>
-        <button type="button" class="geco-btn-bank-copy" id="btnCopiarInterbank" data-copy="200-3001234567" title="Copiar cuenta Interbank">
-          <i class="fa-solid fa-copy"></i>
-        </button>
-      </div>
-      <p style="font-size: 0.76rem; color: var(--tx3); margin: 0;">Titular: Gersson Collantes</p>
-    </article>
-  </div>
+  <!-- 3. NOTA DE CLARIDAD Y VOLUNTARIADO DE GERSSON -->
+  <aside class="geco-gratitude-banner" style="margin: 0; background: var(--glass-card); border-color: var(--yape-border);" aria-label="Aclaración sobre el Yape">
+    <i class="fa-solid fa-circle-check geco-gratitude-icon" style="color: var(--yape-primary);" aria-hidden="true"></i>
+    <p class="geco-gratitude-text" style="color: var(--tx1); font-size: 0.88rem;">
+      <strong>Canal Único Oficial:</strong> En esta página <em>solo usen el Yape</em> quienes deseen donar. Cada aporte es completamente voluntario y va directo al regalo sorpresa que le está organizando Mery. ¡Muchas gracias de corazón por tu cariño!
+    </p>
+  </aside>
 
   <!-- 4. MENSAJE DE GRATITUD ESPIRITUAL -->
   <aside class="geco-gratitude-banner" aria-label="Mensaje de gratitud">
